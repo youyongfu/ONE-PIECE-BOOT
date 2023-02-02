@@ -1,0 +1,45 @@
+server:
+  port: 8089
+
+spring:
+  datasource:
+    druid:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3307/one-piece
+        username: root
+        password: root
+
+        #配置初始化大小、最小、最大  注意 如果这里这三个配置大于数据库最大限制,会抛出异常
+        initial-size: 5
+        min-idle: 10
+        max-active: 20
+        #配置获取连接等待超时的时间
+        max-wait: 60000
+        #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+        time-between-eviction-runs-millis: 60000
+        #配置一个连接在池中最小生存的时间，单位是毫秒
+        min-evictable-idle-time-millis: 300000
+        #检测连接是否有效的sql
+        validation-query: SELECT 'x'
+        #这参数找不到参考意义
+        validation-query-timeout: 10
+        #申请连接时执行validationQuery检测连接是否有效
+        test-on-borrow: true
+        #归还连接时执行validationQuery检测连接是否有效
+        test-on-return: false
+        #申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery
+        test-while-idle: true
+        #打开PSCache，并且指定每个连接上PSCache的大小
+        pool-prepared-statements: false
+        max-pool-prepared-statement-per-connection-size: 20
+        #配置监控统计拦截的filters
+        filters: stat
+        tomcat:
+          connection-properties: useSSL=false;serverTimezone=UTC;characterEncoding=utf8
+
+mybatis-plus:
+  mapper-locations: mapper/*.xml     # 存放sql语句的xml文件目录
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl   # 放开则开启SQL打印
+    map-underscore-to-camel-case: true   # 开启驼峰法则
+  type-aliases-package: com.you.entity   # 实体类包路径
