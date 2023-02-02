@@ -40,8 +40,8 @@ spring:
           connection-properties: useSSL=false;serverTimezone=UTC;characterEncoding=utf8
 
 mybatis-plus:
-  mapper-locations: mapper/*.xml
+  mapper-locations: mapper/*.xml     # 存放sql语句的xml文件目录
   configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-    map-underscore-to-camel-case: true
-  type-aliases-package: com.you.entity
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl   # 放开则开启SQL打印
+    map-underscore-to-camel-case: true   # 开启驼峰法则
+  type-aliases-package: com.you.entity   # 实体类包路径
