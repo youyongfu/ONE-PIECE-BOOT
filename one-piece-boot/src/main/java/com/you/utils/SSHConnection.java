@@ -4,6 +4,7 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 
 /**
+ * SSH连接类
  * @author yyf
  * @version 1.0
  * @date 2023/1/31
