@@ -1,5 +1,6 @@
 package com.you.common.lang;
 
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +12,7 @@ import java.io.Serializable;
  * @version 1.0
  * @date 2023/2/2
  */
+@Data
 public class ResultBean implements Serializable {
 
     protected static final Logger logger = LoggerFactory.getLogger(ResultBean.class);
@@ -20,30 +22,6 @@ public class ResultBean implements Serializable {
     private String msg;
 
     private Object data;
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public Object getData() {
-        return data;
-    }
-
-    public void setData(Object data) {
-        this.data = data;
-    }
 
     public static ResultBean success(){
         ResultBean resultBean = new ResultBean();
