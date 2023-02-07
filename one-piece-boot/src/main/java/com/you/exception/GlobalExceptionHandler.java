@@ -1,6 +1,6 @@
-package com.you.common.exception;
+package com.you.exception;
 
-import com.you.common.lang.ResultBean;
+import com.you.common.ResultBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

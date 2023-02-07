@@ -1,4 +1,4 @@
-package com.you.common.lang;
+package com.you.common;
 
 import lombok.Data;
 import org.slf4j.Logger;

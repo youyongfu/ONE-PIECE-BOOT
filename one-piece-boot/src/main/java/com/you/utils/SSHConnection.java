@@ -22,9 +22,13 @@ public class SSHConnection {
     // 要访问的mysql所在的host
     String remote_host = "localhost";
     // 服务器上数据库端口号
-    int remote_port = 3306;
-    // 本地的端口
-    int local_port = 3307;
+    int mysql_remote_port = 3306;
+    // Mysql 本地的端口
+    int mysql_local_port = 3307;
+    // redis 本地的端口
+    int redis_local_port = 6379;
+    // 服务器上redis端口号
+    int redis_remote_port = 6379;
 
     Session session = null;
 
@@ -38,7 +42,8 @@ public class SSHConnection {
             session.setPassword(password);
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect();
-            session.setPortForwardingL(local_port, remote_host, remote_port);
+            session.setPortForwardingL(mysql_local_port, remote_host, mysql_remote_port);
+            session.setPortForwardingL(redis_local_port,remote_host,redis_remote_port);
         } catch (Exception e) {
         }
     }

@@ -2,7 +2,7 @@ package com.you.controller;
 
 import cn.hutool.core.map.MapUtil;
 import com.google.code.kaptcha.Producer;
-import com.you.common.lang.ResultBean;
+import com.you.common.ResultBean;
 import com.you.constant.RedisConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,7 +48,7 @@ public class AuthController extends BaseController{
         String str = "data:image/jpeg;base64,";
         String base64Img = str + base64Encoder.encode(byteArrayOutputStream.toByteArray());
 
-//        redisUtil.hset(RedisConstant.CAPTCHA_KEY,key,code,120);                     //存储到Redis
+        redisUtil.hset(RedisConstant.CAPTCHA_KEY,key,code,120);                     //存储到Redis
 
         return ResultBean.success(MapUtil.builder().put("token",key).put("captchaImg",base64Img).build());
     }
