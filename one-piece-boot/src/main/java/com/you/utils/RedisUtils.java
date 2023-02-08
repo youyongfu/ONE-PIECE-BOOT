@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2023/2/3
  */
 @Component
-public class RedisUtil {
+public class RedisUtils {
 
     @Autowired
     private RedisTemplate redisTemplate;

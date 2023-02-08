@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.you.constant.RedisConstant;
 import com.you.exception.CaptchaException;
 import com.you.handler.LoginFailureHandler;
-import com.you.utils.RedisUtil;
+import com.you.utils.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -25,7 +25,7 @@ import java.io.IOException;
 public class CaptchaFilter extends OncePerRequestFilter {
 
     @Autowired
-    RedisUtil redisUtil;
+    RedisUtils redisUtils;
 
     @Autowired
     LoginFailureHandler loginFailureHandler;
@@ -58,12 +58,12 @@ public class CaptchaFilter extends OncePerRequestFilter {
             throw new CaptchaException("验证码错误");
         }
 
-        if (!code.equals(redisUtil.hget(RedisConstant.CAPTCHA_KEY, key))) {
+        if (!code.equals(redisUtils.hget(RedisConstant.CAPTCHA_KEY, key))) {
             throw new CaptchaException("验证码错误");
         }
 
         // 删除Redis中验证码缓存
-        redisUtil.hdel(RedisConstant.CAPTCHA_KEY, key);
+        redisUtils.hdel(RedisConstant.CAPTCHA_KEY, key);
     }
 }
 

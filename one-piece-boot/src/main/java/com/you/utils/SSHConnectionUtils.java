@@ -2,6 +2,7 @@ package com.you.utils;
 
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
+import org.springframework.stereotype.Component;
 
 /**
  * SSH连接类
@@ -9,7 +10,8 @@ import com.jcraft.jsch.Session;
  * @version 1.0
  * @date 2023/1/31
  */
-public class SSHConnection {
+@Component
+public class SSHConnectionUtils {
 
     // 服务器登录名
     String user = "root";
@@ -44,7 +46,10 @@ public class SSHConnection {
             session.connect();
             session.setPortForwardingL(mysql_local_port, remote_host, mysql_remote_port);
             session.setPortForwardingL(redis_local_port,remote_host,redis_remote_port);
+            System.out.println("成功建立SSH连接！\n");
         } catch (Exception e) {
+            System.out.println("SSH连接失败！\n");
+            e.printStackTrace();
         }
     }
 
