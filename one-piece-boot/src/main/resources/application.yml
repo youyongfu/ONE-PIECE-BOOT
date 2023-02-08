@@ -50,7 +50,7 @@ spring:
     timeout: 20000
 
 mybatis-plus:
-  mapper-locations: mapper/*.xml     # 存放sql语句的xml文件目录
+  mapper-locations: classpath*:com/you/mapper/*Mapper.xml     # 存放sql语句的xml文件目录
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl   # 放开则开启SQL打印
     map-underscore-to-camel-case: true   # 开启驼峰法则
