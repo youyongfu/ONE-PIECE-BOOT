@@ -24,6 +24,6 @@ public class DtaSourceConfig {
     public DataSource dataSource() throws Exception {
         // 建立SSH连接
         sshConnectionUtils.SSHConnection();
-        return new DruidDataSource();   //创建Druid数据源
+        return new DruidDataSourceWrapper();   //创建Druid数据源
     }
 }
