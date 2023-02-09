@@ -10,15 +10,15 @@
         <result column="avatar" property="avatar" />
         <result column="email" property="email" />
         <result column="city" property="city" />
-        <result column="created" property="created" />
-        <result column="updated" property="updated" />
+        <result column="created_time" property="createdTime" />
+        <result column="updated_time" property="updatedTime" />
         <result column="last_login" property="lastLogin" />
         <result column="statu" property="statu" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, username, password, avatar, email, city, created, updated, last_login, statu
+        id, username, password, avatar, email, city, created_time, updated_time, last_login, statu
     </sql>
 
 </mapper>

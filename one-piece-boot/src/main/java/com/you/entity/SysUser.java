@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
+import java.sql.Date;
 
 /**
  * 用户实体类
@@ -38,6 +38,6 @@ public class SysUser extends BaseEntity {
     private String city;
 
     //最后登录时间
-    private LocalDateTime lastLogin;
+    private Date lastLogin;
 
 }

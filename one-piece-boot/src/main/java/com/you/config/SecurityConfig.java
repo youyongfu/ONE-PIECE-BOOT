@@ -2,10 +2,7 @@ package com.you.config;
 
 import com.you.filter.CaptchaFilter;
 import com.you.filter.JwtAuthenticationFilter;
-import com.you.handler.JwtAccessDeniedHandler;
-import com.you.handler.JwtAuthenticationEntryPoint;
-import com.you.handler.LoginFailureHandler;
-import com.you.handler.LoginSuccessHandler;
+import com.you.handler.*;
 import com.you.service.impl.UserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -42,6 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     JwtAccessDeniedHandler jwtAccessDeniedHandler;
     @Autowired
     UserDetailService userDetailService;
+    @Autowired
+    JwtLogoutSuccessHandler jwtLogoutSuccessHandler;
 
 
     /**
@@ -77,8 +76,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .successHandler(loginSuccessHandler)         //登录成功处理
                 .failureHandler(loginFailureHandler)         //登录失败处理
+
+                //登出操作
                 .and()
                 .logout()
+                .logoutSuccessHandler(jwtLogoutSuccessHandler)     //登出处理
 
                 // 禁用session
                 .and()

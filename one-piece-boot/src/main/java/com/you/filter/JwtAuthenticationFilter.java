@@ -1,6 +1,9 @@
 package com.you.filter;
 
 import cn.hutool.core.util.StrUtil;
+import com.you.entity.SysUser;
+import com.you.service.SysUserService;
+import com.you.service.impl.UserDetailService;
 import com.you.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -27,6 +30,12 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     @Autowired
     JwtUtils jwtUtils;
 
+    @Autowired
+    SysUserService sysUserService;
+
+    @Autowired
+    UserDetailService userDetailService;
+
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
     }
@@ -51,8 +60,9 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
         // 获取用户的权限等信息
         String username = claim.getSubject();
+        SysUser sysUser = sysUserService.getByUsername(username);
         UsernamePasswordAuthenticationToken token
-                = new UsernamePasswordAuthenticationToken(username, null, null);
+                = new UsernamePasswordAuthenticationToken(username, null, userDetailService.getUserAuthority(sysUser.getId()));
 
         SecurityContextHolder.getContext().setAuthentication(token);
         chain.doFilter(request, response);

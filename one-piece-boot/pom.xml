@@ -16,7 +16,18 @@
     </parent>
     <properties>
         <java.version>1.8</java.version>
+        <mybatis-plus-boot-starter.version>3.4.1</mybatis-plus-boot-starter.version>
+        <mybatis-plus-generator.version>3.4.1</mybatis-plus-generator.version>
+        <druid-spring-boot-starter.version>1.1.9</druid-spring-boot-starter.version>
+        <jsch.version>0.1.53</jsch.version>
+        <lombok.version>1.18.4</lombok.version>
+        <jjwt.version>0.9.1</jjwt.version>
+        <kaptcha.version>0.0.9</kaptcha.version>
+        <hutool-all.version>5.3.3</hutool-all.version>
+        <commons-io.version>[2.6,3.0)</commons-io.version>
+        <commons-collections4.version>[4.1,5.0)</commons-collections4.version>
     </properties>
+
     <dependencies>
         <!--导入web项目场景启动器 -->
         <dependency>
@@ -36,21 +47,21 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.4.1</version>
+            <version>${mybatis-plus-boot-starter.version}</version>
         </dependency>
 
         <!--mp代码生成器-->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-generator</artifactId>
-            <version>3.4.1</version>
+            <version>${mybatis-plus-generator.version}</version>
         </dependency>
 
         <!--druid -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
-            <version>1.1.9</version>
+            <version>${druid-spring-boot-starter.version}</version>
         </dependency>
 
         <!--JDBC依赖 -->
@@ -69,14 +80,14 @@
         <dependency>
             <groupId>com.jcraft</groupId>
             <artifactId>jsch</artifactId>
-            <version>0.1.53</version>
+            <version>${jsch.version}</version>
         </dependency>
 
         <!--lombok依赖 -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.4</version>
+            <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -103,27 +114,43 @@
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
-            <version>0.9.1</version>
+            <version>${jjwt.version}</version>
         </dependency>
 
         <!-- kaptcha -->
         <dependency>
             <groupId>com.github.axet</groupId>
             <artifactId>kaptcha</artifactId>
-            <version>0.0.9</version>
+            <version>${kaptcha.version}</version>
         </dependency>
 
         <!-- hutool工具类-->
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.3.3</version>
+            <version>${hutool-all.version}</version>
         </dependency>
 
         <!-- 开启参数校验-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- apache 开源工具 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${commons-collections4.version}</version>
         </dependency>
 
     </dependencies>

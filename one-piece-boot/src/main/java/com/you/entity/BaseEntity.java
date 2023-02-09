@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.sql.Date;
 
 /**
  * 基本实体类
@@ -20,10 +20,10 @@ public class BaseEntity implements Serializable {
     private Long id;
 
     //创建时间
-    private LocalDateTime createdTime;
+    private Date createdTime;
 
     //更新时间
-    private LocalDateTime updatedTime;
+    private Date updatedTime;
 
     //状态
     private Integer statu;

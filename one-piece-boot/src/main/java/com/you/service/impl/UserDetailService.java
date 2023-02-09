@@ -40,6 +40,7 @@ public class UserDetailService implements UserDetailsService {
      * @return
      */
     public List<GrantedAuthority> getUserAuthority(Long userId){
-        return AuthorityUtils.commaSeparatedStringToAuthorityList(null);
+        String authority =sysUserService.getUserAuthorityInfo(userId);
+        return AuthorityUtils.commaSeparatedStringToAuthorityList(authority);
     }
 }
