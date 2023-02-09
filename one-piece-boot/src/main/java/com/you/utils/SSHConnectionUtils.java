@@ -35,7 +35,8 @@ public class SSHConnectionUtils {
     Session session = null;
 
     /**
-     *    建立SSH连接
+     * 建立SSH连接
+     * @throws Exception
      */
     public void SSHConnection() throws Exception{
         try {
@@ -54,7 +55,8 @@ public class SSHConnectionUtils {
     }
 
     /**
-     *    断开SSH连接
+     * 断开SSH连接
+     * @throws Exception
      */
     public void closeSSH () throws Exception
     {

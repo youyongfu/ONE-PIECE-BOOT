@@ -1,6 +1,5 @@
 package com.you.config;
 
-import com.alibaba.druid.pool.DruidDataSource;
 import com.you.utils.SSHConnectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

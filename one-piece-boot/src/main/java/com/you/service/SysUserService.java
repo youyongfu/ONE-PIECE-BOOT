@@ -4,12 +4,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.you.entity.SysUser;
 
 /**
- * <p>
- *  服务类
- * </p>
- *
+ * 用户服务类
  * @author yyf
- * @since 2023-02-06
+ * @version 1.0
+ * @date 2023/2/6
  */
 public interface SysUserService extends IService<SysUser> {
 

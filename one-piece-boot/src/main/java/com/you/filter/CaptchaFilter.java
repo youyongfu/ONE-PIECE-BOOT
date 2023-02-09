@@ -48,7 +48,10 @@ public class CaptchaFilter extends OncePerRequestFilter {
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 
-    // 校验验证码逻辑
+    /**
+     * 校验验证码逻辑
+     * @param httpServletRequest
+     */
     private void validate(HttpServletRequest httpServletRequest) {
 
         String code = httpServletRequest.getParameter("captcha");
@@ -58,6 +61,7 @@ public class CaptchaFilter extends OncePerRequestFilter {
             throw new CaptchaException("验证码错误");
         }
 
+        //比对输入验证码与Redis存储的验证码数据
         if (!code.equals(redisUtils.hget(RedisConstant.CAPTCHA_KEY, key))) {
             throw new CaptchaException("验证码错误");
         }

@@ -20,10 +20,10 @@ public class CorsConfig implements WebMvcConfigurer {
 
     private CorsConfiguration buildConfig() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("*");
-        corsConfiguration.addAllowedHeader("*");
-        corsConfiguration.addAllowedMethod("*");
-        corsConfiguration.addExposedHeader("Authorization");
+        corsConfiguration.addAllowedOrigin("*");           //允许任何域名使用
+        corsConfiguration.addAllowedHeader("*");           //允许任何请求头
+        corsConfiguration.addAllowedMethod("*");           //允许任何类型请求
+        corsConfiguration.addExposedHeader("Authorization");     //校验当前登陆用户的Token是否过期，过期就让用户重新进行登录
         return corsConfiguration;
     }
 
@@ -36,10 +36,10 @@ public class CorsConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("*")
-                .allowedMethods("GET", "POST", "DELETE", "PUT")
-                .maxAge(3600);
+        registry.addMapping("/**")      // 设置允许跨域的路径
+                .allowedOrigins("*")                // 设置允许跨域请求的域名
+                .allowedMethods("GET", "POST", "DELETE", "PUT")       // 设置允许的方法
+                .maxAge(3600);           // 跨域允许时间
     }
 
 }

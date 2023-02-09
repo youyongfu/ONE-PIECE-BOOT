@@ -40,6 +40,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             return;
         }
 
+        //校验Jwt
         Claims claim = jwtUtils.getClaimByToken(jwt);
         if (claim == null) {
             throw new JwtException("token 异常");

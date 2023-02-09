@@ -22,7 +22,11 @@ public class GlobalExceptionHandler {
 
     protected static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    // 实体校验异常捕获
+    /**
+     * 实体校验异常捕获
+     * @param e
+     * @return
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResultBean handler(MethodArgumentNotValidException e) {
@@ -32,6 +36,11 @@ public class GlobalExceptionHandler {
         return ResultBean.fail(objectError.getDefaultMessage());
     }
 
+    /**
+     * 非法参数异常捕获
+     * @param e
+     * @return
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = IllegalArgumentException.class)
     public ResultBean handler(IllegalArgumentException e) {
@@ -39,7 +48,11 @@ public class GlobalExceptionHandler {
         return ResultBean.fail(e.getMessage());
     }
 
-
+    /**
+     * 运行时异常捕获
+     * @param e
+     * @return
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = RuntimeException.class)
     public ResultBean handler(RuntimeException e) {

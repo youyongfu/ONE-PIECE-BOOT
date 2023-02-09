@@ -4,12 +4,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.you.entity.SysUser;
 
 /**
- * <p>
- *  Mapper 接口
- * </p>
- *
+ * 用户Mapper接口
  * @author yyf
- * @since 2023-02-06
+ * @version 1.0
+ * @date 2023/2/6
  */
 public interface SysUserMapper extends BaseMapper<SysUser> {
 

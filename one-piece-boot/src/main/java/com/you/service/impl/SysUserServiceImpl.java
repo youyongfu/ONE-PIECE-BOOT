@@ -8,16 +8,19 @@ import com.you.service.SysUserService;
 import org.springframework.stereotype.Service;
 
 /**
- * <p>
- *  服务实现类
- * </p>
- *
+ * 用户服务实现类
  * @author yyf
- * @since 2023-02-06
+ * @version 1.0
+ * @date 2023/2/6
  */
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
 
+    /**
+     * 根据用户名获取用户信息
+     * @param username
+     * @return
+     */
     @Override
     public SysUser getByUsername(String username) {
         return getOne(new QueryWrapper<SysUser>().eq("username", username));

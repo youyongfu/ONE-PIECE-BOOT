@@ -53,6 +53,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * 注册jwt 过滤器
+     * @return
+     * @throws Exception
+     */
     @Bean
     JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager());
@@ -84,7 +89,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(URL_WHITELIST).permitAll()           //白名单放行
-                .anyRequest().authenticated()
+                .anyRequest().authenticated()                     //其他请求需要认证
 
                 // 异常处理器
                 .and()
