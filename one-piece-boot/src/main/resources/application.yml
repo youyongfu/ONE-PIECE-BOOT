@@ -60,3 +60,15 @@ jwt:
     header: Authorization
     expire: 604800 #7天，秒单位
     secret: ji8n3439n439n43ld9ne9343fdfer49h
+
+# SSH通道连接服务器配置信息
+ssh:
+  user: root          # 服务器登录名
+  password: Yyfyp@@123    # 登陆密码
+  host: 58.67.221.164     # 服务器公网IP
+  port: 22              # 跳板机ssh开放的接口
+  remote_host: localhost      # 要访问的mysql所在的host
+  mysql_remote_port: 3306     # 服务器上数据库端口号
+  mysql_local_port: 3307      # Mysql 本地的端口
+  redis_local_port: 6379      # redis 本地的端口
+  redis_remote_port: 6379     # 服务器上redis端口号

@@ -2,6 +2,8 @@ package com.you.utils;
 
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,27 +12,29 @@ import org.springframework.stereotype.Component;
  * @version 1.0
  * @date 2023/1/31
  */
+@Data
 @Component
+@ConfigurationProperties(prefix = "ssh")
 public class SSHConnectionUtils {
 
     // 服务器登录名
-    String user = "root";
+    String user;
     // 登陆密码
-    String password = "Yyfyp@@123";
+    String password;
     //服务器公网IP
-    String host = "58.67.221.164";
+    String host;
     // 跳板机ssh开放的接口   默认端口 22
-    int port = 22;
+    int port;
     // 要访问的mysql所在的host
-    String remote_host = "localhost";
+    String remote_host;
     // 服务器上数据库端口号
-    int mysql_remote_port = 3306;
+    int mysql_remote_port;
     // Mysql 本地的端口
-    int mysql_local_port = 3307;
+    int mysql_local_port;
     // redis 本地的端口
-    int redis_local_port = 6379;
+    int redis_local_port;
     // 服务器上redis端口号
-    int redis_remote_port = 6379;
+    int redis_remote_port;
 
     Session session = null;
 
