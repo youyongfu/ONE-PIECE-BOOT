@@ -3,7 +3,7 @@ package com.you.filter;
 import cn.hutool.core.util.StrUtil;
 import com.you.entity.SysUser;
 import com.you.service.SysUserService;
-import com.you.service.impl.UserDetailService;
+import com.you.service.impl.UserDetailsServiceImpl;
 import com.you.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -34,7 +34,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     SysUserService sysUserService;
 
     @Autowired
-    UserDetailService userDetailService;
+    UserDetailsServiceImpl userDetailsService;
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
@@ -62,7 +62,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         String username = claim.getSubject();
         SysUser sysUser = sysUserService.getByUsername(username);
         UsernamePasswordAuthenticationToken token
-                = new UsernamePasswordAuthenticationToken(username, null, userDetailService.getUserAuthority(sysUser.getId()));
+                = new UsernamePasswordAuthenticationToken(username, null, userDetailsService.getUserAuthority(sysUser.getId()));
 
         SecurityContextHolder.getContext().setAuthentication(token);
         chain.doFilter(request, response);

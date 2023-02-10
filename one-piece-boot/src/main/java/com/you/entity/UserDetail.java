@@ -11,7 +11,7 @@ import java.util.Collection;
  * @version 1.0
  * @date 2023/2/6
  */
-public class AccountUser implements UserDetails {
+public class UserDetail implements UserDetails {
 
     private Long userId;
 
@@ -29,14 +29,14 @@ public class AccountUser implements UserDetails {
 
     private final boolean enabled;
 
-    public AccountUser(Long userId, String username, String password, Collection<? extends GrantedAuthority> authorities) {
+    public UserDetail(Long userId, String username, String password, Collection<? extends GrantedAuthority> authorities) {
         this(userId, username, password, true, true, true, true, authorities);
     }
 
 
-    public AccountUser(Long userId, String username, String password, boolean enabled, boolean accountNonExpired,
-                       boolean credentialsNonExpired, boolean accountNonLocked,
-                       Collection<? extends GrantedAuthority> authorities) {
+    public UserDetail(Long userId, String username, String password, boolean enabled, boolean accountNonExpired,
+                      boolean credentialsNonExpired, boolean accountNonLocked,
+                      Collection<? extends GrantedAuthority> authorities) {
         Assert.isTrue(username != null && !"".equals(username) && password != null,
                 "Cannot pass null or empty values to constructor");
         this.userId = userId;

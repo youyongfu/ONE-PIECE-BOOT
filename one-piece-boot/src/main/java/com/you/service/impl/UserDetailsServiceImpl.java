@@ -1,7 +1,7 @@
 package com.you.service.impl;
 
-import com.you.entity.AccountUser;
 import com.you.entity.SysUser;
+import com.you.entity.UserDetail;
 import com.you.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,7 +20,7 @@ import java.util.List;
  */
 
 @Service
-public class UserDetailService implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     private SysUserService sysUserService;
@@ -31,7 +31,7 @@ public class UserDetailService implements UserDetailsService {
         if (sysUser == null) {
             throw new UsernameNotFoundException("用户名或密码不正确");
         }
-        return new AccountUser(sysUser.getId(), sysUser.getUsername(), sysUser.getPassword(), getUserAuthority(sysUser.getId()));
+        return new UserDetail(sysUser.getId(), sysUser.getUsername(), sysUser.getPassword(), getUserAuthority(sysUser.getId()));
     }
 
     /**

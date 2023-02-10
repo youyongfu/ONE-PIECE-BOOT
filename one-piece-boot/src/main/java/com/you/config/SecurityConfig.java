@@ -3,7 +3,7 @@ package com.you.config;
 import com.you.filter.CaptchaFilter;
 import com.you.filter.JwtAuthenticationFilter;
 import com.you.handler.*;
-import com.you.service.impl.UserDetailService;
+import com.you.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     JwtAccessDeniedHandler jwtAccessDeniedHandler;
     @Autowired
-    UserDetailService userDetailService;
+    UserDetailsServiceImpl userDetailsService;
     @Autowired
     JwtLogoutSuccessHandler jwtLogoutSuccessHandler;
 
@@ -114,6 +114,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailService);
+        auth.userDetailsService(userDetailsService);
     }
 }
