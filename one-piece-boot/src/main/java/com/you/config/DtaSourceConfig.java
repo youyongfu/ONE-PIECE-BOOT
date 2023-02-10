@@ -1,10 +1,10 @@
 package com.you.config;
 
 import com.you.utils.SSHConnectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 /**
@@ -16,7 +16,7 @@ import javax.sql.DataSource;
 @Configuration
 public class DtaSourceConfig {
 
-    @Autowired
+    @Resource
     private SSHConnectionUtils sshConnectionUtils;
 
     @Bean

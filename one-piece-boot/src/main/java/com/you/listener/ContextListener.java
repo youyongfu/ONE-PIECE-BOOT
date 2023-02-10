@@ -18,6 +18,7 @@ import javax.servlet.annotation.WebListener;
 public class ContextListener implements ServletContextListener {
 
     private SSHConnectionUtils sshConnectionUtils;
+
     public ContextListener() {
         super();
     }

@@ -3,12 +3,12 @@ package com.you.handler;
 import cn.hutool.json.JSONUtil;
 import com.you.common.ResultBean;
 import com.you.utils.JwtUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -24,8 +24,8 @@ import java.io.IOException;
 @Component
 public class JwtLogoutSuccessHandler implements LogoutSuccessHandler {
 
-    @Autowired
-    JwtUtils jwtUtils;
+    @Resource
+    private JwtUtils jwtUtils;
 
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {

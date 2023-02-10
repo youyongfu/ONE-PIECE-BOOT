@@ -7,12 +7,12 @@ import com.you.service.impl.UserDetailsServiceImpl;
 import com.you.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -27,14 +27,14 @@ import java.io.IOException;
  */
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
-    @Autowired
-    JwtUtils jwtUtils;
+    @Resource
+    private JwtUtils jwtUtils;
 
-    @Autowired
-    SysUserService sysUserService;
+    @Resource
+    private SysUserService sysUserService;
 
-    @Autowired
-    UserDetailsServiceImpl userDetailsService;
+    @Resource
+    private UserDetailsServiceImpl userDetailsService;
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);

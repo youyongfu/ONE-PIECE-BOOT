@@ -11,9 +11,9 @@ import com.you.service.SysRoleService;
 import com.you.service.SysUserService;
 import com.you.utils.RedisUtils;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,16 +26,16 @@ import java.util.stream.Collectors;
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
 
-    @Autowired
+    @Resource
     private SysRoleService sysRoleService;
 
-    @Autowired
+    @Resource
     private SysUserMapper sysUserMapper;
 
-    @Autowired
+    @Resource
     private SysMenuMapper sysMenuMapper;
 
-    @Autowired
+    @Resource
     private RedisUtils redisUtils;
 
     /**

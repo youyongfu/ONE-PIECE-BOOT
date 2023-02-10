@@ -4,11 +4,11 @@ import cn.hutool.core.map.MapUtil;
 import com.google.code.kaptcha.Producer;
 import com.you.common.ResultBean;
 import com.you.constant.RedisConstant;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sun.misc.BASE64Encoder;
 
+import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -25,7 +25,7 @@ import java.util.UUID;
 @RestController
 public class AuthController extends BaseController{
 
-    @Autowired
+    @Resource
     private Producer producer;
 
     /**

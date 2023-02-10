@@ -5,10 +5,10 @@ import com.you.constant.RedisConstant;
 import com.you.exception.CaptchaException;
 import com.you.handler.LoginFailureHandler;
 import com.you.utils.RedisUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,11 +24,11 @@ import java.io.IOException;
 @Component
 public class CaptchaFilter extends OncePerRequestFilter {
 
-    @Autowired
-    RedisUtils redisUtils;
+    @Resource
+    private RedisUtils redisUtils;
 
-    @Autowired
-    LoginFailureHandler loginFailureHandler;
+    @Resource
+    private LoginFailureHandler loginFailureHandler;
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {

@@ -4,7 +4,6 @@ import com.you.filter.CaptchaFilter;
 import com.you.filter.JwtAuthenticationFilter;
 import com.you.handler.*;
 import com.you.service.impl.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -15,6 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.annotation.Resource;
 
 /**
  * Security 配置类
@@ -27,20 +28,20 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)      //开启spring方法级安全,prePostEnabled = true 会解锁 @PreAuthorize(在方法执行前进行验证) 和 @PostAuthorize(在方法执行后进行验证) 。
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    LoginSuccessHandler loginSuccessHandler;
-    @Autowired
-    LoginFailureHandler loginFailureHandler;
-    @Autowired
-    CaptchaFilter captchaFilter;
-    @Autowired
-    JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    @Autowired
-    JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    @Autowired
-    UserDetailsServiceImpl userDetailsService;
-    @Autowired
-    JwtLogoutSuccessHandler jwtLogoutSuccessHandler;
+    @Resource
+    private LoginSuccessHandler loginSuccessHandler;
+    @Resource
+    private LoginFailureHandler loginFailureHandler;
+    @Resource
+    private CaptchaFilter captchaFilter;
+    @Resource
+    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    @Resource
+    private JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    @Resource
+    private UserDetailsServiceImpl userDetailsService;
+    @Resource
+    private JwtLogoutSuccessHandler jwtLogoutSuccessHandler;
 
 
     /**

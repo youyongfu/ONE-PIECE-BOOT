@@ -1,8 +1,8 @@
 package com.you.controller;
 
 import com.you.utils.RedisUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -13,10 +13,10 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class BaseController {
 
-    @Autowired
+    @Resource
     HttpServletRequest req;
 
-    @Autowired
+    @Resource
     RedisUtils redisUtils;
 
 }

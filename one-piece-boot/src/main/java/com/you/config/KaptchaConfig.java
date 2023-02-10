@@ -17,7 +17,7 @@ import java.util.Properties;
 public class KaptchaConfig {
 
     @Bean
-    DefaultKaptcha producer() {
+    public DefaultKaptcha producer() {
         Properties properties = new Properties();
         properties.put("kaptcha.border", "no");     //图片边框
         properties.put("kaptcha.textproducer.font.color", "black");    //字体颜色

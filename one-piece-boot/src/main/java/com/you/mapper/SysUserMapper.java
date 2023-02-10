@@ -2,7 +2,7 @@ package com.you.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.you.entity.SysUser;
-import org.springframework.stereotype.Repository;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 用户Mapper接口
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
  * @version 1.0
  * @date 2023/2/6
  */
-@Repository
+@Mapper
 public interface SysUserMapper extends BaseMapper<SysUser> {
 
 }

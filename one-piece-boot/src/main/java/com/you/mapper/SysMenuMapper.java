@@ -2,7 +2,7 @@ package com.you.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.you.entity.SysMenu;
-import org.springframework.stereotype.Repository;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * @version 1.0
  * @date 2023/2/9
  */
-@Repository
+@Mapper
 public interface SysMenuMapper extends BaseMapper<SysMenu> {
 
     List<SysMenu> getMenuInfoByUserId(Long userId);
