@@ -12,6 +12,4 @@ import com.you.entity.SysUser;
 public interface SysUserService extends IService<SysUser> {
 
     SysUser getByUsername(String username);
-
-    String getUserAuthorityInfo(Long userId);
 }

@@ -2,6 +2,7 @@ package com.you.service.impl;
 
 import com.you.entity.SysUser;
 import com.you.entity.UserDetail;
+import com.you.service.AuthorityService;
 import com.you.service.SysUserService;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -24,6 +25,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Resource
     private SysUserService sysUserService;
+    @Resource
+    private AuthorityService authorityService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -40,7 +43,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      * @return
      */
     public List<GrantedAuthority> getUserAuthority(Long userId){
-        String authority =sysUserService.getUserAuthorityInfo(userId);
+        String authority = authorityService.getUserAuthorityInfo(userId);
         return AuthorityUtils.commaSeparatedStringToAuthorityList(authority);
     }
 }
