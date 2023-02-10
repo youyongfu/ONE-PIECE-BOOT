@@ -1,13 +1,12 @@
 package com.you.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.you.entity.SysMenu;
 import com.you.entity.SysRole;
 import com.you.entity.SysUser;
 import com.you.mapper.SysMenuMapper;
+import com.you.mapper.SysRoleMapper;
 import com.you.mapper.SysUserMapper;
 import com.you.service.AuthorityService;
-import com.you.service.SysRoleService;
 import com.you.utils.RedisUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,7 @@ import java.util.stream.Collectors;
 public class AuthorityServiceImpl implements AuthorityService {
 
     @Resource
-    private SysRoleService sysRoleService;
+    private SysRoleMapper sysRoleMapper;
     @Resource
     private SysUserMapper sysUserMapper;
     @Resource
@@ -51,7 +50,7 @@ public class AuthorityServiceImpl implements AuthorityService {
             authority = (String) redisUtils.get("GrantedAuthority:" + sysUser.getUsername());
         } else {
             //获取该用户的角色信息
-            List<SysRole> sysRoleList = sysRoleService.list(new QueryWrapper<SysRole>().inSql("id", "select role_id from sys_user_role where user_id = " + userId));
+            List<SysRole> sysRoleList = sysRoleMapper.getRoleInfoByUserId(userId);
 
             //获取角色编码
             if(CollectionUtils.isNotEmpty(sysRoleList)){
@@ -59,8 +58,8 @@ public class AuthorityServiceImpl implements AuthorityService {
                 authority = roleCode.concat(",");
             }
 
-            //获取该用户的菜单信息
-            List<SysMenu> sysMenuList = sysMenuMapper.getMenuInfoByUserId(userId);
+            //获取该用户的菜单权限信息
+            List<SysMenu> sysMenuList = sysMenuMapper.getMenuPermsByUserId(userId);
 
             //获取菜单授权码
             if(CollectionUtils.isNotEmpty(sysMenuList)){
@@ -81,7 +80,20 @@ public class AuthorityServiceImpl implements AuthorityService {
      */
     @Override
     public void clearUserAuthorityInfo(String username) {
-        redisUtils.del("GrantedAuthority" + username);
+        redisUtils.del("GrantedAuthority:" + username);
     }
+
+    @Override
+    public void clearUserAuthorityInfoByRoleId(Long roleId) {
+        List<SysUser> userInfoList = sysUserMapper.getUserInfoByRoleId(roleId);
+        userInfoList.forEach(u -> clearUserAuthorityInfo(u.getUsername()));
+    }
+
+    @Override
+    public void clearUserAuthorityInfoByMenuId(Long menuId) {
+        List<SysUser> userInfoList = sysUserMapper.getUserInfoByMenuId(menuId);
+        userInfoList.forEach(u -> clearUserAuthorityInfo(u.getUsername()));
+    }
+
 
 }

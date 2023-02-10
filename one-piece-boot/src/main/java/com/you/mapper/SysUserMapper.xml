@@ -21,4 +21,26 @@
         id, username, password, avatar, email, city, created_time, updated_time, last_login, statu
     </sql>
 
+    <!-- 根据角色id获取用户信息-->
+    <select id="getUserInfoByRoleId" parameterType="Long" resultMap="BaseResultMap">
+        select
+            u.*
+        from
+            sys_user u
+        left join sys_user_role ur on ur.user_id = u.id
+        where
+            ur.role_id = #{roleId}
+    </select>
+
+    <!-- 根据菜单id获取用户信息-->
+    <select id="getUserInfoByMenuId" parameterType="Long" resultMap="BaseResultMap">
+        select
+            distinct u.*
+        from
+            sys_user_role ur
+        left join sys_role_menu rm on ur.role_id = rm.role_id
+        left join sys_user u on ur.user_id = u.id
+        where
+            rm.menu_id = #{menuId}
+    </select>
 </mapper>

@@ -11,4 +11,8 @@ public interface AuthorityService {
     String getUserAuthorityInfo(Long userId);
 
     void clearUserAuthorityInfo(String username);
+
+    void clearUserAuthorityInfoByRoleId(Long roleId);
+
+    void clearUserAuthorityInfoByMenuId(Long menuId);
 }
