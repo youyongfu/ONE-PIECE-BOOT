@@ -59,7 +59,7 @@ public class AuthorityServiceImpl implements AuthorityService {
             }
 
             //获取该用户的菜单权限信息
-            List<SysMenu> sysMenuList = sysMenuMapper.getMenuPermsByUserId(userId);
+            List<SysMenu> sysMenuList = sysMenuMapper.getMenuByUserId(userId);
 
             //获取菜单授权码
             if(CollectionUtils.isNotEmpty(sysMenuList)){

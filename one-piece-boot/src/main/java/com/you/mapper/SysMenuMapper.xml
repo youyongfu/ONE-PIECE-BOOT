@@ -24,14 +24,19 @@
     </sql>
 
     <!-- 根据用户id获取菜单权限-->
-    <select id="getMenuPermsByUserId" parameterType="Long" resultMap="BaseResultMap">
+    <select id="getMenuByUserId" parameterType="Long" resultMap="BaseResultMap">
         select
-            distinct rm.menu_id,
-            m.perms
+            DISTINCT m.id,
+            m.parent_id,
+            m.name,
+            m.path,
+            m.perms,
+            m.component,
+            m.icon
         from
-            sys_user_role ur
-        left join sys_role_menu rm on ur.role_id = rm.role_id
-		left join sys_menu m on m.id = rm.menu_id
+            sys_menu m
+        left join sys_role_menu rm on rm.menu_id = m.id
+        left join sys_user_role ur on ur.role_id = rm.role_id
         where
             ur.user_id = #{userId}
     </select>

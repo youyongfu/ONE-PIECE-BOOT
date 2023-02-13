@@ -6,6 +6,8 @@ import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 菜单实体类
@@ -34,7 +36,7 @@ public class SysMenu extends BaseEntity {
     @NotBlank(message = "菜单授权码不能为空")
     private String perms;
 
-    //内容
+    //组件
     private String component;
 
     //类型     0：目录   1：菜单   2：按钮
@@ -48,5 +50,7 @@ public class SysMenu extends BaseEntity {
     @TableField("orderNum")
     private Integer orderNum;
 
+    //子导航
+    private List<SysMenu> children = new ArrayList<>();
 }
 
