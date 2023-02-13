@@ -2,6 +2,7 @@ package com.you.handler;
 
 import cn.hutool.json.JSONUtil;
 import com.you.common.ResultBean;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -27,8 +28,13 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
         response.setContentType("application/json;charset=UTF-8");
         ServletOutputStream outputStream = response.getOutputStream();
 
+        String message = exception.getMessage();
+        if(exception instanceof BadCredentialsException){
+            message = "用户名或密码不正确";
+        }
+
         //返回登录失败信息
-        ResultBean result = ResultBean.fail(exception.getMessage());
+        ResultBean result = ResultBean.fail(message);
         outputStream.write(JSONUtil.toJsonStr(result).getBytes("UTF-8"));
         outputStream.flush();
         outputStream.close();
