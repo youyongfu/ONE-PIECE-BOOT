@@ -64,6 +64,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             dto.setIcon(m.getIcon());
             dto.setPath(m.getPath());
             dto.setPerms(m.getPerms());
+            dto.setComponent(m.getComponent());
 
             if (m.getChildren().size() > 0) {
                 // 子节点调用当前方法进行再次转换

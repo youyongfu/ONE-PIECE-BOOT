@@ -29,6 +29,9 @@ public class SysMenuDto implements Serializable {
     //授权
     private String perms;
 
+    //组件
+    private String component;
+
     //子导航
     private List<SysMenuDto> children = new ArrayList<>();
 
