@@ -19,4 +19,5 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 
     List<SysUser> getUserInfoByMenuId(Long menuId);
 
+    void deleteUserRoleByUserId(Long userId);
 }

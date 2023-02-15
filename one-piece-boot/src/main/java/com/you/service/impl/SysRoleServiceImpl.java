@@ -25,7 +25,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     private SysRoleMapper sysRoleMapper;
 
     /**
-     * 删除用户
+     * 删除角色
      * @param id
      * @return
      */
@@ -34,7 +34,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         // 清除所有与该用户相关的权限缓存
         authorityService.clearUserAuthorityInfoByRoleId(id);
 
-        //删除菜单
+        //删除角色
         removeById(id);
 
         //删除角色菜单关系

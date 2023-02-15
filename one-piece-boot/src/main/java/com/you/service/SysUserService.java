@@ -1,6 +1,7 @@
 package com.you.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.you.common.ResultBean;
 import com.you.entity.SysUser;
 
 /**
@@ -12,4 +13,6 @@ import com.you.entity.SysUser;
 public interface SysUserService extends IService<SysUser> {
 
     SysUser getByUsername(String username);
+
+    ResultBean delete(Long id);
 }

@@ -34,6 +34,9 @@ public class SysUser extends BaseEntity {
     @Email(message = "邮箱格式不正确")
     private String email;
 
+    //手机号
+    private String phone;
+
     //籍贯
     private String city;
 

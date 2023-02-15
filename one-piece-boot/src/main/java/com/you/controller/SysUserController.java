@@ -4,7 +4,9 @@ import cn.hutool.core.map.MapUtil;
 import com.you.common.ResultBean;
 import com.you.dto.PasswordDto;
 import com.you.entity.SysUser;
+import com.you.service.AuthorityService;
 import com.you.service.SysUserService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -26,9 +28,10 @@ public class SysUserController extends BaseController{
 
     @Resource
     private SysUserService sysUserService;
-
     @Resource
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Resource
+    private AuthorityService authorityService;
 
     /**
      * 获取登录用户信息
@@ -59,5 +62,65 @@ public class SysUserController extends BaseController{
         sysUser.setUpdatedTime(new Date());
         sysUserService.updateById(sysUser);
         return ResultBean.success("密码修改成功");
+    }
+
+    /**
+     * 获取用户列表
+     * @return
+     */
+    @GetMapping("/list")
+    @PreAuthorize("hasAuthority('sys:user:list')")   //查看权限
+    public ResultBean list(){
+        return ResultBean.success(sysUserService.list());
+    }
+
+    /**
+     * 添加用户
+     * @param sysUser
+     * @return
+     */
+    @PostMapping("/save")
+    @PreAuthorize("hasAuthority('sys:user:save')")      //提交权限
+    public ResultBean save(@Validated @RequestBody SysUser sysUser) {
+        sysUser.setCreatedTime(new Date());
+        sysUserService.save(sysUser);
+        return ResultBean.success(sysUser);
+    }
+
+    /**
+     * 根据id获取用户
+     * @param id
+     * @return
+     */
+    @GetMapping("/info/{id}")
+    @PreAuthorize("hasAuthority('sys:user:list')")
+    public ResultBean info(@PathVariable(name = "id") Long id) {
+        return ResultBean.success(sysUserService.getById(id));
+    }
+
+    /**
+     * 更新用户
+     * @param sysUser
+     * @return
+     */
+    @PostMapping("/update")
+    @PreAuthorize("hasAuthority('sys:user:update')")      //更新权限
+    public ResultBean update(@Validated @RequestBody SysUser sysUser) {
+        //更新操作
+        sysUser.setUpdatedTime(new Date());
+        sysUserService.updateById(sysUser);
+
+        return ResultBean.success(sysUser);
+    }
+
+    /**
+     * 根据id删除用户
+     * @param id
+     * @return
+     */
+    @PostMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('sys:user:delete')")
+    public ResultBean delete(@PathVariable("id") Long id) {
+        return sysUserService.delete(id);
     }
 }

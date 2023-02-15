@@ -28,7 +28,7 @@ public class SysRoleController extends BaseController{
     private SysRoleService sysRoleService;
 
     /**
-     * 获取当前用户角色列表
+     * 获取角色列表
      * @return
      */
     @GetMapping("/list")
@@ -38,7 +38,7 @@ public class SysRoleController extends BaseController{
     }
 
     /**
-     * 添加用户
+     * 添加角色
      * @param sysRole
      * @return
      */
@@ -51,7 +51,7 @@ public class SysRoleController extends BaseController{
     }
 
     /**
-     * 根据id获取用户
+     * 根据id获取角色
      * @param id
      * @return
      */
@@ -62,7 +62,7 @@ public class SysRoleController extends BaseController{
     }
 
     /**
-     * 更新用户
+     * 更新角色
      * @param sysRole
      * @return
      */
@@ -80,7 +80,7 @@ public class SysRoleController extends BaseController{
     }
 
     /**
-     * 根据id删除菜单
+     * 根据id删除角色
      * @param id
      * @return
      */
