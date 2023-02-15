@@ -16,4 +16,8 @@ import java.util.List;
 public interface SysRoleMapper extends BaseMapper<SysRole> {
 
     List<SysRole> getRoleInfoByUserId(Long userId);
+
+    void deleteRoleMenuByRoleId(Long roleId);
+
+    void deleteUserRoleByRoleId(Long roleId);
 }

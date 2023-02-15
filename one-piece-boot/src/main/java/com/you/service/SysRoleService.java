@@ -1,6 +1,7 @@
 package com.you.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.you.common.ResultBean;
 import com.you.entity.SysRole;
 
 /**
@@ -11,4 +12,5 @@ import com.you.entity.SysRole;
  */
 public interface SysRoleService extends IService<SysRole> {
 
+    ResultBean delete(Long id);
 }
