@@ -33,6 +33,32 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         List<SysMenu> sysMenuList = sysMenuMapper.getMenuByUserId(userId);
 
         //转成树形结构
+        List<SysMenu> menuTree= buildMenuTree(sysMenuList);
+
+        return convert(menuTree);
+    }
+
+    /**
+     * 获取当前用户菜单列表
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<SysMenu> list(Long userId) {
+        //获取当前用户导航信息
+        List<SysMenu> sysMenuList = sysMenuMapper.getMenuByUserId(userId);
+
+        //转成树形结构
+        List<SysMenu> menuTree= buildMenuTree(sysMenuList);
+
+        return menuTree;
+    }
+
+    /**
+     * 构建菜单树形数据
+     * @return
+     */
+    private List<SysMenu> buildMenuTree(List<SysMenu> sysMenuList){
         List<SysMenu> menuTree = new ArrayList<>();
         sysMenuList.forEach(sysMenu -> {
             //获取最外层父节点
@@ -47,7 +73,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 }
             });
         });
-        return convert(menuTree);
+        return  menuTree;
     }
 
     /**

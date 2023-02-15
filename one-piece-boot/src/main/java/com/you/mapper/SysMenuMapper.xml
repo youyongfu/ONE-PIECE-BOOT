@@ -12,7 +12,7 @@
         <result column="component" property="component" />
         <result column="type" property="type" />
         <result column="icon" property="icon" />
-        <result column="orderNum" property="ordernum" />
+        <result column="order_num" property="orderNum" />
         <result column="created_time" property="createdTime" />
         <result column="updated_time" property="updatedTime" />
         <result column="statu" property="statu" />
@@ -20,7 +20,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, parent_id, name, path, perms, component, type, icon, orderNum, created_time, updated_time, statu
+        id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu
     </sql>
 
     <!-- 根据用户id获取菜单权限-->
@@ -32,7 +32,10 @@
             m.path,
             m.perms,
             m.component,
-            m.icon
+            m.icon,
+            m.statu,
+            m.type,
+            m.order_num
         from
             sys_menu m
         left join sys_role_menu rm on rm.menu_id = m.id

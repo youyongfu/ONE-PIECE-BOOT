@@ -45,4 +45,16 @@ public class SysMenuController extends BaseController{
         return ResultBean.success(MapUtil.builder().put("menuList",menuList).map());
     }
 
+    /**
+     * 获取当前用户菜单列表
+     * @return
+     */
+    @GetMapping("/list")
+    public ResultBean list(Principal principal){
+        //获取用户信息
+        SysUser sysUser = sysUserService.getByUsername(principal.getName());
+
+        return ResultBean.success(sysMenuService.list(sysUser.getId()));
+    }
+
 }

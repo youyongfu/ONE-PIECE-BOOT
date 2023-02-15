@@ -1,6 +1,5 @@
 package com.you.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -47,7 +46,6 @@ public class SysMenu extends BaseEntity {
     private String icon;
 
     //排序
-    @TableField("orderNum")
     private Integer orderNum;
 
     //子导航
