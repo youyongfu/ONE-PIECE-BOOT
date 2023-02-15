@@ -44,19 +44,12 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     /**
-     * 获取当前用户菜单列表
-     * @param userId
+     * 获取菜单列表
      * @return
      */
     @Override
-    public List<SysMenu> list(Long userId) {
-        //获取当前用户导航信息
-        List<SysMenu> sysMenuList = sysMenuMapper.getMenuByUserId(userId);
-
-        //转成树形结构
-        List<SysMenu> menuTree= buildMenuTree(sysMenuList);
-
-        return menuTree;
+    public List<SysMenu> treeList() {
+        return buildMenuTree(list());
     }
 
     /**

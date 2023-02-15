@@ -17,7 +17,7 @@ public interface SysMenuService extends IService<SysMenu> {
 
     List<SysMenuDto> getCurrentUserNav(Long userId);
 
-    List<SysMenu> list(Long userId);
+    List<SysMenu> treeList();
 
     ResultBean delete(Long id);
 }

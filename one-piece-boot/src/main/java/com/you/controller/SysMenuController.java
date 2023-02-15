@@ -52,16 +52,13 @@ public class SysMenuController extends BaseController{
     }
 
     /**
-     * 获取当前用户菜单列表
+     * 获取菜单列表
      * @return
      */
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('sys:menu:list')")   //查看权限
-    public ResultBean list(Principal principal){
-        //获取用户信息
-        SysUser sysUser = sysUserService.getByUsername(principal.getName());
-
-        return ResultBean.success(sysMenuService.list(sysUser.getId()));
+    public ResultBean list(){
+        return ResultBean.success(sysMenuService.treeList());
     }
 
     /**
