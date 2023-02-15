@@ -1,9 +1,12 @@
 package com.you.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.you.common.ResultBean;
 import com.you.dto.SysMenuDto;
 import com.you.entity.SysMenu;
 import com.you.mapper.SysMenuMapper;
+import com.you.service.AuthorityService;
 import com.you.service.SysMenuService;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +23,8 @@ import java.util.List;
 @Service
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements SysMenuService {
 
+    @Resource
+    private AuthorityService authorityService;
     @Resource
     private SysMenuMapper sysMenuMapper;
 
@@ -52,6 +57,31 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         List<SysMenu> menuTree= buildMenuTree(sysMenuList);
 
         return menuTree;
+    }
+
+    /**
+     * 删除菜单
+     * @param id
+     * @return
+     */
+    @Override
+    public ResultBean delete(Long id) {
+        //判断该菜单是否存在子菜单，存在无法删除
+        int count = count(new QueryWrapper<SysMenu>().eq("parent_id", id));
+        if (count > 0) {
+            return ResultBean.fail("请先删除子菜单");
+        }
+
+        // 清除所有与该菜单相关的权限缓存
+        authorityService.clearUserAuthorityInfoByMenuId(id);
+
+        //删除菜单
+        removeById(id);
+
+        //删除角色菜单关系
+        sysMenuMapper.deleteRoleMenuByMenuId(id);
+
+        return ResultBean.success();
     }
 
     /**

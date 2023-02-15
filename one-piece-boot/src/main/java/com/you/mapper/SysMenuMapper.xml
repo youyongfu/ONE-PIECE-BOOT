@@ -44,4 +44,8 @@
             ur.user_id = #{userId}
     </select>
 
+    <!-- 根据菜单id删除角色菜单关系-->
+    <delete id="deleteRoleMenuByMenuId">
+        delete from sys_role_menu where menu_id = #{menuId}
+    </delete>
 </mapper>

@@ -16,4 +16,6 @@ import java.util.List;
 public interface SysMenuMapper extends BaseMapper<SysMenu> {
 
     List<SysMenu> getMenuByUserId(Long userId);
+
+    void deleteRoleMenuByMenuId(Long menuId);
 }

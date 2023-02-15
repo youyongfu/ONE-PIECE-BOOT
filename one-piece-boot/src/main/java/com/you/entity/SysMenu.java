@@ -1,5 +1,6 @@
 package com.you.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -49,6 +50,7 @@ public class SysMenu extends BaseEntity {
     private Integer orderNum;
 
     //子导航
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
     private List<SysMenu> children = new ArrayList<>();
 }
 
