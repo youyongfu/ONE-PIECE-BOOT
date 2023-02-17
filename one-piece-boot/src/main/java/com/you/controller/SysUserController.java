@@ -2,6 +2,7 @@ package com.you.controller;
 
 import cn.hutool.core.map.MapUtil;
 import com.you.common.ResultBean;
+import com.you.constant.UserConstant;
 import com.you.dto.PasswordDto;
 import com.you.entity.SysUser;
 import com.you.service.AuthorityService;
@@ -68,10 +69,10 @@ public class SysUserController extends BaseController{
      * 获取用户列表
      * @return
      */
-    @GetMapping("/list")
+    @GetMapping("/listPage")
     @PreAuthorize("hasAuthority('sys:user:list')")   //查看权限
-    public ResultBean list(){
-        return ResultBean.success(sysUserService.list());
+    public ResultBean listPage(@RequestParam String keyword, @RequestParam Integer current, @RequestParam Integer size){
+        return sysUserService.listPage(keyword,current,size);
     }
 
     /**
@@ -83,6 +84,8 @@ public class SysUserController extends BaseController{
     @PreAuthorize("hasAuthority('sys:user:save')")      //提交权限
     public ResultBean save(@Validated @RequestBody SysUser sysUser) {
         sysUser.setCreatedTime(new Date());
+        sysUser.setPassword(bCryptPasswordEncoder.encode(UserConstant.DEFULT_PASSWORD));
+        sysUser.setStatu(UserConstant.STATUS_ON);
         sysUserService.save(sysUser);
         return ResultBean.success(sysUser);
     }

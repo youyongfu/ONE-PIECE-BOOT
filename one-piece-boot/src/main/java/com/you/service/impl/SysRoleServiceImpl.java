@@ -1,5 +1,9 @@
 package com.you.service.impl;
 
+import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.you.common.ResultBean;
 import com.you.entity.SysRole;
@@ -25,6 +29,34 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     private SysRoleMapper sysRoleMapper;
 
     /**
+     * 分页获取角色列表
+     * @param current
+     * @param size
+     * @return
+     */
+    @Override
+    public ResultBean listPage(String keyword, Integer current, Integer size) {
+
+        //条件构造器
+        QueryWrapper queryWrapper = new QueryWrapper();
+
+        //添加条件
+        JSONObject jsonObject = JSONObject.parseObject(keyword);
+        if(jsonObject.size() > 0){
+            String name = jsonObject.getString("name");
+            queryWrapper.like(StrUtil.isNotBlank(name), "name", name);
+        }
+
+        //分页插件
+        Page<SysRole> page= new Page(current,size);
+
+        //分页获取数据
+        Page<SysRole> pageData = sysRoleMapper.selectPage(page, queryWrapper);
+
+        return ResultBean.success(pageData);
+    }
+
+    /**
      * 删除角色
      * @param id
      * @return
@@ -44,4 +76,5 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
         return ResultBean.success();
     }
+
 }
