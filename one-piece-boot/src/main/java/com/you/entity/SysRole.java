@@ -1,9 +1,12 @@
 package com.you.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 角色实体类
@@ -28,4 +31,7 @@ public class SysRole extends BaseEntity {
     //备注
     private String remark;
 
+    //菜单id
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private List<Long> menuIds = new ArrayList<>();
 }

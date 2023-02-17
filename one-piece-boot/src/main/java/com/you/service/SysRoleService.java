@@ -15,4 +15,8 @@ public interface SysRoleService extends IService<SysRole> {
     ResultBean delete(Long id);
 
     ResultBean listPage(String keyword, Integer current, Integer size);
+
+    ResultBean getInfoById(Long id);
+
+    ResultBean perm(Long id, Long[] menuIds);
 }

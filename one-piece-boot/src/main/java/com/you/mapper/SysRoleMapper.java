@@ -2,6 +2,7 @@ package com.you.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.you.entity.SysRole;
+import com.you.entity.SysRoleMenu;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -20,4 +21,6 @@ public interface SysRoleMapper extends BaseMapper<SysRole> {
     void deleteRoleMenuByRoleId(Long roleId);
 
     void deleteUserRoleByRoleId(Long roleId);
+
+    void batcSaveRoleMenu(List<SysRoleMenu> roleMenuList);
 }

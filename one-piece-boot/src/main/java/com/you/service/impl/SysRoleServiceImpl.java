@@ -6,13 +6,21 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.you.common.ResultBean;
+import com.you.entity.SysMenu;
 import com.you.entity.SysRole;
+import com.you.entity.SysRoleMenu;
+import com.you.mapper.SysMenuMapper;
 import com.you.mapper.SysRoleMapper;
 import com.you.service.AuthorityService;
 import com.you.service.SysRoleService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 角色服务实现类
@@ -27,6 +35,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     private AuthorityService authorityService;
     @Resource
     private SysRoleMapper sysRoleMapper;
+    @Resource
+    private SysMenuMapper sysMenuMapper;
 
     /**
      * 分页获取角色列表
@@ -54,6 +64,56 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         Page<SysRole> pageData = sysRoleMapper.selectPage(page, queryWrapper);
 
         return ResultBean.success(pageData);
+    }
+
+    /**
+     * 根据id获取角色
+     * @param id
+     * @return
+     */
+    @Override
+    public ResultBean getInfoById(Long id) {
+
+        SysRole sysRole = getById(id);
+
+        //获取菜单
+        List<SysMenu> sysMenuList = sysMenuMapper.getMenuByRoleId(id);
+        if(CollectionUtils.isNotEmpty(sysMenuList)){
+            List<Long> menuIds = sysMenuList.stream().map(m -> m.getId()).collect(Collectors.toList());
+            sysRole.setMenuIds(menuIds);
+        }
+
+        return ResultBean.success(sysRole);
+    }
+
+    /**
+     * 分配权限
+     * @param id
+     * @param menuIds
+     * @return
+     */
+    @Override
+    public ResultBean perm(Long id, Long[] menuIds) {
+
+        //组装前端勾选的角色权限信息
+        List<SysRoleMenu> roleMenuList = new ArrayList<>();
+        Arrays.stream(menuIds).forEach(menuId -> {
+            SysRoleMenu sysRoleMenu = new SysRoleMenu();
+            sysRoleMenu.setRoleId(id);
+            sysRoleMenu.setMenuId(menuId);
+            roleMenuList.add(sysRoleMenu);
+        });
+
+        //删除原来的角色权限关系
+        sysRoleMapper.deleteRoleMenuByRoleId(id);
+
+        //保存现在的角色权限关系
+        sysRoleMapper.batcSaveRoleMenu(roleMenuList);
+
+        // 清除所有与该角色相关的权限缓存
+        authorityService.clearUserAuthorityInfoByRoleId(id);
+
+        return ResultBean.success(menuIds);
     }
 
     /**

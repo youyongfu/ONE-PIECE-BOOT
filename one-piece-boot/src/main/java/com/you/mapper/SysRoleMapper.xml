@@ -39,4 +39,11 @@
         delete from sys_user_role where role_id = #{roleId}
     </delete>
 
+    <!-- 批量新增角色菜单关系 -->
+    <insert id="batcSaveRoleMenu" parameterType="java.util.List">
+        insert into sys_role_menu(role_id, menu_id)
+        <foreach collection="list" item="item" separator="union all">
+            (select #{item.roleId,jdbcType=DECIMAL}, #{item.menuId,jdbcType=DECIMAL} from dual)
+        </foreach>
+    </insert>
 </mapper>

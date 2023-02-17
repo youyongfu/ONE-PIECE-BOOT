@@ -10,6 +10,7 @@ import com.you.service.AuthorityService;
 import com.you.service.SysMenuService;
 import com.you.service.SysUserService;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -110,6 +111,7 @@ public class SysMenuController extends BaseController{
      * @param id
      * @return
      */
+    @Transactional
     @PostMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('sys:menu:delete')")
     public ResultBean delete(@PathVariable("id") Long id) {

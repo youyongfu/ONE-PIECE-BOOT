@@ -44,6 +44,26 @@
             ur.user_id = #{userId}
     </select>
 
+    <!-- 根据角色id获取菜单权限-->
+    <select id="getMenuByRoleId" parameterType="Long" resultMap="BaseResultMap">
+        select
+            DISTINCT m.id,
+            m.parent_id,
+            m.name,
+            m.path,
+            m.perms,
+            m.component,
+            m.icon,
+            m.statu,
+            m.type,
+            m.order_num
+        from
+            sys_menu m
+        left join sys_role_menu rm on rm.menu_id = m.id
+        where
+            rm.role_id = #{roleId}
+    </select>
+
     <!-- 根据菜单id删除角色菜单关系-->
     <delete id="deleteRoleMenuByMenuId">
         delete from sys_role_menu where menu_id = #{menuId}

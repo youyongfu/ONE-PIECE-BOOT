@@ -17,5 +17,7 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
 
     List<SysMenu> getMenuByUserId(Long userId);
 
+    List<SysMenu> getMenuByRoleId(Long roleId);
+
     void deleteRoleMenuByMenuId(Long menuId);
 }

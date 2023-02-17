@@ -6,6 +6,7 @@ import com.you.entity.SysRole;
 import com.you.service.AuthorityService;
 import com.you.service.SysRoleService;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,7 +61,7 @@ public class SysRoleController extends BaseController{
     @GetMapping("/info/{id}")
     @PreAuthorize("hasAuthority('sys:role:list')")
     public ResultBean info(@PathVariable(name = "id") Long id) {
-        return ResultBean.success(sysRoleService.getById(id));
+        return sysRoleService.getInfoById(id);
     }
 
     /**
@@ -75,7 +76,7 @@ public class SysRoleController extends BaseController{
         sysRole.setUpdatedTime(new Date());
         sysRoleService.updateById(sysRole);
 
-        // 清除所有与该用户相关的权限缓存
+        // 清除所有与该角色相关的权限缓存
         authorityService.clearUserAuthorityInfoByRoleId(sysRole.getId());
 
         return ResultBean.success(sysRole);
@@ -86,9 +87,22 @@ public class SysRoleController extends BaseController{
      * @param id
      * @return
      */
+    @Transactional
     @PostMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('sys:role:delete')")
     public ResultBean delete(@PathVariable("id") Long id) {
         return sysRoleService.delete(id);
+    }
+
+    /**
+     * 分配权限
+     * @param id
+     * @return
+     */
+    @Transactional
+    @PostMapping("/perm/{id}")
+    @PreAuthorize("hasAuthority('sys:role:perm')")
+    public ResultBean perm(@PathVariable(name = "id") Long id, @RequestBody Long[] menuIds) {
+        return sysRoleService.perm(id,menuIds);
     }
 }
