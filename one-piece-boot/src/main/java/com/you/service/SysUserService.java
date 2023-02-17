@@ -17,4 +17,8 @@ public interface SysUserService extends IService<SysUser> {
     ResultBean delete(Long id);
 
     ResultBean listPage(String keyword, Integer current, Integer size);
+
+    ResultBean getInfoById(Long id);
+
+    ResultBean role(Long id, Long[] roleIds);
 }

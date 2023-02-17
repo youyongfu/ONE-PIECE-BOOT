@@ -92,14 +92,14 @@ public class SysUserController extends BaseController{
     }
 
     /**
-     * 根据id获取用户
+     * 根据id获取用户信息
      * @param id
      * @return
      */
     @GetMapping("/info/{id}")
     @PreAuthorize("hasAuthority('sys:user:list')")
     public ResultBean info(@PathVariable(name = "id") Long id) {
-        return ResultBean.success(sysUserService.getById(id));
+        return sysUserService.getInfoById(id);
     }
 
     /**
@@ -127,5 +127,17 @@ public class SysUserController extends BaseController{
     @PreAuthorize("hasAuthority('sys:user:delete')")
     public ResultBean delete(@PathVariable("id") Long id) {
         return sysUserService.delete(id);
+    }
+
+    /**
+     * 分配角色
+     * @param id
+     * @return
+     */
+    @Transactional
+    @PostMapping("/role/{id}")
+    @PreAuthorize("hasAuthority('sys:user:role')")
+    public ResultBean role(@PathVariable(name = "id") Long id, @RequestBody Long[] roleIds) {
+        return sysUserService.role(id,roleIds);
     }
 }

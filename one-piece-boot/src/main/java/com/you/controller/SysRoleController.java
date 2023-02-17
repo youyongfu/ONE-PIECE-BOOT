@@ -30,13 +30,23 @@ public class SysRoleController extends BaseController{
     private SysRoleService sysRoleService;
 
     /**
-     * 获取角色列表
+     * 分页获取角色列表
      * @return
      */
     @GetMapping("/listPage")
     @PreAuthorize("hasAuthority('sys:role:list')")   //查看权限
     public ResultBean listPage(@RequestParam String keyword, @RequestParam Integer current, @RequestParam Integer size){
         return sysRoleService.listPage(keyword,current,size);
+    }
+
+    /**
+     * 获取角色列表
+     * @return
+     */
+    @GetMapping("/list")
+    @PreAuthorize("hasAuthority('sys:role:list')")   //查看权限
+    public ResultBean list(){
+        return ResultBean.success(sysRoleService.list());
     }
 
     /**

@@ -6,12 +6,21 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.you.common.ResultBean;
+import com.you.entity.SysRole;
 import com.you.entity.SysUser;
+import com.you.entity.SysUserRole;
+import com.you.mapper.SysRoleMapper;
 import com.you.mapper.SysUserMapper;
+import com.you.service.AuthorityService;
 import com.you.service.SysUserService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 用户服务实现类
@@ -24,6 +33,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Resource
     private SysUserMapper sysUserMapper;
+    @Resource
+    private SysRoleMapper sysRoleMapper;
+    @Resource
+    private AuthorityService authorityService;
 
     /**
      * 根据用户名获取用户信息
@@ -60,6 +73,57 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         Page<SysUser> pageData = sysUserMapper.selectPage(page, queryWrapper);
 
         return ResultBean.success(pageData);
+    }
+
+    /**
+     * 根据id获取用户信息
+     * @param id
+     * @return
+     */
+    @Override
+    public ResultBean getInfoById(Long id) {
+
+        SysUser sysUser = getById(id);
+
+        //获取角色
+        List<SysRole> sysRoleList = sysRoleMapper.getRoleInfoByUserId(id);
+        if(CollectionUtils.isNotEmpty(sysRoleList)){
+            List<Long> roleds = sysRoleList.stream().map(m -> m.getId()).collect(Collectors.toList());
+            sysUser.setRoleIds(roleds);
+        }
+
+        return ResultBean.success(sysUser);
+    }
+
+    /**
+     * 分配角色
+     * @param id
+     * @param roleIds
+     * @return
+     */
+    @Override
+    public ResultBean role(Long id, Long[] roleIds) {
+
+        //组装前端勾选的用户角色信息
+        List<SysUserRole> userRoleList = new ArrayList<>();
+        Arrays.stream(roleIds).forEach(roleId -> {
+            SysUserRole userRole = new SysUserRole();
+            userRole.setUserId(id);
+            userRole.setRoleId(roleId);
+            userRoleList.add(userRole);
+        });
+
+        //删除原来的用户角色关系
+        sysUserMapper.deleteUserRoleByUserId(id);
+
+        //保存现在的用户角色关系
+        sysUserMapper.batcSaveUserRole(userRoleList);
+
+        // 删除缓存
+        SysUser sysUser = getById(id);
+        authorityService.clearUserAuthorityInfo(sysUser.getUsername());
+
+        return ResultBean.success(roleIds);
     }
 
     /**
