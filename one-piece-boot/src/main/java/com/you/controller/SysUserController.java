@@ -140,4 +140,17 @@ public class SysUserController extends BaseController{
     public ResultBean role(@PathVariable(name = "id") Long id, @RequestBody Long[] roleIds) {
         return sysUserService.role(id,roleIds);
     }
+
+    /**
+     * 重置密码
+     * @return
+     */
+    @PostMapping("/repass")
+    public ResultBean repass(@RequestBody Long userId){
+        SysUser sysUser = sysUserService.getById(userId);
+        sysUser.setPassword(bCryptPasswordEncoder.encode(UserConstant.DEFULT_PASSWORD));
+        sysUser.setUpdatedTime(new Date());
+        sysUserService.updateById(sysUser);
+        return ResultBean.success();
+    }
 }
