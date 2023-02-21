@@ -105,7 +105,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         });
 
         //删除原来的角色权限关系
-        sysRoleMapper.deleteRoleMenuByRoleId(id);
+        sysRoleMapper.deleteRoleMenuByRoleId(Arrays.asList(id));
 
         //保存现在的角色权限关系
         sysRoleMapper.batcSaveRoleMenu(roleMenuList);
@@ -118,21 +118,25 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
     /**
      * 删除角色
-     * @param id
+     * @param ids
      * @return
      */
     @Override
-    public ResultBean delete(Long id) {
-        // 清除所有与该用户相关的权限缓存
-        authorityService.clearUserAuthorityInfoByRoleId(id);
+    public ResultBean delete(Long[] ids) {
+        List<Long> idList = Arrays.asList(ids);
+
+        idList.stream().forEach(id -> {
+            // 清除所有与该用户相关的权限缓存
+            authorityService.clearUserAuthorityInfoByRoleId(id);
+        });
 
         //删除角色
-        removeById(id);
+        removeByIds(idList);
 
         //删除角色菜单关系
-        sysRoleMapper.deleteRoleMenuByRoleId(id);
+        sysRoleMapper.deleteRoleMenuByRoleId(idList);
         //删除角色用户关系
-        sysRoleMapper.deleteUserRoleByRoleId(id);
+        sysRoleMapper.deleteUserRoleByRoleId(idList);
 
         return ResultBean.success();
     }

@@ -114,7 +114,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         });
 
         //删除原来的用户角色关系
-        sysUserMapper.deleteUserRoleByUserId(id);
+        sysUserMapper.deleteUserRoleByUserId(Arrays.asList(id));
 
         //保存现在的用户角色关系
         sysUserMapper.batcSaveUserRole(userRoleList);
@@ -128,16 +128,19 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     /**
      * 删除用户
-     * @param id
+     * @param ids
      * @return
      */
     @Override
-    public ResultBean delete(Long id) {
+    public ResultBean delete(Long[] ids) {
+
+        List<Long> idList = Arrays.asList(ids);
+
         //删除角色
-        removeById(id);
+        removeByIds(idList);
 
         //删除角色用户关系
-        sysUserMapper.deleteUserRoleByUserId(id);
+        sysUserMapper.deleteUserRoleByUserId(idList);
 
         return ResultBean.success();
     }

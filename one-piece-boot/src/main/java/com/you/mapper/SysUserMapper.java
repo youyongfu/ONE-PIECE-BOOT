@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.you.entity.SysUser;
 import com.you.entity.SysUserRole;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 
     List<SysUser> getUserInfoByMenuId(Long menuId);
 
-    void deleteUserRoleByUserId(Long userId);
+    void deleteUserRoleByUserId(@Param("userIds") List userIds);
 
     void batcSaveUserRole(List<SysUserRole> userRoleList);
 }

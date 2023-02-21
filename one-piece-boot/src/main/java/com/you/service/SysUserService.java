@@ -14,7 +14,7 @@ public interface SysUserService extends IService<SysUser> {
 
     SysUser getByUsername(String username);
 
-    ResultBean delete(Long id);
+    ResultBean delete(Long[] ids);
 
     ResultBean listPage(String keyword, Integer current, Integer size);
 

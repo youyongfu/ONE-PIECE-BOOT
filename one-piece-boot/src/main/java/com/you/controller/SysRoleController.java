@@ -94,14 +94,14 @@ public class SysRoleController extends BaseController{
 
     /**
      * 根据id删除角色
-     * @param id
+     * @param ids
      * @return
      */
     @Transactional
-    @PostMapping("/delete/{id}")
+    @PostMapping("/delete")
     @PreAuthorize("hasAuthority('sys:role:delete')")
-    public ResultBean delete(@PathVariable("id") Long id) {
-        return sysRoleService.delete(id);
+    public ResultBean delete(@RequestBody Long[] ids) {
+        return sysRoleService.delete(ids);
     }
 
     /**

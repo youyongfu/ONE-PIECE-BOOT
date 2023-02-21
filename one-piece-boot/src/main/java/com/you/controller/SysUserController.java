@@ -119,14 +119,14 @@ public class SysUserController extends BaseController{
 
     /**
      * 根据id删除用户
-     * @param id
+     * @param ids
      * @return
      */
     @Transactional
-    @PostMapping("/delete/{id}")
+    @PostMapping("/delete")
     @PreAuthorize("hasAuthority('sys:user:delete')")
-    public ResultBean delete(@PathVariable("id") Long id) {
-        return sysUserService.delete(id);
+    public ResultBean delete(@RequestBody Long[] ids) {
+        return sysUserService.delete(ids);
     }
 
     /**
