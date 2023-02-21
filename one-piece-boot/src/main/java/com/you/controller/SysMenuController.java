@@ -11,6 +11,7 @@ import com.you.service.SysMenuService;
 import com.you.service.SysUserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,10 +48,14 @@ public class SysMenuController extends BaseController{
         //获取用户信息
         SysUser sysUser = sysUserService.getByUsername(principal.getName());
 
+        //获取权限信息
+        String authorityInfo = authorityService.getUserAuthorityInfo(sysUser.getId());
+        String[] authorityInfoArray = StringUtils.tokenizeToStringArray(authorityInfo, ",");
+
         //获取当前用户导航信息
         List<SysMenuDto> menuList = sysMenuService.getCurrentUserNav(sysUser.getId());
 
-        return ResultBean.success(MapUtil.builder().put("menuList",menuList).map());
+        return ResultBean.success(MapUtil.builder().put("menuList",menuList).put("permList", authorityInfoArray).map());
     }
 
     /**
