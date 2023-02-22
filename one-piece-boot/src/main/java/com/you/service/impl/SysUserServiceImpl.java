@@ -117,7 +117,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         sysUserMapper.deleteUserRoleByUserId(Arrays.asList(id));
 
         //保存现在的用户角色关系
-        sysUserMapper.batcSaveUserRole(userRoleList);
+        if(CollectionUtils.isNotEmpty(userRoleList)){
+            sysUserMapper.batcSaveUserRole(userRoleList);
+        }
 
         // 删除缓存
         SysUser sysUser = getById(id);

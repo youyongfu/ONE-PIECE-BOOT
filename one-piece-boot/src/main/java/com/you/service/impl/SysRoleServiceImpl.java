@@ -108,7 +108,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         sysRoleMapper.deleteRoleMenuByRoleId(Arrays.asList(id));
 
         //保存现在的角色权限关系
-        sysRoleMapper.batcSaveRoleMenu(roleMenuList);
+        if(CollectionUtils.isNotEmpty(roleMenuList)){
+            sysRoleMapper.batcSaveRoleMenu(roleMenuList);
+        }
 
         // 清除所有与该角色相关的权限缓存
         authorityService.clearUserAuthorityInfoByRoleId(id);
