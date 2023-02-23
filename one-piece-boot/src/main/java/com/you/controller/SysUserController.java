@@ -84,6 +84,12 @@ public class SysUserController extends BaseController{
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('sys:user:save')")      //提交权限
     public ResultBean save(@Validated @RequestBody SysUser sysUser) {
+
+        //判断用户名是否已存在
+        SysUser oldUser = sysUserService.getByUsername(sysUser.getUsername());
+        if(oldUser != null){
+            return ResultBean.fail("用户名已存在，无法新增！");
+        }
         sysUser.setCreatedTime(new Date());
         sysUser.setPassword(bCryptPasswordEncoder.encode(UserConstant.DEFULT_PASSWORD));
         sysUser.setStatu(UserConstant.STATUS_ON);

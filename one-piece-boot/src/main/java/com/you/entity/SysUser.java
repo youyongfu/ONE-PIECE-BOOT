@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,8 @@ public class SysUser extends BaseEntity {
     private String email;
 
     //手机号
+    @NotBlank(message = "手机号不能为空")
+    @Pattern(regexp = "^[1][3,4,5,6,7,8,9][0-9]{9}$", message = "手机号格式不正确")
     private String phone;
 
     //籍贯
