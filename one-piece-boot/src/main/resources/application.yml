@@ -72,3 +72,10 @@ ssh:
   mysql_local_port: 3307      # Mysql 本地的端口
   redis_local_port: 6379      # redis 本地的端口
   redis_remote_port: 6379     # 服务器上redis端口号
+
+oss:
+  host: http://oss-cn-beijing.aliyuncs.com
+  bucketName: one-piece
+  endpoint: oss-cn-beijing.aliyuncs.com
+  accessKeyId: LTAI5tQWtZmBFE45o5v4D1My
+  accessKeySecret: kRgNXQHDWBZy9YKiclPNLv5ZCGIapN
