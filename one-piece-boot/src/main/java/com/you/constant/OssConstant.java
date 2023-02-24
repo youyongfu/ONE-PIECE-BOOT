@@ -21,4 +21,6 @@ public class OssConstant {
     public static final String UNIT_K = "K";
 
     public static final String UNIT_G = "G";
+
+    public static final String CLASSIFY_AVATAR = "Avatar";
 }

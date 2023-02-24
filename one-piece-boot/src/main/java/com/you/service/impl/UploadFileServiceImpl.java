@@ -1,6 +1,7 @@
 package com.you.service.impl;
 
 import com.you.common.ResultBean;
+import com.you.constant.OssConstant;
 import com.you.entity.SysUser;
 import com.you.service.SysUserService;
 import com.you.service.UploadFileService;
@@ -35,7 +36,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         SysUser sysUser = sysUserService.getByUsername(username);
 
         //上传新头像
-        String url = String.valueOf(ossUtils.upload(file));
+        String url = String.valueOf(ossUtils.upload(username, OssConstant.CLASSIFY_AVATAR,file));
         sysUser.setAvatar(url);
         sysUserService.updateById(sysUser);
 
