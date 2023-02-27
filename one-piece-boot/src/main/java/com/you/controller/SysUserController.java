@@ -92,7 +92,6 @@ public class SysUserController extends BaseController{
         }
         sysUser.setCreatedTime(new Date());
         sysUser.setPassword(bCryptPasswordEncoder.encode(UserConstant.DEFULT_PASSWORD));
-        sysUser.setStatu(UserConstant.STATUS_ON);
         sysUserService.save(sysUser);
         return ResultBean.success(sysUser);
     }

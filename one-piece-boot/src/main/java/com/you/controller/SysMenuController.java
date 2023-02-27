@@ -2,7 +2,6 @@ package com.you.controller;
 
 import cn.hutool.core.map.MapUtil;
 import com.you.common.ResultBean;
-import com.you.constant.MenuConstant;
 import com.you.dto.SysMenuDto;
 import com.you.entity.SysMenu;
 import com.you.entity.SysUser;
@@ -76,8 +75,11 @@ public class SysMenuController extends BaseController{
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('sys:menu:save')")      //提交权限
     public ResultBean save(@Validated @RequestBody SysMenu sysMenu) {
+        //未选择上级菜单，则默认为添加目录
+        if(sysMenu.getParentId() == null){
+            sysMenu.setParentId(0L);
+        }
         sysMenu.setCreatedTime(new Date());
-        sysMenu.setStatu(MenuConstant.STATUS_ON);
         sysMenuService.save(sysMenu);
         return ResultBean.success(sysMenu);
     }

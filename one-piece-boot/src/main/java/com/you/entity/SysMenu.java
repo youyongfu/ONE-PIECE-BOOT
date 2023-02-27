@@ -22,7 +22,6 @@ public class SysMenu extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     //菜单ID，一级菜单为0
-    @NotNull(message = "上级菜单不能为空")
     private Long parentId;
 
     //菜单名称

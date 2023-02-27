@@ -1,7 +1,6 @@
 package com.you.controller;
 
 import com.you.common.ResultBean;
-import com.you.constant.RoleConstant;
 import com.you.entity.SysRole;
 import com.you.service.AuthorityService;
 import com.you.service.SysRoleService;
@@ -58,7 +57,6 @@ public class SysRoleController extends BaseController{
     @PreAuthorize("hasAuthority('sys:role:save')")      //提交权限
     public ResultBean save(@Validated @RequestBody SysRole sysRole) {
         sysRole.setCreatedTime(new Date());
-        sysRole.setStatu(RoleConstant.STATUS_ON);
         sysRoleService.save(sysRole);
         return ResultBean.success(sysRole);
     }

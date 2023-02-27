@@ -1,7 +1,9 @@
 package com.you.service.impl;
 
+import com.you.constant.UserConstant;
 import com.you.entity.SysUser;
 import com.you.entity.UserDetail;
+import com.you.exception.ForbiddenException;
 import com.you.service.AuthorityService;
 import com.you.service.SysUserService;
 import org.springframework.security.core.GrantedAuthority;
@@ -33,6 +35,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         SysUser sysUser = sysUserService.getByUsername(username);
         if (sysUser == null) {
             throw new UsernameNotFoundException("用户名或密码不正确");
+        }
+        if(UserConstant.STATUS_OFF.equals(sysUser.getStatu())){
+            throw new ForbiddenException("该账号已被禁用，请联系管理员进行解禁");
         }
         return new UserDetail(sysUser.getId(), sysUser.getUsername(), sysUser.getPassword(), getUserAuthority(sysUser.getId()));
     }
