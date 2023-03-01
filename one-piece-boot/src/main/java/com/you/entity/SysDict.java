@@ -52,4 +52,8 @@ public class SysDict implements Serializable {
     @TableField(exist = false)    //表示当前属性不是数据库的字段
     private List<SysDict> children = new ArrayList<>();
 
+    //是否包含子节点
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private Boolean hasChildren;
+
 }

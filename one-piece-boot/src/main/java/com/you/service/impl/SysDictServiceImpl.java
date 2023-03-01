@@ -1,6 +1,7 @@
 package com.you.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.you.common.ResultBean;
 import com.you.entity.SysDict;
@@ -8,6 +9,7 @@ import com.you.mapper.SysDictMapper;
 import com.you.service.SysDictService;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +22,65 @@ import java.util.List;
 @Service
 public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> implements SysDictService {
 
+    @Resource
+    private SysDictMapper sysDictMapper;
+
+    /**
+     * 分页获取一级数据字典列表
+     * @param current
+     * @param size
+     * @return
+     */
+    @Override
+    public ResultBean listPage(Integer current, Integer size) {
+
+        //获取一级数据字典列表
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("parent_id",0L);
+        Page<SysDict> page= new Page(current,size);
+        Page<SysDict> pageData = sysDictMapper.selectPage(page, queryWrapper);
+
+        //判断是否存在子数据字典
+        pageData.getRecords().forEach(sysDict -> {
+            Boolean hasChildren = hasChildren(sysDict.getId());
+            sysDict.setHasChildren(hasChildren);
+        });
+
+        return ResultBean.success(pageData);
+    }
+
+    /**
+     * 获取子数据字典列表
+     * @param id
+     * @return
+     */
+    @Override
+    public ResultBean getChildrenList(Long id) {
+
+        //获取子数据字典
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("parent_id",id);
+        List<SysDict> list = sysDictMapper.selectList(queryWrapper);
+
+        //判断是否存在子数据字典
+        list.forEach(sysDict -> {
+            Boolean hasChildren = hasChildren(sysDict.getId());
+            sysDict.setHasChildren(hasChildren);
+        });
+        return ResultBean.success(list);
+    }
+
+    /**
+     * 判断是否存在子菜单
+     * @param id
+     * @return
+     */
+    private Boolean hasChildren(Long id){
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("parent_id",id);
+        Integer count = sysDictMapper.selectCount(queryWrapper);
+        return count > 0;
+    }
 
     /**
      * 获取数据字典

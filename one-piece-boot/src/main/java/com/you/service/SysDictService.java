@@ -17,4 +17,8 @@ public interface SysDictService extends IService<SysDict> {
     List<SysDict> treeList();
 
     ResultBean delete(Long id);
+
+    ResultBean listPage(Integer current, Integer size);
+
+    ResultBean getChildrenList(Long id);
 }

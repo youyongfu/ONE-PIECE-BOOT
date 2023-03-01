@@ -20,4 +20,8 @@ public interface SysMenuService extends IService<SysMenu> {
     List<SysMenu> treeList();
 
     ResultBean delete(Long id);
+
+    ResultBean listPage(Integer current, Integer size);
+
+    ResultBean getChildrenList(Long id);
 }

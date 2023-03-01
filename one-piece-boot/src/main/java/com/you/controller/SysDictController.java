@@ -25,6 +25,26 @@ public class SysDictController {
     private SysDictService sysDictService;
 
     /**
+     * 分页获取一级数据字典列表
+     * @return
+     */
+    @GetMapping("/listPage")
+    @PreAuthorize("hasAuthority('sys:dict:list')")   //查看权限
+    public ResultBean listPage(@RequestParam Integer current, @RequestParam Integer size){
+        return sysDictService.listPage(current,size);
+    }
+
+    /**
+     * 获取子数据字典列表
+     * @return
+     */
+    @GetMapping("/getChildrenList/{id}")
+    @PreAuthorize("hasAuthority('sys:dict:list')")   //查看权限
+    public ResultBean getChildrenList(@PathVariable(name = "id") Long id){
+        return sysDictService.getChildrenList(id);
+    }
+
+    /**
      * 获取数据字典列表
      * @return
      */

@@ -1,6 +1,7 @@
 package com.you.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.you.common.ResultBean;
 import com.you.dto.SysMenuDto;
@@ -41,6 +42,63 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         List<SysMenu> menuTree= buildMenuTree(sysMenuList);
 
         return convert(menuTree);
+    }
+
+    /**
+     * 分页获取一级菜单列表
+     * @param current
+     * @param size
+     * @return
+     */
+    @Override
+    public ResultBean listPage(Integer current, Integer size) {
+
+        //获取一级菜单列表
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("parent_id",0L);
+        Page<SysMenu> page= new Page(current,size);
+        Page<SysMenu> pageData = sysMenuMapper.selectPage(page, queryWrapper);
+
+        //判断是否存在子菜单
+        pageData.getRecords().forEach(sysMenu -> {
+            Boolean hasChildren = hasChildren(sysMenu.getId());
+            sysMenu.setHasChildren(hasChildren);
+        });
+
+        return ResultBean.success(pageData);
+    }
+
+    /**
+     * 获取子菜单列表
+     * @param id
+     * @return
+     */
+    @Override
+    public ResultBean getChildrenList(Long id) {
+
+        //获取子菜单
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("parent_id",id);
+        List<SysMenu> list = sysMenuMapper.selectList(queryWrapper);
+
+        //判断是否存在子菜单
+        list.forEach(sysMenu -> {
+            Boolean hasChildren = hasChildren(sysMenu.getId());
+            sysMenu.setHasChildren(hasChildren);
+        });
+        return ResultBean.success(list);
+    }
+
+    /**
+     * 判断是否存在子菜单
+     * @param id
+     * @return
+     */
+    private Boolean hasChildren(Long id){
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("parent_id",id);
+        Integer count = sysMenuMapper.selectCount(queryWrapper);
+        return count > 0;
     }
 
     /**

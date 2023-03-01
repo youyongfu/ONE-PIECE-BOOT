@@ -58,6 +58,26 @@ public class SysMenuController extends BaseController{
     }
 
     /**
+     * 分页获取一级菜单列表
+     * @return
+     */
+    @GetMapping("/listPage")
+    @PreAuthorize("hasAuthority('sys:menu:list')")   //查看权限
+    public ResultBean listPage(@RequestParam Integer current, @RequestParam Integer size){
+        return sysMenuService.listPage(current,size);
+    }
+
+    /**
+     * 获取子菜单列表
+     * @return
+     */
+    @GetMapping("/getChildrenList/{id}")
+    @PreAuthorize("hasAuthority('sys:menu:list')")   //查看权限
+    public ResultBean getChildrenList(@PathVariable(name = "id") Long id){
+        return sysMenuService.getChildrenList(id);
+    }
+
+    /**
      * 获取菜单列表
      * @return
      */
