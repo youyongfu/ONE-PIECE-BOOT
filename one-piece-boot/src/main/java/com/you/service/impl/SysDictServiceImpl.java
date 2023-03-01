@@ -1,5 +1,7 @@
 package com.you.service.impl;
 
+import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -32,12 +34,20 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
      * @return
      */
     @Override
-    public ResultBean listPage(Integer current, Integer size) {
+    public ResultBean listPage(String keyword,Integer current, Integer size) {
 
         //获取一级数据字典列表
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("parent_id",0L);
         queryWrapper.orderByAsc("created_time");
+
+        //添加条件
+        JSONObject jsonObject = JSONObject.parseObject(keyword);
+        if(jsonObject.size() > 0){
+            String name = jsonObject.getString("name");
+            queryWrapper.like(StrUtil.isNotBlank(name), "name", name);
+        }
+
         Page<SysDict> page= new Page(current,size);
         Page<SysDict> pageData = sysDictMapper.selectPage(page, queryWrapper);
 

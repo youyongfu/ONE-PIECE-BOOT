@@ -18,7 +18,7 @@ public interface SysDictService extends IService<SysDict> {
 
     ResultBean delete(Long id);
 
-    ResultBean listPage(Integer current, Integer size);
+    ResultBean listPage(String keyword,Integer current, Integer size);
 
     ResultBean getChildrenList(Long id);
 }

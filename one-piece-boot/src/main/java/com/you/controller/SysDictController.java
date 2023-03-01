@@ -30,8 +30,8 @@ public class SysDictController {
      */
     @GetMapping("/listPage")
     @PreAuthorize("hasAuthority('sys:dict:list')")   //查看权限
-    public ResultBean listPage(@RequestParam Integer current, @RequestParam Integer size){
-        return sysDictService.listPage(current,size);
+    public ResultBean listPage(@RequestParam String keyword,@RequestParam Integer current, @RequestParam Integer size){
+        return sysDictService.listPage(keyword,current,size);
     }
 
     /**
