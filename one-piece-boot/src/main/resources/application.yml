@@ -79,3 +79,11 @@ oss:
   endpoint: oss-cn-beijing.aliyuncs.com
   accessKeyId: LTAI5tQWtZmBFE45o5v4D1My
   accessKeySecret: kRgNXQHDWBZy9YKiclPNLv5ZCGIapN
+
+swagger:
+  title: ONE_PIECE 接口文档
+  name: yyf
+  url: https://www.baidu.com/
+  email: 2465293546@qq.com
+  version: 1.0
+  description: API 描述

@@ -66,7 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     //白名单
     private static final String[] URL_WHITELIST = {
-            "/captcha","/login"
+            "/captcha","/login","/swagger-resources/**","/webjars/**","/v2/**","/api/**","/doc.html"
     };
 
     protected void configure(HttpSecurity http) throws Exception {
