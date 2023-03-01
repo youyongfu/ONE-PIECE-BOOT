@@ -49,6 +49,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
         //条件构造器
         QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.orderByAsc("created_time");
 
         //添加条件
         JSONObject jsonObject = JSONObject.parseObject(keyword);

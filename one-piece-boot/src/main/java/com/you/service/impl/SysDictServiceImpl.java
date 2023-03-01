@@ -37,6 +37,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
         //获取一级数据字典列表
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("parent_id",0L);
+        queryWrapper.orderByAsc("created_time");
         Page<SysDict> page= new Page(current,size);
         Page<SysDict> pageData = sysDictMapper.selectPage(page, queryWrapper);
 
@@ -60,6 +61,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
         //获取子数据字典
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("parent_id",id);
+        queryWrapper.orderByAsc("created_time");
         List<SysDict> list = sysDictMapper.selectList(queryWrapper);
 
         //判断是否存在子数据字典

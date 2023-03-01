@@ -58,6 +58,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public ResultBean listPage(String keyword, Integer current, Integer size) {
         //条件构造器
         QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.orderByAsc("created_time");
 
         //添加条件
         JSONObject jsonObject = JSONObject.parseObject(keyword);

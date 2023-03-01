@@ -56,6 +56,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         //获取一级菜单列表
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("parent_id",0L);
+        queryWrapper.orderByAsc("order_num");
         Page<SysMenu> page= new Page(current,size);
         Page<SysMenu> pageData = sysMenuMapper.selectPage(page, queryWrapper);
 
@@ -79,6 +80,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         //获取子菜单
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("parent_id",id);
+        queryWrapper.orderByAsc("order_num");
         List<SysMenu> list = sysMenuMapper.selectList(queryWrapper);
 
         //判断是否存在子菜单
