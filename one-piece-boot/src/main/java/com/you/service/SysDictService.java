@@ -1,5 +1,6 @@
 package com.you.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.you.common.ResultBean;
 import com.you.entity.SysDict;
@@ -14,11 +15,12 @@ import java.util.List;
  */
 public interface SysDictService extends IService<SysDict> {
 
+    Page<SysDict> listPage(String keyword, Integer current, Integer size);
+
+    List<SysDict> getChildrenList(Long id);
+
     List<SysDict> treeList();
 
     ResultBean delete(Long id);
 
-    ResultBean listPage(String keyword,Integer current, Integer size);
-
-    ResultBean getChildrenList(Long id);
 }

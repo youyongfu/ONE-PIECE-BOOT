@@ -34,7 +34,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
      * @return
      */
     @Override
-    public ResultBean listPage(String keyword,Integer current, Integer size) {
+    public Page<SysDict> listPage(String keyword,Integer current, Integer size) {
 
         //获取一级数据字典列表
         QueryWrapper queryWrapper = new QueryWrapper();
@@ -57,7 +57,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
             sysDict.setHasChildren(hasChildren);
         });
 
-        return ResultBean.success(pageData);
+        return pageData;
     }
 
     /**
@@ -66,7 +66,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
      * @return
      */
     @Override
-    public ResultBean getChildrenList(Long id) {
+    public List<SysDict> getChildrenList(Long id) {
 
         //获取子数据字典
         QueryWrapper queryWrapper = new QueryWrapper();
@@ -79,7 +79,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
             Boolean hasChildren = hasChildren(sysDict.getId());
             sysDict.setHasChildren(hasChildren);
         });
-        return ResultBean.success(list);
+        return list;
     }
 
     /**
@@ -127,13 +127,13 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
      */
     @Override
     public ResultBean delete(Long id) {
-        //判断该菜单是否存在子菜单，存在无法删除
+        //判断该菜单是否存在子数据字典，存在无法删除
         int count = count(new QueryWrapper<SysDict>().eq("parent_id", id));
         if (count > 0) {
             return ResultBean.fail("请先删除子数据字典");
         }
 
-        //删除菜单
+        //删除数据字典
         removeById(id);
 
         return ResultBean.success();

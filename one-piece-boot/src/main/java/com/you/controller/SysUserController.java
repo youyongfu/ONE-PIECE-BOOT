@@ -5,8 +5,10 @@ import com.you.common.ResultBean;
 import com.you.constant.UserConstant;
 import com.you.dto.PasswordDto;
 import com.you.entity.SysUser;
-import com.you.service.AuthorityService;
 import com.you.service.SysUserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +25,7 @@ import java.util.Date;
  * @version 1.0
  * @date 2023/2/3
  */
-
+@Api(tags = "用户控制层")
 @RestController
 @RequestMapping("/sys/user")
 public class SysUserController extends BaseController{
@@ -32,13 +34,12 @@ public class SysUserController extends BaseController{
     private SysUserService sysUserService;
     @Resource
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-    @Resource
-    private AuthorityService authorityService;
 
     /**
      * 获取登录用户信息
      * @return
      */
+    @ApiOperation("获取登录用户信息")
     @GetMapping("/userInfo")
     public ResultBean userInfo(Principal principal){
         SysUser sysUser = sysUserService.getByUsername(principal.getName());
@@ -49,6 +50,7 @@ public class SysUserController extends BaseController{
      * 修改密码
      * @return
      */
+    @ApiOperation("修改密码")
     @PostMapping("/updatePassword")
     public ResultBean updatePassword(@Validated @RequestBody PasswordDto passwordDto,Principal principal){
 
@@ -67,12 +69,15 @@ public class SysUserController extends BaseController{
     }
 
     /**
-     * 获取用户列表
+     * 分页获取用户列表
      * @return
      */
+    @ApiOperation("分页获取用户列表")
     @GetMapping("/listPage")
     @PreAuthorize("hasAuthority('sys:user:list')")   //查看权限
-    public ResultBean listPage(@RequestParam String keyword, @RequestParam Integer current, @RequestParam Integer size){
+    public ResultBean listPage(@ApiParam("关键字") @RequestParam String keyword,
+                               @ApiParam("页数") @RequestParam Integer current,
+                               @ApiParam("条数") @RequestParam Integer size){
         return sysUserService.listPage(keyword,current,size);
     }
 
@@ -81,6 +86,7 @@ public class SysUserController extends BaseController{
      * @param sysUser
      * @return
      */
+    @ApiOperation("添加用户")
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('sys:user:save')")      //提交权限
     public ResultBean save(@Validated @RequestBody SysUser sysUser) {
@@ -101,9 +107,10 @@ public class SysUserController extends BaseController{
      * @param id
      * @return
      */
+    @ApiOperation("根据id获取用户信息")
     @GetMapping("/info/{id}")
     @PreAuthorize("hasAuthority('sys:user:list')")
-    public ResultBean info(@PathVariable(name = "id") Long id) {
+    public ResultBean info(@ApiParam("用户id") @PathVariable(name = "id") Long id) {
         return sysUserService.getInfoById(id);
     }
 
@@ -112,6 +119,7 @@ public class SysUserController extends BaseController{
      * @param sysUser
      * @return
      */
+    @ApiOperation("更新用户")
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('sys:user:update')")      //更新权限
     public ResultBean update(@Validated @RequestBody SysUser sysUser) {
@@ -127,10 +135,11 @@ public class SysUserController extends BaseController{
      * @param ids
      * @return
      */
+    @ApiOperation("根据id删除用户")
     @Transactional
     @PostMapping("/delete")
     @PreAuthorize("hasAuthority('sys:user:delete')")
-    public ResultBean delete(@RequestBody Long[] ids) {
+    public ResultBean delete(@ApiParam("用户id") @RequestBody Long[] ids) {
         return sysUserService.delete(ids);
     }
 
@@ -139,10 +148,11 @@ public class SysUserController extends BaseController{
      * @param id
      * @return
      */
+    @ApiOperation("分配角色")
     @Transactional
     @PostMapping("/role/{id}")
     @PreAuthorize("hasAuthority('sys:user:role')")
-    public ResultBean role(@PathVariable(name = "id") Long id, @RequestBody Long[] roleIds) {
+    public ResultBean role(@ApiParam("用户id") @PathVariable(name = "id") Long id, @ApiParam("角色id") @RequestBody Long[] roleIds) {
         return sysUserService.role(id,roleIds);
     }
 
@@ -150,8 +160,9 @@ public class SysUserController extends BaseController{
      * 重置密码
      * @return
      */
+    @ApiOperation("重置密码")
     @PostMapping("/repass")
-    public ResultBean repass(@RequestBody Long userId){
+    public ResultBean repass(@ApiParam("用户id") @RequestBody Long userId){
         SysUser sysUser = sysUserService.getById(userId);
         sysUser.setPassword(bCryptPasswordEncoder.encode(UserConstant.DEFULT_PASSWORD));
         sysUser.setUpdatedTime(new Date());

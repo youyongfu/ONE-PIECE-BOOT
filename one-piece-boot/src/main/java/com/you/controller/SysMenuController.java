@@ -8,6 +8,9 @@ import com.you.entity.SysUser;
 import com.you.service.AuthorityService;
 import com.you.service.SysMenuService;
 import com.you.service.SysUserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -20,12 +23,12 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 用户控制层
+ * 菜单控制层
  * @author yyf
  * @version 1.0
  * @date 2023/2/3
  */
-
+@Api(tags = "菜单控制层")
 @RestController
 @RequestMapping("/sys/menu")
 public class SysMenuController extends BaseController{
@@ -41,6 +44,7 @@ public class SysMenuController extends BaseController{
      * 获取当前用户导航和权限信息
      * @return
      */
+    @ApiOperation("获取当前用户导航和权限信息")
     @GetMapping("/nav")
     public ResultBean nav(Principal principal){
 
@@ -61,9 +65,11 @@ public class SysMenuController extends BaseController{
      * 分页获取一级菜单列表
      * @return
      */
+    @ApiOperation("分页获取一级菜单列表")
     @GetMapping("/listPage")
     @PreAuthorize("hasAuthority('sys:menu:list')")   //查看权限
-    public ResultBean listPage(@RequestParam Integer current, @RequestParam Integer size){
+    public ResultBean listPage(@ApiParam("页数") @RequestParam Integer current,
+                               @ApiParam("条数") @RequestParam Integer size){
         return sysMenuService.listPage(current,size);
     }
 
@@ -71,9 +77,10 @@ public class SysMenuController extends BaseController{
      * 获取子菜单列表
      * @return
      */
+    @ApiOperation("获取子菜单列表")
     @GetMapping("/getChildrenList/{id}")
     @PreAuthorize("hasAuthority('sys:menu:list')")   //查看权限
-    public ResultBean getChildrenList(@PathVariable(name = "id") Long id){
+    public ResultBean getChildrenList(@ApiParam("父菜单id") @PathVariable(name = "id") Long id){
         return sysMenuService.getChildrenList(id);
     }
 
@@ -81,6 +88,7 @@ public class SysMenuController extends BaseController{
      * 获取菜单列表
      * @return
      */
+    @ApiOperation("获取菜单列表")
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('sys:menu:list')")   //查看权限
     public ResultBean list(){
@@ -92,6 +100,7 @@ public class SysMenuController extends BaseController{
      * @param sysMenu
      * @return
      */
+    @ApiOperation("添加菜单")
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('sys:menu:save')")      //提交权限
     public ResultBean save(@Validated @RequestBody SysMenu sysMenu) {
@@ -109,9 +118,10 @@ public class SysMenuController extends BaseController{
      * @param id
      * @return
      */
+    @ApiOperation("根据id获取菜单")
     @GetMapping("/info/{id}")
     @PreAuthorize("hasAuthority('sys:menu:list')")
-    public ResultBean info(@PathVariable(name = "id") Long id) {
+    public ResultBean info(@ApiParam("菜单id") @PathVariable(name = "id") Long id) {
         return ResultBean.success(sysMenuService.getById(id));
     }
 
@@ -120,6 +130,7 @@ public class SysMenuController extends BaseController{
      * @param sysMenu
      * @return
      */
+    @ApiOperation("更新菜单")
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('sys:menu:update')")      //更新权限
     public ResultBean update(@Validated @RequestBody SysMenu sysMenu) {
@@ -138,10 +149,11 @@ public class SysMenuController extends BaseController{
      * @param id
      * @return
      */
+    @ApiOperation("根据id删除菜单")
     @Transactional
     @PostMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('sys:menu:delete')")
-    public ResultBean delete(@PathVariable("id") Long id) {
+    public ResultBean delete(@ApiParam("菜单id") @PathVariable("id") Long id) {
         return sysMenuService.delete(id);
     }
 }
