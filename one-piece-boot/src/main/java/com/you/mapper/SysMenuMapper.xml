@@ -42,6 +42,7 @@
         left join sys_user_role ur on ur.role_id = rm.role_id
         where
             ur.user_id = #{userId}
+        order by m.order_num
     </select>
 
     <!-- 根据角色id获取菜单权限-->
