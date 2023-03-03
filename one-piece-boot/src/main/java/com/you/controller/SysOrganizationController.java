@@ -7,6 +7,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -95,6 +96,19 @@ public class SysOrganizationController {
         sysOrganizationService.updateById(sysOrganization);
 
         return ResultBean.success(sysOrganization);
+    }
+
+    /**
+     * 根据id删除组织
+     * @param id
+     * @return
+     */
+    @ApiOperation("根据id删除组织")
+    @Transactional
+    @PostMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('sys:organization:delete')")
+    public ResultBean delete(@ApiParam("组织id") @PathVariable("id") Long id) {
+        return sysOrganizationService.delete(id);
     }
 }
 

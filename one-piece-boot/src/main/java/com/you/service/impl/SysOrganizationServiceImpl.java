@@ -106,5 +106,24 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
         return ResultBean.success(MapUtil.builder().put("organization",sysOrganization).put("fileList",fileList).build());
     }
 
+    /**
+     * 根据id删除组织
+     * @param id
+     * @return
+     */
+    @Override
+    public ResultBean delete(Long id) {
+        //判断该菜单是否存在子菜单，存在无法删除
+        int count = count(new QueryWrapper<SysOrganization>().eq("parent_id", id));
+        if (count > 0) {
+            return ResultBean.fail("请先删除子组织");
+        }
+
+        //删除菜单
+        removeById(id);
+
+        return ResultBean.success();
+    }
+
 
 }
