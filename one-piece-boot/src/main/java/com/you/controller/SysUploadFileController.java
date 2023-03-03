@@ -1,7 +1,7 @@
 package com.you.controller;
 
 import com.you.common.ResultBean;
-import com.you.service.UploadFileService;
+import com.you.service.SysUploadFileService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,10 +24,10 @@ import java.security.Principal;
 @Valid
 @RestController
 @RequestMapping("/file")
-public class UploadFileController {
+public class SysUploadFileController {
 
     @Resource
-    private UploadFileService uploadFileService;
+    private SysUploadFileService uploadFileService;
 
     /**
      * 上传头像
@@ -37,6 +37,16 @@ public class UploadFileController {
     @PreAuthorize("hasAuthority('sys:user:upload')")
     public ResultBean uploadAvatar(MultipartFile file, Principal principal) {
         return uploadFileService.uploadAvatar(file,principal.getName());
+    }
+
+    /**
+     * 上传文件
+     */
+    @ApiOperation("上传文件")
+    @PostMapping("/uploadFile")
+    @PreAuthorize("hasAuthority('sys:user:upload')")
+    public ResultBean uploadFile(MultipartFile file) {
+        return uploadFileService.uploadFile(file);
     }
 
 }

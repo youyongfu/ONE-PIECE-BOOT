@@ -40,7 +40,7 @@ public class OssUtils {
      * @param file
      * @return
      */
-    public String upload(String username,String classify,MultipartFile file) {
+    public String upload(String classify,MultipartFile file) {
 
         if (file.isEmpty()) {
             throw new ServiceException("上传文件不能为空");
@@ -58,7 +58,7 @@ public class OssUtils {
             objectMetadata.setContentType(getcontentType(fileName.substring(fileName.lastIndexOf("."))));
 
             String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
-            fileName = username + "/" + classify + "/" + date + "/" + fileName;
+            fileName = classify + "/" + date + "/" + fileName;
             // 调用oss的方法实现长传 第一个参数 bucketName,第二个参数 上传到oss的文件路径和文件名称
             ossClient.putObject(bucketName, fileName, new ByteArrayInputStream(file.getBytes()),objectMetadata);
             // 关闭OSSClient。

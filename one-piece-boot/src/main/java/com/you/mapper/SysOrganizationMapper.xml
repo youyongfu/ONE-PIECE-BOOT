@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.you.mapper.SysOrganizationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.you.entity.SysOrganization">
+        <id column="id" property="id" />
+        <result column="parent_id" property="parentId" />
+        <result column="chinese_name" property="chineseName" />
+        <result column="english_name" property="englishName" />
+        <result column="properties" property="properties" />
+        <result column="birth" property="birth" />
+        <result column="station" property="station" />
+        <result column="supreme_power" property="supremePower" />
+        <result column="sign" property="sign" />
+        <result column="history" property="history" />
+        <result column="created_time" property="createdTime" />
+        <result column="updated_time" property="updatedTime" />
+        <result column="statu" property="statu" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, parent_id, chinese_name, english_name, properties, birth, station, supreme_power, sign, history, created_time, updated_time, statu
+    </sql>
+
+</mapper>
