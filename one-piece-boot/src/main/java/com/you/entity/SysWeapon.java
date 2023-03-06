@@ -4,39 +4,33 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * 果实实体类
+ * 武器实体类
  * @author yyf
  * @version 1.0
  * @date 2023/2/9
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class SysDevilnut extends BaseEntity {
+public class SysWeapon extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
     //中文名
     private String name;
 
-    //外文名
-    private String foreignName;
+    //级别
+    private String level;
 
-    //别名
-    private String alias;
+    //价值
+    private String cost;
 
-    //类别
-    private String category;
-
-    //性质
-    private String properties;
+    //特点
+    private String point;
 
     //图片
     private String picture;
 
     //介绍
     private String introduce;
-
-    //招式
-    private String move;
 
 }
