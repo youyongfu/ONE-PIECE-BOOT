@@ -138,4 +138,25 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
 
         return ResultBean.success();
     }
+
+    /**
+     * 根据编码获取数据字典
+     * @param code
+     * @return
+     */
+    @Override
+    public ResultBean getListByCode(String code) {
+        //获取父字典
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("code",code);
+        SysDict sysDictParent = sysDictMapper.selectOne(queryWrapper);
+        if(sysDictParent != null){
+            //获取子字典
+            QueryWrapper query = new QueryWrapper();
+            query.eq("parent_id",sysDictParent.getId());
+            List<SysDict> sysDictList = sysDictMapper.selectList(query);
+            return ResultBean.success(sysDictList);
+        }
+        return ResultBean.fail("查无此字典数据");
+    }
 }

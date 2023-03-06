@@ -121,5 +121,16 @@ public class SysDictController {
     public ResultBean delete(@ApiParam("数据字典id") @PathVariable("id") Long id) {
         return sysDictService.delete(id);
     }
+
+    /**
+     * 根据编码获取数据字典
+     * @param code
+     * @return
+     */
+    @ApiOperation("根据编码获取数据字典")
+    @GetMapping("/getListByCode")
+    public ResultBean getListByCode(@ApiParam("字典编码") @RequestParam String code) {
+        return sysDictService.getListByCode(code);
+    }
 }
 

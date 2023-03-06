@@ -8,19 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 组织实体类
+ * 果实实体类
  * @author yyf
  * @version 1.0
  * @date 2023/2/9
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class SysOrganization extends BaseEntity {
+public class SysDevilnut extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
-
-    //父组织id
-    private Long parentId;
 
     //中文名
     private String name;
@@ -28,26 +25,25 @@ public class SysOrganization extends BaseEntity {
     //外文名
     private String foreignName;
 
-    //组织性质
+    //别名
+    private String alias;
+
+    //类别
+    private String category;
+
+    //性质
     private String properties;
 
-    //诞生时间
-    private String birth;
+    //图片
+    private String picture;
 
-    //组织驻地
-    private String station;
+    //介绍
+    private String introduce;
 
-    //最高权力
-    private String supremePower;
-
-    //组织标志
-    private String sign;
-
-    //组织历史
-    private String history;
-
+    //招式
+    private String move;
 
     //子组织
     @TableField(exist = false)    //表示当前属性不是数据库的字段
-    private List<SysOrganization> children = new ArrayList<>();
+    private List<SysDevilnut> children = new ArrayList<>();
 }

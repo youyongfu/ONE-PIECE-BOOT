@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.you.mapper.SysOrganizationMapper">
+<mapper namespace="com.you.mapper.SysDevilnutMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.you.entity.SysOrganization">
+    <resultMap id="BaseResultMap" type="com.you.entity.SysDevilnut">
         <id column="id" property="id" />
-        <result column="parent_id" property="parentId" />
         <result column="name" property="name" />
         <result column="foreign_name" property="foreignName" />
+        <result column="alias" property="alias" />
+        <result column="category" property="category" />
         <result column="properties" property="properties" />
-        <result column="birth" property="birth" />
-        <result column="station" property="station" />
-        <result column="supreme_power" property="supremePower" />
-        <result column="sign" property="sign" />
-        <result column="history" property="history" />
+        <result column="picture" property="picture" />
+        <result column="introduce" property="introduce" />
+        <result column="move" property="move" />
         <result column="created_time" property="createdTime" />
         <result column="updated_time" property="updatedTime" />
         <result column="statu" property="statu" />
@@ -21,7 +20,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, parent_id, name, foreign_name, properties, birth, station, supreme_power, sign, history, created_time, updated_time, statu
+        id, name, foreign_name, alias, category, properties, picture, introduce, move, created_time, updated_time, statu
     </sql>
 
 </mapper>

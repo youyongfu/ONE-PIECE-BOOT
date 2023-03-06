@@ -23,4 +23,5 @@ public interface SysDictService extends IService<SysDict> {
 
     ResultBean delete(Long id);
 
+    ResultBean getListByCode(String code);
 }
