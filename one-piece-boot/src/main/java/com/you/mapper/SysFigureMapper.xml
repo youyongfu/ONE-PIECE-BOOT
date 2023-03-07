@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.you.mapper.SysFigureMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.you.entity.SysFigure">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="foreign_name" property="foreignName" />
+        <result column="alias" property="alias" />
+        <result column="birth" property="birth" />
+        <result column="age" property="age" />
+        <result column="blood" property="blood" />
+        <result column="height" property="height" />
+        <result column="sex" property="sex" />
+        <result column="bounty" property="bounty" />
+        <result column="overbearing" property="overbearing" />
+        <result column="synopsis" property="synopsis" />
+        <result column="source" property="source" />
+        <result column="image" property="image" />
+        <result column="life" property="life" />
+        <result column="ability" property="ability" />
+        <result column="experience" property="experience" />
+        <result column="war_record" property="warRecord" />
+        <result column="picture" property="picture" />
+        <result column="created_time" property="createdTime" />
+        <result column="updated_time" property="updatedTime" />
+        <result column="statu" property="statu" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, foreign_name, alias, birth, age, blood, height, sex, bounty, overbearing, synopsis, source, image, life, ability, experience, war_record, picture, created_time, updated_time, statu
+    </sql>
+
+</mapper>
