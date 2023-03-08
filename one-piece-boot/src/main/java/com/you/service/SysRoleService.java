@@ -12,11 +12,16 @@ import com.you.entity.SysRole;
  */
 public interface SysRoleService extends IService<SysRole> {
 
-    ResultBean delete(Long[] id);
-
     ResultBean listPage(String keyword, Integer current, Integer size);
+
+    ResultBean saveRole(SysRole sysRole);
 
     ResultBean getInfoById(Long id);
 
+    ResultBean updateRole(SysRole sysRole);
+
+    ResultBean delete(Long[] id);
+
     ResultBean perm(Long id, Long[] menuIds);
+
 }

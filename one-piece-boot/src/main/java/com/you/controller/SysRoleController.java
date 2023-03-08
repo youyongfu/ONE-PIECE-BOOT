@@ -2,7 +2,6 @@ package com.you.controller;
 
 import com.you.common.ResultBean;
 import com.you.entity.SysRole;
-import com.you.service.AuthorityService;
 import com.you.service.SysRoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.Date;
 
 /**
  * 角色控制层
@@ -26,8 +24,6 @@ import java.util.Date;
 @RequestMapping("/sys/role")
 public class SysRoleController extends BaseController{
 
-    @Resource
-    private AuthorityService authorityService;
     @Resource
     private SysRoleService sysRoleService;
 
@@ -64,9 +60,7 @@ public class SysRoleController extends BaseController{
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('sys:role:save')")      //提交权限
     public ResultBean save(@Validated @RequestBody SysRole sysRole) {
-        sysRole.setCreatedTime(new Date());
-        sysRoleService.save(sysRole);
-        return ResultBean.success(sysRole);
+        return sysRoleService.saveRole(sysRole);
     }
 
     /**
@@ -77,7 +71,7 @@ public class SysRoleController extends BaseController{
     @ApiOperation("根据id获取角色")
     @GetMapping("/info/{id}")
     @PreAuthorize("hasAuthority('sys:role:list')")
-    public ResultBean info(@ApiParam("角色id") @PathVariable(name = "id") Long id) {
+    public ResultBean info(@PathVariable(name = "id") Long id) {
         return sysRoleService.getInfoById(id);
     }
 
@@ -90,14 +84,7 @@ public class SysRoleController extends BaseController{
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('sys:role:update')")      //更新权限
     public ResultBean update(@Validated @RequestBody SysRole sysRole) {
-        //更新操作
-        sysRole.setUpdatedTime(new Date());
-        sysRoleService.updateById(sysRole);
-
-        // 清除所有与该角色相关的权限缓存
-        authorityService.clearUserAuthorityInfoByRoleId(sysRole.getId());
-
-        return ResultBean.success(sysRole);
+        return sysRoleService.updateRole(sysRole);
     }
 
     /**
@@ -109,7 +96,7 @@ public class SysRoleController extends BaseController{
     @Transactional
     @PostMapping("/delete")
     @PreAuthorize("hasAuthority('sys:role:delete')")
-    public ResultBean delete(@ApiParam("角色id") @RequestBody Long[] ids) {
+    public ResultBean delete(@RequestBody Long[] ids) {
         return sysRoleService.delete(ids);
     }
 
@@ -122,7 +109,7 @@ public class SysRoleController extends BaseController{
     @Transactional
     @PostMapping("/perm/{id}")
     @PreAuthorize("hasAuthority('sys:role:perm')")
-    public ResultBean perm(@ApiParam("角色id") @PathVariable(name = "id") Long id, @ApiParam("菜单id") @RequestBody Long[] menuIds) {
+    public ResultBean perm(@PathVariable(name = "id") Long id, @ApiParam("菜单id") @RequestBody Long[] menuIds) {
         return sysRoleService.perm(id,menuIds);
     }
 }
