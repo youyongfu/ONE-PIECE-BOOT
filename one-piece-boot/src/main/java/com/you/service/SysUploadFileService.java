@@ -13,7 +13,5 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface SysUploadFileService extends IService<SysUploadFile> {
 
-    ResultBean uploadAvatar(MultipartFile file,String username);
-
-    ResultBean uploadFile(MultipartFile file);
+    ResultBean uploadFile(MultipartFile file,String type);
 }

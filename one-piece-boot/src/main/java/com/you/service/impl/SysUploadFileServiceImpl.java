@@ -2,12 +2,9 @@ package com.you.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.you.common.ResultBean;
-import com.you.constant.OssConstant;
 import com.you.entity.SysUploadFile;
-import com.you.entity.SysUser;
 import com.you.mapper.SysUploadFileMapper;
 import com.you.service.SysUploadFileService;
-import com.you.service.SysUserService;
 import com.you.utils.OssUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,26 +23,6 @@ public class SysUploadFileServiceImpl extends ServiceImpl<SysUploadFileMapper, S
 
     @Resource
     private OssUtils ossUtils;
-    @Resource
-    private SysUserService sysUserService;
-
-    /**
-     * 上传头像
-     * @param file
-     * @return
-     */
-    @Override
-    public ResultBean uploadAvatar(MultipartFile file,String username) {
-
-        SysUser sysUser = sysUserService.getByUsername(username);
-
-        //上传新头像
-        String url = String.valueOf(ossUtils.upload(OssConstant.CLASSIFY_AVATAR,file));
-        sysUser.setAvatar(url);
-        sysUserService.updateById(sysUser);
-
-        return ResultBean.success(url);
-    }
 
     /**
      * 上传文件
@@ -53,10 +30,10 @@ public class SysUploadFileServiceImpl extends ServiceImpl<SysUploadFileMapper, S
      * @return
      */
     @Override
-    public ResultBean uploadFile(MultipartFile file) {
+    public ResultBean uploadFile(MultipartFile file,String type) {
 
         //上传文件
-        String url = String.valueOf(ossUtils.upload(OssConstant.CLASSIFY_SIGN,file));
+        String url = String.valueOf(ossUtils.upload(type,file));
 
         //保存文件信息
         String id = UUID.randomUUID().toString().replaceAll("-","");

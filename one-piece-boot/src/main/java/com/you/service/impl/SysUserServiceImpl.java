@@ -1,24 +1,34 @@
 package com.you.service.impl;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.you.common.ResultBean;
+import com.you.constant.UserConstant;
+import com.you.dto.PasswordDto;
 import com.you.entity.SysRole;
+import com.you.entity.SysUploadFile;
 import com.you.entity.SysUser;
 import com.you.entity.SysUserRole;
 import com.you.mapper.SysRoleMapper;
 import com.you.mapper.SysUserMapper;
 import com.you.service.AuthorityService;
+import com.you.service.SysUploadFileService;
 import com.you.service.SysUserService;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,9 +44,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Resource
     private SysUserMapper sysUserMapper;
     @Resource
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Resource
     private SysRoleMapper sysRoleMapper;
     @Resource
     private AuthorityService authorityService;
+    @Resource
+    private SysUploadFileService uploadFileService;
 
     /**
      * 根据用户名获取用户信息
@@ -46,6 +60,83 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public SysUser getByUsername(String username) {
         return getOne(new QueryWrapper<SysUser>().eq("username", username));
+    }
+
+    /**
+     * 获取用户信息
+     * @return
+     */
+    @Override
+    public ResultBean userInfo(Principal principal) {
+        SysUser sysUser = getByUsername(principal.getName());
+
+        //获取头像信息
+        String url = "";
+        if(StringUtils.isNotBlank(sysUser.getUploadFileId())){
+            SysUploadFile sysUploadFile = uploadFileService.getById(sysUser.getUploadFileId());
+            url = sysUploadFile.getUrl();
+        }
+
+        return ResultBean.success(MapUtil.builder().put("id",sysUser.getId()).put("username",sysUser.getUsername()).put("avatar",url).build());
+    }
+
+
+
+    /**
+     * 修改密码
+     * @param passwordDto
+     * @param principal
+     * @return
+     */
+    @Override
+    public ResultBean updatePassword(PasswordDto passwordDto, Principal principal) {
+        //比对旧密码
+        SysUser sysUser = getByUsername(principal.getName());
+        boolean matches = bCryptPasswordEncoder.matches(passwordDto.getCurrentPass(),sysUser.getPassword());
+        if(!matches){
+            return ResultBean.fail("旧密码不正确");
+        }
+
+        //更新密码
+        sysUser.setPassword(bCryptPasswordEncoder.encode(passwordDto.getPassword()));
+        sysUser.setUpdatedTime(new Date());
+        updateById(sysUser);
+        return ResultBean.success("密码修改成功");
+    }
+
+    /**
+     * 重置密码
+     * @param userId
+     * @return
+     */
+    @Override
+    public ResultBean rePass(Long userId) {
+        SysUser sysUser = getById(userId);
+        sysUser.setPassword(bCryptPasswordEncoder.encode(UserConstant.DEFULT_PASSWORD));
+        sysUser.setUpdatedTime(new Date());
+        updateById(sysUser);
+        return ResultBean.success();
+    }
+
+    /**
+     * 上传头像
+     * @param file
+     * @param name
+     * @return
+     */
+    @Override
+    public ResultBean uploadAvatar(MultipartFile file, String name,String type) {
+
+        //上传图片
+        ResultBean resultBean = uploadFileService.uploadFile(file,type);
+        SysUploadFile sysUploadFile = (SysUploadFile) resultBean.getData();
+
+        //保存上传文件id
+        SysUser sysUser = getByUsername(name);
+        sysUser.setUploadFileId(sysUploadFile.getId());
+        updateById(sysUser);
+
+        return ResultBean.success(sysUploadFile.getUrl());
     }
 
     /**
@@ -77,6 +168,24 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     /**
+     * 添加用户
+     * @param sysUser
+     * @return
+     */
+    @Override
+    public ResultBean saveUser(SysUser sysUser) {
+        //判断用户名是否已存在
+        SysUser oldUser = getByUsername(sysUser.getUsername());
+        if(oldUser != null){
+            return ResultBean.fail("用户名已存在，无法新增！");
+        }
+        sysUser.setCreatedTime(new Date());
+        sysUser.setPassword(bCryptPasswordEncoder.encode(UserConstant.DEFULT_PASSWORD));
+        save(sysUser);
+        return ResultBean.success(sysUser);
+    }
+
+    /**
      * 根据id获取用户信息
      * @param id
      * @return
@@ -86,7 +195,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
         SysUser sysUser = getById(id);
 
-        //获取角色
+        //获取该用户的角色信息
         List<SysRole> sysRoleList = sysRoleMapper.getRoleInfoByUserId(id);
         if(CollectionUtils.isNotEmpty(sysRoleList)){
             List<Long> roleds = sysRoleList.stream().map(m -> m.getId()).collect(Collectors.toList());
@@ -94,6 +203,38 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
 
         return ResultBean.success(sysUser);
+    }
+
+    /**
+     * 更新用户
+     * @param sysUser
+     * @return
+     */
+    @Override
+    public ResultBean updateUser(SysUser sysUser) {
+        //更新操作
+        sysUser.setUpdatedTime(new Date());
+        updateById(sysUser);
+
+        return ResultBean.success(sysUser);
+    }
+
+    /**
+     * 删除用户
+     * @param ids
+     * @return
+     */
+    @Override
+    public ResultBean delete(Long[] ids) {
+
+        //删除角色
+        List<Long> idList = Arrays.asList(ids);
+        removeByIds(idList);
+
+        //删除用户角色关系
+        sysUserMapper.deleteUserRoleByUserId(idList);
+
+        return ResultBean.success();
     }
 
     /**
@@ -122,30 +263,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             sysUserMapper.batcSaveUserRole(userRoleList);
         }
 
-        // 删除缓存
+        // 删除权限缓存
         SysUser sysUser = getById(id);
         authorityService.clearUserAuthorityInfo(sysUser.getUsername());
 
         return ResultBean.success(roleIds);
-    }
-
-    /**
-     * 删除用户
-     * @param ids
-     * @return
-     */
-    @Override
-    public ResultBean delete(Long[] ids) {
-
-        List<Long> idList = Arrays.asList(ids);
-
-        //删除角色
-        removeByIds(idList);
-
-        //删除角色用户关系
-        sysUserMapper.deleteUserRoleByUserId(idList);
-
-        return ResultBean.success();
     }
 
 }

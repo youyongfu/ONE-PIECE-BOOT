@@ -7,7 +7,6 @@ import lombok.EqualsAndHashCode;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +29,8 @@ public class SysUser extends BaseEntity {
     //密码
     private String password;
 
-    //头像
-    private String avatar;
+    //上传文件id
+    private String uploadFileId;
 
     //邮箱
     @NotBlank(message = "邮箱不能为空")
@@ -45,9 +44,6 @@ public class SysUser extends BaseEntity {
 
     //籍贯
     private String city;
-
-    //最后登录时间
-    private Date lastLogin;
 
     //角色id
     @TableField(exist = false)    //表示当前属性不是数据库的字段

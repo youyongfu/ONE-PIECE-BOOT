@@ -1,8 +1,6 @@
 package com.you.controller;
 
-import cn.hutool.core.map.MapUtil;
 import com.you.common.ResultBean;
-import com.you.constant.UserConstant;
 import com.you.dto.PasswordDto;
 import com.you.entity.SysUser;
 import com.you.service.SysUserService;
@@ -10,14 +8,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.security.Principal;
-import java.util.Date;
 
 /**
  * 用户控制层
@@ -32,18 +29,15 @@ public class SysUserController extends BaseController{
 
     @Resource
     private SysUserService sysUserService;
-    @Resource
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     /**
-     * 获取登录用户信息
+     * 获取用户信息
      * @return
      */
-    @ApiOperation("获取登录用户信息")
+    @ApiOperation("获取用户信息")
     @GetMapping("/userInfo")
     public ResultBean userInfo(Principal principal){
-        SysUser sysUser = sysUserService.getByUsername(principal.getName());
-        return ResultBean.success(MapUtil.builder().put("id",sysUser.getId()).put("username",sysUser.getUsername()).put("avatar",sysUser.getAvatar()).build());
+        return sysUserService.userInfo(principal);
     }
 
     /**
@@ -53,19 +47,27 @@ public class SysUserController extends BaseController{
     @ApiOperation("修改密码")
     @PostMapping("/updatePassword")
     public ResultBean updatePassword(@Validated @RequestBody PasswordDto passwordDto,Principal principal){
+        return sysUserService.updatePassword(passwordDto,principal);
+    }
 
-        //比对旧密码
-        SysUser sysUser = sysUserService.getByUsername(principal.getName());
-        boolean matches = bCryptPasswordEncoder.matches(passwordDto.getCurrentPass(),sysUser.getPassword());
-        if(!matches){
-            return ResultBean.fail("旧密码不正确");
-        }
+    /**
+     * 重置密码
+     * @return
+     */
+    @ApiOperation("重置密码")
+    @PostMapping("/repass")
+    public ResultBean repass(@ApiParam("用户id") @RequestBody Long userId){
+        return sysUserService.rePass(userId);
+    }
 
-        //更新密码
-        sysUser.setPassword(bCryptPasswordEncoder.encode(passwordDto.getPassword()));
-        sysUser.setUpdatedTime(new Date());
-        sysUserService.updateById(sysUser);
-        return ResultBean.success("密码修改成功");
+    /**
+     * 上传头像
+     */
+    @ApiOperation("上传头像")
+    @PostMapping("/uploadAvatar")
+    @PreAuthorize("hasAuthority('sys:user:upload')")
+    public ResultBean uploadAvatar(MultipartFile file, Principal principal,String type) {
+        return sysUserService.uploadAvatar(file,principal.getName(),type);
     }
 
     /**
@@ -90,16 +92,7 @@ public class SysUserController extends BaseController{
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('sys:user:save')")      //提交权限
     public ResultBean save(@Validated @RequestBody SysUser sysUser) {
-
-        //判断用户名是否已存在
-        SysUser oldUser = sysUserService.getByUsername(sysUser.getUsername());
-        if(oldUser != null){
-            return ResultBean.fail("用户名已存在，无法新增！");
-        }
-        sysUser.setCreatedTime(new Date());
-        sysUser.setPassword(bCryptPasswordEncoder.encode(UserConstant.DEFULT_PASSWORD));
-        sysUserService.save(sysUser);
-        return ResultBean.success(sysUser);
+        return sysUserService.saveUser(sysUser);
     }
 
     /**
@@ -110,7 +103,7 @@ public class SysUserController extends BaseController{
     @ApiOperation("根据id获取用户信息")
     @GetMapping("/info/{id}")
     @PreAuthorize("hasAuthority('sys:user:list')")
-    public ResultBean info(@ApiParam("用户id") @PathVariable(name = "id") Long id) {
+    public ResultBean info(@PathVariable(name = "id") Long id) {
         return sysUserService.getInfoById(id);
     }
 
@@ -123,11 +116,7 @@ public class SysUserController extends BaseController{
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('sys:user:update')")      //更新权限
     public ResultBean update(@Validated @RequestBody SysUser sysUser) {
-        //更新操作
-        sysUser.setUpdatedTime(new Date());
-        sysUserService.updateById(sysUser);
-
-        return ResultBean.success(sysUser);
+        return sysUserService.updateUser(sysUser);
     }
 
     /**
@@ -156,17 +145,4 @@ public class SysUserController extends BaseController{
         return sysUserService.role(id,roleIds);
     }
 
-    /**
-     * 重置密码
-     * @return
-     */
-    @ApiOperation("重置密码")
-    @PostMapping("/repass")
-    public ResultBean repass(@ApiParam("用户id") @RequestBody Long userId){
-        SysUser sysUser = sysUserService.getById(userId);
-        sysUser.setPassword(bCryptPasswordEncoder.encode(UserConstant.DEFULT_PASSWORD));
-        sysUser.setUpdatedTime(new Date());
-        sysUserService.updateById(sysUser);
-        return ResultBean.success();
-    }
 }
