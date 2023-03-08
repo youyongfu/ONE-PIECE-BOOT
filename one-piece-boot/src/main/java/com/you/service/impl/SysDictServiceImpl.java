@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -48,7 +49,10 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
             queryWrapper.like(StrUtil.isNotBlank(name), "name", name);
         }
 
+        //分页插件
         Page<SysDict> page= new Page(current,size);
+
+        //分页获取数据
         Page<SysDict> pageData = sysDictMapper.selectPage(page, queryWrapper);
 
         //判断是否存在子数据字典
@@ -83,18 +87,6 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
     }
 
     /**
-     * 判断是否存在子菜单
-     * @param id
-     * @return
-     */
-    private Boolean hasChildren(Long id){
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("parent_id",id);
-        Integer count = sysDictMapper.selectCount(queryWrapper);
-        return count > 0;
-    }
-
-    /**
      * 获取数据字典
      * @return
      */
@@ -118,6 +110,35 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
             });
         });
         return  dictTree;
+    }
+
+    /**
+     * 保存数据字典
+     * @param sysDict
+     * @return
+     */
+    @Override
+    public ResultBean saveDict(SysDict sysDict) {
+        //未选择上级菜单，则默认为添加目录
+        if(sysDict.getParentId() == null){
+            sysDict.setParentId(0L);
+        }
+        sysDict.setCreatedTime(new Date());
+        save(sysDict);
+        return ResultBean.success(sysDict);
+    }
+
+    /**
+     * 更新数据字典
+     * @param sysDict
+     * @return
+     */
+    @Override
+    public ResultBean updateDict(SysDict sysDict) {
+        //更新操作
+        sysDict.setUpdatedTime(new Date());
+        updateById(sysDict);
+        return ResultBean.success(sysDict);
     }
 
     /**
@@ -158,5 +179,17 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
             return ResultBean.success(sysDictList);
         }
         return ResultBean.fail("查无此字典数据");
+    }
+
+    /**
+     * 判断是否存在子数据字典
+     * @param id
+     * @return
+     */
+    private Boolean hasChildren(Long id){
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("parent_id",id);
+        Integer count = sysDictMapper.selectCount(queryWrapper);
+        return count > 0;
     }
 }

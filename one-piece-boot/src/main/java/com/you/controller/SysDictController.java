@@ -12,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.Date;
 
 /**
  * 数据字典控制层
@@ -72,13 +71,7 @@ public class SysDictController {
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('sys:dict:save')")      //提交权限
     public ResultBean save(@Validated @RequestBody SysDict sysDict) {
-        //未选择上级菜单，则默认为添加目录
-        if(sysDict.getParentId() == null){
-            sysDict.setParentId(0L);
-        }
-        sysDict.setCreatedTime(new Date());
-        sysDictService.save(sysDict);
-        return ResultBean.success(sysDict);
+        return sysDictService.saveDict(sysDict);
     }
 
     /**
@@ -89,7 +82,7 @@ public class SysDictController {
     @ApiOperation("根据id获取数据字典")
     @GetMapping("/info/{id}")
     @PreAuthorize("hasAuthority('sys:dict:list')")
-    public ResultBean info(@ApiParam("数据字典id") @PathVariable(name = "id") Long id) {
+    public ResultBean info(@PathVariable(name = "id") Long id) {
         return ResultBean.success(sysDictService.getById(id));
     }
 
@@ -102,11 +95,7 @@ public class SysDictController {
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('sys:dict:update')")      //更新权限
     public ResultBean update(@Validated @RequestBody SysDict sysDict) {
-        //更新操作
-        sysDict.setUpdatedTime(new Date());
-        sysDictService.updateById(sysDict);
-
-        return ResultBean.success(sysDict);
+        return sysDictService.updateDict(sysDict);
     }
 
     /**
@@ -118,7 +107,7 @@ public class SysDictController {
     @Transactional
     @PostMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('sys:dict:delete')")
-    public ResultBean delete(@ApiParam("数据字典id") @PathVariable("id") Long id) {
+    public ResultBean delete(@PathVariable("id") Long id) {
         return sysDictService.delete(id);
     }
 
