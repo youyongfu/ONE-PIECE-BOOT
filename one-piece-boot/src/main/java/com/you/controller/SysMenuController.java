@@ -1,26 +1,18 @@
 package com.you.controller;
 
-import cn.hutool.core.map.MapUtil;
 import com.you.common.ResultBean;
-import com.you.dto.SysMenuDto;
 import com.you.entity.SysMenu;
-import com.you.entity.SysUser;
-import com.you.service.AuthorityService;
 import com.you.service.SysMenuService;
-import com.you.service.SysUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.security.Principal;
-import java.util.Date;
-import java.util.List;
 
 /**
  * 菜单控制层
@@ -34,10 +26,6 @@ import java.util.List;
 public class SysMenuController extends BaseController{
 
     @Resource
-    private AuthorityService authorityService;
-    @Resource
-    private SysUserService sysUserService;
-    @Resource
     private SysMenuService sysMenuService;
 
     /**
@@ -47,18 +35,7 @@ public class SysMenuController extends BaseController{
     @ApiOperation("获取当前用户导航和权限信息")
     @GetMapping("/nav")
     public ResultBean nav(Principal principal){
-
-        //获取用户信息
-        SysUser sysUser = sysUserService.getByUsername(principal.getName());
-
-        //获取权限信息
-        String authorityInfo = authorityService.getUserAuthorityInfo(sysUser.getId());
-        String[] authorityInfoArray = StringUtils.tokenizeToStringArray(authorityInfo, ",");
-
-        //获取当前用户导航信息
-        List<SysMenuDto> menuList = sysMenuService.getCurrentUserNav(sysUser.getId());
-
-        return ResultBean.success(MapUtil.builder().put("menuList",menuList).put("permList", authorityInfoArray).map());
+        return sysMenuService.nav(principal);
     }
 
     /**
@@ -104,13 +81,7 @@ public class SysMenuController extends BaseController{
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('sys:menu:save')")      //提交权限
     public ResultBean save(@Validated @RequestBody SysMenu sysMenu) {
-        //未选择上级菜单，则默认为添加目录
-        if(sysMenu.getParentId() == null){
-            sysMenu.setParentId(0L);
-        }
-        sysMenu.setCreatedTime(new Date());
-        sysMenuService.save(sysMenu);
-        return ResultBean.success(sysMenu);
+        return sysMenuService.saveMenu(sysMenu);
     }
 
     /**
@@ -121,7 +92,7 @@ public class SysMenuController extends BaseController{
     @ApiOperation("根据id获取菜单")
     @GetMapping("/info/{id}")
     @PreAuthorize("hasAuthority('sys:menu:list')")
-    public ResultBean info(@ApiParam("菜单id") @PathVariable(name = "id") Long id) {
+    public ResultBean info(@PathVariable(name = "id") Long id) {
         return ResultBean.success(sysMenuService.getById(id));
     }
 
@@ -134,14 +105,7 @@ public class SysMenuController extends BaseController{
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('sys:menu:update')")      //更新权限
     public ResultBean update(@Validated @RequestBody SysMenu sysMenu) {
-        //更新操作
-        sysMenu.setUpdatedTime(new Date());
-        sysMenuService.updateById(sysMenu);
-
-        // 清除所有与该菜单相关的权限缓存
-        authorityService.clearUserAuthorityInfoByMenuId(sysMenu.getId());
-
-        return ResultBean.success(sysMenu);
+        return sysMenuService.updateMenu(sysMenu);
     }
 
     /**
@@ -153,7 +117,7 @@ public class SysMenuController extends BaseController{
     @Transactional
     @PostMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('sys:menu:delete')")
-    public ResultBean delete(@ApiParam("菜单id") @PathVariable("id") Long id) {
+    public ResultBean delete(@PathVariable("id") Long id) {
         return sysMenuService.delete(id);
     }
 }

@@ -2,9 +2,9 @@ package com.you.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.you.common.ResultBean;
-import com.you.dto.SysMenuDto;
 import com.you.entity.SysMenu;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -15,13 +15,18 @@ import java.util.List;
  */
 public interface SysMenuService extends IService<SysMenu> {
 
-    List<SysMenuDto> getCurrentUserNav(Long userId);
-
-    List<SysMenu> treeList();
-
-    ResultBean delete(Long id);
+    ResultBean nav(Principal principal);
 
     ResultBean listPage(Integer current, Integer size);
 
     ResultBean getChildrenList(Long id);
+
+    List<SysMenu> treeList();
+
+    ResultBean saveMenu(SysMenu sysMenu);
+
+    ResultBean updateMenu(SysMenu sysMenu);
+
+    ResultBean delete(Long id);
+
 }

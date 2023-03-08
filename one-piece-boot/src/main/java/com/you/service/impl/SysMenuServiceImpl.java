@@ -1,18 +1,24 @@
 package com.you.service.impl;
 
+import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.you.common.ResultBean;
 import com.you.dto.SysMenuDto;
 import com.you.entity.SysMenu;
+import com.you.entity.SysUser;
 import com.you.mapper.SysMenuMapper;
 import com.you.service.AuthorityService;
 import com.you.service.SysMenuService;
+import com.you.service.SysUserService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,20 +34,30 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     private AuthorityService authorityService;
     @Resource
     private SysMenuMapper sysMenuMapper;
+    @Resource
+    private SysUserService sysUserService;
 
     /**
-     * 获取当前用户导航信息
+     * 获取当前用户导航和权限信息
+     * @param principal
      * @return
      */
     @Override
-    public List<SysMenuDto> getCurrentUserNav(Long userId) {
-        //获取当前用户导航信息
-        List<SysMenu> sysMenuList = sysMenuMapper.getMenuByUserId(userId);
+    public ResultBean nav(Principal principal) {
+        //获取用户信息
+        SysUser sysUser = sysUserService.getByUsername(principal.getName());
+
+        //获取权限信息
+        String authorityInfo = authorityService.getUserAuthorityInfo(sysUser.getId());
+        String[] authorityInfoArray = StringUtils.tokenizeToStringArray(authorityInfo, ",");
+
+        //获取导航信息
+        List<SysMenu> sysMenuList = sysMenuMapper.getMenuByUserId(sysUser.getId());
 
         //转成树形结构
         List<SysMenu> menuTree= buildMenuTree(sysMenuList);
 
-        return convert(menuTree);
+        return ResultBean.success(MapUtil.builder().put("menuList",convert(menuTree)).put("permList", authorityInfoArray).map());
     }
 
     /**
@@ -92,24 +108,45 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     /**
-     * 判断是否存在子菜单
-     * @param id
-     * @return
-     */
-    private Boolean hasChildren(Long id){
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("parent_id",id);
-        Integer count = sysMenuMapper.selectCount(queryWrapper);
-        return count > 0;
-    }
-
-    /**
      * 获取菜单列表
      * @return
      */
     @Override
     public List<SysMenu> treeList() {
         return buildMenuTree(list());
+    }
+
+    /**
+     * 保存菜单
+     * @param sysMenu
+     * @return
+     */
+    @Override
+    public ResultBean saveMenu(SysMenu sysMenu) {
+        //未选择上级菜单，则默认为添加目录
+        if(sysMenu.getParentId() == null){
+            sysMenu.setParentId(0L);
+        }
+        sysMenu.setCreatedTime(new Date());
+        save(sysMenu);
+        return ResultBean.success(sysMenu);
+    }
+
+    /**
+     * 更新菜单
+     * @param sysMenu
+     * @return
+     */
+    @Override
+    public ResultBean updateMenu(SysMenu sysMenu) {
+        //更新操作
+        sysMenu.setUpdatedTime(new Date());
+        updateById(sysMenu);
+
+        // 清除所有与该菜单相关的权限缓存
+        authorityService.clearUserAuthorityInfoByMenuId(sysMenu.getId());
+
+        return ResultBean.success(sysMenu);
     }
 
     /**
@@ -135,6 +172,18 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         sysMenuMapper.deleteRoleMenuByMenuId(id);
 
         return ResultBean.success();
+    }
+
+    /**
+     * 判断是否存在子菜单
+     * @param id
+     * @return
+     */
+    private Boolean hasChildren(Long id){
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("parent_id",id);
+        Integer count = sysMenuMapper.selectCount(queryWrapper);
+        return count > 0;
     }
 
     /**
