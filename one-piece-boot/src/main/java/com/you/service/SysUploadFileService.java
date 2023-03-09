@@ -1,7 +1,6 @@
 package com.you.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.you.common.ResultBean;
 import com.you.entity.SysUploadFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,5 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface SysUploadFileService extends IService<SysUploadFile> {
 
-    ResultBean uploadFile(MultipartFile file,String type);
+    SysUploadFile uploadFile(MultipartFile file,String type);
+
+    void uploadFileAndRecord(MultipartFile file, String type, String id);
 }

@@ -2,7 +2,10 @@ package com.you.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.you.entity.SysOrganization;
+import com.you.entity.SysOrganizationFile;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * 组织管理Mapper接口
@@ -13,4 +16,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface SysOrganizationMapper extends BaseMapper<SysOrganization> {
 
+    void saveOrganizationFile(SysOrganizationFile sysOrganization);
+
+    void deleteOrganizationFileByFileId(List<String> fileIds);
 }

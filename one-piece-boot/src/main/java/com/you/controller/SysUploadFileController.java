@@ -35,7 +35,18 @@ public class SysUploadFileController {
     @PostMapping("/uploadFile")
     @PreAuthorize("hasAuthority('sys:user:upload')")
     public ResultBean uploadFile(MultipartFile file,String type) {
-        return uploadFileService.uploadFile(file,type);
+        return ResultBean.success(uploadFileService.uploadFile(file,type));
+    }
+
+    /**
+     * 上传文件并保存记录
+     */
+    @ApiOperation("上传文件并保存记录")
+    @PostMapping("/uploadFileAndRecord")
+    @PreAuthorize("hasAuthority('sys:user:upload')")
+    public ResultBean uploadFileAndRecord(MultipartFile file,String type,String id) {
+        uploadFileService.uploadFileAndRecord(file,type,id);
+        return ResultBean.success();
     }
 
 }

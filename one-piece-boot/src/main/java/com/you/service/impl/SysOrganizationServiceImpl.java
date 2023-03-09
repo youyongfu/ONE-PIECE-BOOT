@@ -11,13 +11,12 @@ import com.you.common.ResultBean;
 import com.you.entity.SysOrganization;
 import com.you.entity.SysUploadFile;
 import com.you.mapper.SysOrganizationMapper;
+import com.you.mapper.SysUploadFileMapper;
 import com.you.service.SysOrganizationService;
-import com.you.service.SysUploadFileService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 组织管理服务实现类
@@ -32,7 +31,7 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
     private SysOrganizationMapper sysOrganizationMapper;
 
     @Resource
-    private SysUploadFileService sysUploadFileService;
+    private SysUploadFileMapper sysUploadFileMapper;
 
     /**
      * 分页获取组织列表
@@ -72,13 +71,13 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
         List<SysOrganization> menuTree = new ArrayList<>();
         list().forEach(sysOrganization -> {
             //获取最外层父节点
-            if(sysOrganization.getParentId() == 0L){
+            if(sysOrganization.getParentId().equals("0")){
                 menuTree.add(sysOrganization);
             }
 
             //依次获取子节点
             list().forEach(sysOrganizationChild -> {
-                if(sysOrganization.getId() == sysOrganizationChild.getParentId()){
+                if(sysOrganization.getId().equals(sysOrganizationChild.getParentId())){
                     sysOrganization.getChildren().add(sysOrganizationChild);
                 }
             });
@@ -87,23 +86,58 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
     }
 
     /**
+     * 新增组织
+     * @param sysOrganization
+     * @return
+     */
+    @Override
+    public ResultBean saveOrganization(SysOrganization sysOrganization) {
+        //保存组织信息
+        String organizationId = UUID.randomUUID().toString().replaceAll("-","");
+        sysOrganization.setId(organizationId);
+        //未选择上级菜单，则默认为添加目录
+        if(StringUtils.isBlank(sysOrganization.getParentId())){
+            sysOrganization.setParentId("0");
+        }
+        sysOrganization.setCreatedTime(new Date());
+        save(sysOrganization);
+
+        return ResultBean.success(sysOrganization);
+    }
+
+    /**
      * 根据id获取组织
      * @param id
      * @return
      */
     @Override
-    public ResultBean getInfoById(Long id) {
+    public ResultBean getInfoById(String id) {
         SysOrganization sysOrganization = getById(id);
 
-        List<SysUploadFile> fileList = new ArrayList<>();
-        if(StringUtils.isNotBlank(sysOrganization.getSign())){
-            String[] signs = sysOrganization.getSign().split(",");
-            for (String FileId : signs) {
-                fileList.add(sysUploadFileService.getById(FileId));
-            }
-        }
+        //获取上传文件信息
+        List<SysUploadFile> fileList = sysUploadFileMapper.getFileByOrganizationId(sysOrganization.getId());
 
         return ResultBean.success(MapUtil.builder().put("organization",sysOrganization).put("fileList",fileList).build());
+    }
+
+    /**
+     * 更新组织
+     * @param sysOrganization
+     * @return
+     */
+    @Override
+    public ResultBean updateOrganization(SysOrganization sysOrganization) {
+        //更新操作
+        sysOrganization.setUpdatedTime(new Date());
+        updateById(sysOrganization);
+
+        //删除已保存的组织文件关系
+        if(StringUtils.isNotBlank(sysOrganization.getFileIds())){
+            List<String> fileIds = Arrays.asList(sysOrganization.getFileIds().split(","));
+            sysOrganizationMapper.deleteOrganizationFileByFileId(fileIds);
+        }
+
+        return ResultBean.success(sysOrganization);
     }
 
     /**
@@ -112,7 +146,7 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
      * @return
      */
     @Override
-    public ResultBean delete(Long id) {
+    public ResultBean delete(String id) {
         //判断该菜单是否存在子菜单，存在无法删除
         int count = count(new QueryWrapper<SysOrganization>().eq("parent_id", id));
         if (count > 0) {

@@ -22,4 +22,6 @@ public class OssConstant {
 
     public static final String UNIT_G = "G";
 
+    public static final String ORGANIZATION_TYPE = "organization";
+
 }

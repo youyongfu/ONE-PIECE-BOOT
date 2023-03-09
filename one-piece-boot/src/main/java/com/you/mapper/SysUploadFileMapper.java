@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.you.entity.SysUploadFile;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * 数据字典Mapper接口
  * @author yyf
@@ -12,5 +14,7 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface SysUploadFileMapper extends BaseMapper<SysUploadFile> {
+
+    List<SysUploadFile> getFileByOrganizationId(String organizationId);
 
 }

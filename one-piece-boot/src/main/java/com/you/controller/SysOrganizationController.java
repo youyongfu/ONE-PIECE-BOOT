@@ -12,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.Date;
 
 /**
  * 组织管理控制层
@@ -42,24 +41,6 @@ public class SysOrganizationController {
     }
 
     /**
-     * 新增组织
-     * @param sysOrganization
-     * @return
-     */
-    @ApiOperation("新增组织")
-    @PostMapping("/save")
-    @PreAuthorize("hasAuthority('sys:organization:save')")      //提交权限
-    public ResultBean save(@Validated @RequestBody SysOrganization sysOrganization) {
-        //未选择上级菜单，则默认为添加目录
-        if(sysOrganization.getParentId() == null){
-            sysOrganization.setParentId(0L);
-        }
-        sysOrganization.setCreatedTime(new Date());
-        sysOrganizationService.save(sysOrganization);
-        return ResultBean.success(sysOrganization);
-    }
-
-    /**
      * 获取组织树形数据
      * @return
      */
@@ -71,6 +52,18 @@ public class SysOrganizationController {
     }
 
     /**
+     * 新增组织
+     * @param sysOrganization
+     * @return
+     */
+    @ApiOperation("新增组织")
+    @PostMapping("/save")
+    @PreAuthorize("hasAuthority('sys:organization:save')")      //提交权限
+    public ResultBean save(@Validated @RequestBody SysOrganization sysOrganization) {
+        return sysOrganizationService.saveOrganization(sysOrganization);
+    }
+
+    /**
      * 根据id获取组织
      * @param id
      * @return
@@ -78,7 +71,7 @@ public class SysOrganizationController {
     @ApiOperation("根据id获取组织")
     @GetMapping("/info/{id}")
     @PreAuthorize("hasAuthority('sys:organization:list')")
-    public ResultBean info(@ApiParam("角色id") @PathVariable(name = "id") Long id) {
+    public ResultBean info(@ApiParam("角色id") @PathVariable(name = "id") String id) {
         return sysOrganizationService.getInfoById(id);
     }
 
@@ -91,11 +84,7 @@ public class SysOrganizationController {
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('sys:organization:update')")      //更新权限
     public ResultBean update(@Validated @RequestBody SysOrganization sysOrganization) {
-        //更新操作
-        sysOrganization.setUpdatedTime(new Date());
-        sysOrganizationService.updateById(sysOrganization);
-
-        return ResultBean.success(sysOrganization);
+        return sysOrganizationService.updateOrganization(sysOrganization);
     }
 
     /**
@@ -107,7 +96,7 @@ public class SysOrganizationController {
     @Transactional
     @PostMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('sys:organization:delete')")
-    public ResultBean delete(@ApiParam("组织id") @PathVariable("id") Long id) {
+    public ResultBean delete(@ApiParam("组织id") @PathVariable("id") String id) {
         return sysOrganizationService.delete(id);
     }
 }

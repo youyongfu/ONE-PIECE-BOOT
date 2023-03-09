@@ -1,8 +1,10 @@
 package com.you.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.you.common.ResultBean;
+import com.you.constant.OssConstant;
+import com.you.entity.SysOrganizationFile;
 import com.you.entity.SysUploadFile;
+import com.you.mapper.SysOrganizationMapper;
 import com.you.mapper.SysUploadFileMapper;
 import com.you.service.SysUploadFileService;
 import com.you.utils.OssUtils;
@@ -23,6 +25,8 @@ public class SysUploadFileServiceImpl extends ServiceImpl<SysUploadFileMapper, S
 
     @Resource
     private OssUtils ossUtils;
+    @Resource
+    private SysOrganizationMapper sysOrganizationMapper;
 
     /**
      * 上传文件
@@ -30,7 +34,7 @@ public class SysUploadFileServiceImpl extends ServiceImpl<SysUploadFileMapper, S
      * @return
      */
     @Override
-    public ResultBean uploadFile(MultipartFile file,String type) {
+    public SysUploadFile uploadFile(MultipartFile file,String type) {
 
         //上传文件
         String url = String.valueOf(ossUtils.upload(type,file));
@@ -43,6 +47,26 @@ public class SysUploadFileServiceImpl extends ServiceImpl<SysUploadFileMapper, S
         sysUploadFile.setUrl(url);
         save(sysUploadFile);
 
-        return ResultBean.success(sysUploadFile);
+        return sysUploadFile;
+    }
+
+    /**
+     * 上传文件并保存记录
+     */
+    @Override
+    public void uploadFileAndRecord(MultipartFile file, String type, String id) {
+
+        //上传文件
+        SysUploadFile sysUploadFile = uploadFile(file, type);
+
+        //保存文件记录
+        if(OssConstant.ORGANIZATION_TYPE.equals(type)){
+            //添加组织文件关系
+            SysOrganizationFile sysOrganizationFile = new SysOrganizationFile();
+            sysOrganizationFile.setUploadFileId(sysUploadFile.getId());
+            sysOrganizationFile.setOrganizationId(id);
+            sysOrganizationMapper.saveOrganizationFile(sysOrganizationFile);
+        }
+
     }
 }

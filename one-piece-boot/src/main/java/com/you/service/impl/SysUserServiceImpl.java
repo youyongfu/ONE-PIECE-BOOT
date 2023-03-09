@@ -74,7 +74,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         String url = "";
         if(StringUtils.isNotBlank(sysUser.getUploadFileId())){
             SysUploadFile sysUploadFile = uploadFileService.getById(sysUser.getUploadFileId());
-            url = sysUploadFile.getUrl();
+            if(sysUploadFile != null){
+                url = sysUploadFile.getUrl();
+            }
         }
 
         return ResultBean.success(MapUtil.builder().put("id",sysUser.getId()).put("username",sysUser.getUsername()).put("avatar",url).build());
@@ -128,8 +130,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public ResultBean uploadAvatar(MultipartFile file, String name,String type) {
 
         //上传图片
-        ResultBean resultBean = uploadFileService.uploadFile(file,type);
-        SysUploadFile sysUploadFile = (SysUploadFile) resultBean.getData();
+        SysUploadFile sysUploadFile = uploadFileService.uploadFile(file,type);
 
         //保存上传文件id
         SysUser sysUser = getByUsername(name);

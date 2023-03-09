@@ -6,7 +6,7 @@
     <resultMap id="BaseResultMap" type="com.you.entity.SysUploadFile">
         <id column="id" property="id" />
         <result column="name" property="name" />
-        <result column="url" property="statu" />
+        <result column="url" property="url" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -14,4 +14,14 @@
         id, name, url
     </sql>
 
+    <!-- 根据组织id获取上传文件信息-->
+    <select id="getFileByOrganizationId" parameterType="String" resultMap="BaseResultMap">
+        select
+            suf.*
+        from
+            sys_upload_file suf
+        left join sys_organization_file sof on suf.id = sof.upload_file_id
+        where
+            sof.organization_id = #{organizationId}
+    </select>
 </mapper>
