@@ -33,22 +33,22 @@ public class SysOrganization implements Serializable {
     private String foreignName;
 
     //组织性质
-    private String properties;
+    private String nature;
 
     //诞生时间
     private String birth;
 
-    //组织驻地
-    private String station;
+    //领导者
+    private String leader;
 
-    //最高权力
-    private String supremePower;
+    //总部
+    private String headquarters;
 
-    //组织标志
-    private String sign;
+    //初次登场
+    private String debut;
 
-    //组织历史
-    private String history;
+    //简介
+    private String synopsis;
 
     //创建时间
     private Date createdTime;
@@ -58,6 +58,30 @@ public class SysOrganization implements Serializable {
 
     //状态
     private Integer statu;
+
+    //成立背景
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private String background;
+
+    //组织经历
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private String experience;
+
+    //组织文化
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private String civilization;
+
+    //组织成员
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private String member;
+
+    //组织驻地
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private String station;
+
+    //组织关系
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private String relation;
 
     //子组织
     @TableField(exist = false)    //表示当前属性不是数据库的字段

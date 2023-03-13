@@ -23,5 +23,5 @@ public interface SysRoleMapper extends BaseMapper<SysRole> {
 
     void deleteUserRoleByRoleId(@Param("roleIds") List roleIds);
 
-    void batcSaveRoleMenu(List<SysRoleMenu> roleMenuList);
+    void batchSaveRoleMenu(List<SysRoleMenu> roleMenuList);
 }

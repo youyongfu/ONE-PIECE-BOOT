@@ -2,6 +2,7 @@ package com.you.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.you.entity.SysOrganization;
+import com.you.entity.SysOrganizationContent;
 import com.you.entity.SysOrganizationFile;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -19,4 +20,10 @@ public interface SysOrganizationMapper extends BaseMapper<SysOrganization> {
     void saveOrganizationFile(SysOrganizationFile sysOrganization);
 
     void deleteOrganizationFileByFileId(List<String> fileIds);
+
+    void batchSaveOrganizationContent(List<SysOrganizationContent> contentList);
+
+    List<SysOrganizationContent> getContentByOrganizationId(String organizationId);
+
+    void deleteContentByOrganizationId(String organizationId);
 }

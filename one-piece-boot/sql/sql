@@ -127,11 +127,19 @@ CREATE TABLE sys_upload_file (
 
 --------------------------------------组织信息表-----------------------------------------------------------------------------
 CREATE TABLE sys_organization (
-  id varchar(50) NOT NULL,
+  id varchar(32) NOT NULL,
   parent_id varchar(50) DEFAULT NULL COMMENT '上级组织',
   name varchar(50) DEFAULT NULL COMMENT '名称',
+  foreign_name varchar(100) DEFAULT NULL COMMENT '外文名',
+  nature varchar(50) DEFAULT NULL COMMENT '组织性质',
+  birth varchar(50) DEFAULT NULL COMMENT '诞生时间',
+  leader varchar(50) DEFAULT NULL COMMENT '组织领导',
+  headquarters varchar(50) DEFAULT NULL COMMENT '组织总部',
+  debut varchar(50) DEFAULT NULL COMMENT '初次登场',
+  synopsis varchar(1000) DEFAULT NULL COMMENT '简介',
   created_time datetime DEFAULT NULL COMMENT '创建时间',
   updated_time datetime DEFAULT NULL COMMENT '更新时间',
+  statu int(2) DEFAULT NULL COMMENT '状态',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -142,3 +150,12 @@ CREATE TABLE sys_organization_file (
   upload_file_id varchar(50) DEFAULT NULL COMMENT '上传文件id',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+
+--------------------------------------组织内容表-----------------------------------------------------------------------------
+CREATE TABLE sys_organization_content (
+  id varchar(50) NOT NULL,
+  organization_id varchar(32) DEFAULT NULL COMMENT '组织id',
+  content text COMMENT '内容',
+  type varchar(25) DEFAULT NULL COMMENT '类型',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

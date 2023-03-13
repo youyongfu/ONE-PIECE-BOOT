@@ -8,12 +8,12 @@
         <result column="parent_id" property="parentId" />
         <result column="name" property="name" />
         <result column="foreign_name" property="foreignName" />
-        <result column="properties" property="properties" />
+        <result column="nature" property="nature" />
         <result column="birth" property="birth" />
-        <result column="station" property="station" />
-        <result column="supreme_power" property="supremePower" />
-        <result column="sign" property="sign" />
-        <result column="history" property="history" />
+        <result column="leader" property="leader" />
+        <result column="headquarters" property="headquarters" />
+        <result column="debut" property="debut" />
+        <result column="synopsis" property="synopsis" />
         <result column="created_time" property="createdTime" />
         <result column="updated_time" property="updatedTime" />
         <result column="statu" property="statu" />
@@ -21,7 +21,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, parent_id, name, foreign_name, properties, birth, station, supreme_power, sign, history, created_time, updated_time, statu
+        id, parent_id, name, foreign_name, nature, birth, leader, headquarters, debut, synopsis, created_time, updated_time, statu
     </sql>
 
     <!-- 新增组织文件关系 -->
@@ -38,4 +38,20 @@
         </foreach>
     </delete>
 
+    <!-- 批量新增组织内容信息 -->
+    <insert id="batchSaveOrganizationContent" parameterType="java.util.List">
+        insert into sys_organization_content(id,organization_id, content,type)
+        <foreach collection="list" item="item" separator="union all">
+            (select #{item.id,jdbcType=VARCHAR},#{item.organizationId,jdbcType=VARCHAR}, #{item.content,jdbcType=VARCHAR}, #{item.type,jdbcType=VARCHAR} from dual)
+        </foreach>
+    </insert>
+
+    <!-- 根据组织id获取内容信息 -->
+    <select id="getContentByOrganizationId" parameterType="String" resultType="com.you.entity.SysOrganizationContent">
+        select content,type from sys_organization_content where organization_id = #{organizationId}
+    </select>
+
+    <delete id="deleteContentByOrganizationId" parameterType="String">
+        delete  from sys_organization_content where organization_id = #{organizationId}
+    </delete>
 </mapper>

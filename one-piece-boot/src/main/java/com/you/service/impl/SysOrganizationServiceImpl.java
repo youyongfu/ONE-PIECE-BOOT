@@ -1,5 +1,6 @@
 package com.you.service.impl;
 
+import cn.hutool.core.map.MapBuilder;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
@@ -8,7 +9,9 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.you.common.ResultBean;
+import com.you.constant.OrganizationConstant;
 import com.you.entity.SysOrganization;
+import com.you.entity.SysOrganizationContent;
 import com.you.entity.SysUploadFile;
 import com.you.mapper.SysOrganizationMapper;
 import com.you.mapper.SysUploadFileMapper;
@@ -102,6 +105,13 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
         sysOrganization.setCreatedTime(new Date());
         save(sysOrganization);
 
+        //保存组织内容信息
+        List<SysOrganizationContent> contentList = new ArrayList<>();
+        contentList.add(assemblyData(organizationId,sysOrganization.getBackground(), OrganizationConstant.BACKGROUND_TYPE));
+        contentList.add(assemblyData(organizationId,sysOrganization.getExperience(), OrganizationConstant.EXPERIENCE_TYPE));
+        contentList.add(assemblyData(organizationId,sysOrganization.getCivilization(), OrganizationConstant.CIVILIZATION_TYPE));
+        sysOrganizationMapper.batchSaveOrganizationContent(contentList);
+
         return ResultBean.success(sysOrganization);
     }
 
@@ -112,12 +122,24 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
      */
     @Override
     public ResultBean getInfoById(String id) {
+
+        MapBuilder<Object, Object> map = MapUtil.builder();
+
+        //获取组织信息
         SysOrganization sysOrganization = getById(id);
+        map.put("organization",sysOrganization);
 
         //获取上传文件信息
         List<SysUploadFile> fileList = sysUploadFileMapper.getFileByOrganizationId(sysOrganization.getId());
+        map.put("fileList",fileList);
 
-        return ResultBean.success(MapUtil.builder().put("organization",sysOrganization).put("fileList",fileList).build());
+        //获取组织内容信息
+        List<SysOrganizationContent> organizationContentList = sysOrganizationMapper.getContentByOrganizationId(id);
+        organizationContentList.forEach(conten ->{
+            map.put(conten.getType(),conten.getContent());
+        });
+
+        return ResultBean.success(map.build());
     }
 
     /**
@@ -128,8 +150,20 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
     @Override
     public ResultBean updateOrganization(SysOrganization sysOrganization) {
         //更新操作
+        String organizationId = sysOrganization.getId();
+        if(StringUtils.isBlank(sysOrganization.getParentId())){
+            sysOrganization.setParentId("0");
+        }
         sysOrganization.setUpdatedTime(new Date());
         updateById(sysOrganization);
+
+        //更新组织内容信息
+        sysOrganizationMapper.deleteContentByOrganizationId(organizationId);
+        List<SysOrganizationContent> contentList = new ArrayList<>();
+        contentList.add(assemblyData(organizationId,sysOrganization.getBackground(), OrganizationConstant.BACKGROUND_TYPE));
+        contentList.add(assemblyData(organizationId,sysOrganization.getExperience(), OrganizationConstant.EXPERIENCE_TYPE));
+        contentList.add(assemblyData(organizationId,sysOrganization.getCivilization(), OrganizationConstant.CIVILIZATION_TYPE));
+        sysOrganizationMapper.batchSaveOrganizationContent(contentList);
 
         //删除已保存的组织文件关系
         if(StringUtils.isNotBlank(sysOrganization.getFileIds())){
@@ -153,11 +187,29 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
             return ResultBean.fail("请先删除子组织");
         }
 
-        //删除菜单
+        //删除组织
         removeById(id);
+
+        //删除组织内容信息
+        sysOrganizationMapper.deleteContentByOrganizationId(id);
 
         return ResultBean.success();
     }
 
+    /**
+     * 组装组织内容数据
+     * @param organizationId
+     * @param content
+     * @param type
+     * @return
+     */
+    private SysOrganizationContent assemblyData(String organizationId,String content,String type){
+        SysOrganizationContent organizationContent = new SysOrganizationContent();
+        organizationContent.setId(UUID.randomUUID().toString().replaceAll("-",""));
+        organizationContent.setOrganizationId(organizationId);
+        organizationContent.setContent(content);
+        organizationContent.setType(type);
+        return organizationContent;
+    }
 
 }

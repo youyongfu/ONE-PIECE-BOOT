@@ -166,7 +166,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
         //保存现在的角色权限关系
         if(CollectionUtils.isNotEmpty(roleMenuList)){
-            sysRoleMapper.batcSaveRoleMenu(roleMenuList);
+            sysRoleMapper.batchSaveRoleMenu(roleMenuList);
         }
 
         // 清除所有与该角色相关的权限缓存
