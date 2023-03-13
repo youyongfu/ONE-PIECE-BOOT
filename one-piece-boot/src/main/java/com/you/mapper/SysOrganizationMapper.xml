@@ -38,20 +38,4 @@
         </foreach>
     </delete>
 
-    <!-- 批量新增组织内容信息 -->
-    <insert id="batchSaveOrganizationContent" parameterType="java.util.List">
-        insert into sys_organization_content(id,organization_id, content,type)
-        <foreach collection="list" item="item" separator="union all">
-            (select #{item.id,jdbcType=VARCHAR},#{item.organizationId,jdbcType=VARCHAR}, #{item.content,jdbcType=VARCHAR}, #{item.type,jdbcType=VARCHAR} from dual)
-        </foreach>
-    </insert>
-
-    <!-- 根据组织id获取内容信息 -->
-    <select id="getContentByOrganizationId" parameterType="String" resultType="com.you.entity.SysOrganizationContent">
-        select content,type from sys_organization_content where organization_id = #{organizationId}
-    </select>
-
-    <delete id="deleteContentByOrganizationId" parameterType="String">
-        delete  from sys_organization_content where organization_id = #{organizationId}
-    </delete>
 </mapper>

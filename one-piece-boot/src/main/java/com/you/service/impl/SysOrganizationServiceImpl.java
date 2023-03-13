@@ -15,6 +15,7 @@ import com.you.entity.SysOrganizationContent;
 import com.you.entity.SysUploadFile;
 import com.you.mapper.SysOrganizationMapper;
 import com.you.mapper.SysUploadFileMapper;
+import com.you.service.SysOrganizationContentService;
 import com.you.service.SysOrganizationService;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +36,9 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
 
     @Resource
     private SysUploadFileMapper sysUploadFileMapper;
+
+    @Resource
+    private SysOrganizationContentService sysOrganizationContentService;
 
     /**
      * 分页获取组织列表
@@ -110,7 +114,7 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
         contentList.add(assemblyData(organizationId,sysOrganization.getBackground(), OrganizationConstant.BACKGROUND_TYPE));
         contentList.add(assemblyData(organizationId,sysOrganization.getExperience(), OrganizationConstant.EXPERIENCE_TYPE));
         contentList.add(assemblyData(organizationId,sysOrganization.getCivilization(), OrganizationConstant.CIVILIZATION_TYPE));
-        sysOrganizationMapper.batchSaveOrganizationContent(contentList);
+        sysOrganizationContentService.saveBatch(contentList);
 
         return ResultBean.success(sysOrganization);
     }
@@ -134,7 +138,9 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
         map.put("fileList",fileList);
 
         //获取组织内容信息
-        List<SysOrganizationContent> organizationContentList = sysOrganizationMapper.getContentByOrganizationId(id);
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("organization_id",id);
+        List<SysOrganizationContent> organizationContentList = sysOrganizationContentService.list(queryWrapper);
         organizationContentList.forEach(conten ->{
             map.put(conten.getType(),conten.getContent());
         });
@@ -158,12 +164,20 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
         updateById(sysOrganization);
 
         //更新组织内容信息
-        sysOrganizationMapper.deleteContentByOrganizationId(organizationId);
-        List<SysOrganizationContent> contentList = new ArrayList<>();
-        contentList.add(assemblyData(organizationId,sysOrganization.getBackground(), OrganizationConstant.BACKGROUND_TYPE));
-        contentList.add(assemblyData(organizationId,sysOrganization.getExperience(), OrganizationConstant.EXPERIENCE_TYPE));
-        contentList.add(assemblyData(organizationId,sysOrganization.getCivilization(), OrganizationConstant.CIVILIZATION_TYPE));
-        sysOrganizationMapper.batchSaveOrganizationContent(contentList);
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("organization_id",organizationId);
+        List<SysOrganizationContent> organizationContentList = sysOrganizationContentService.list(queryWrapper);
+        organizationContentList.forEach(content ->{
+            if(OrganizationConstant.BACKGROUND_TYPE.equals(content.getType())){
+                content.setContent(sysOrganization.getBackground());
+            }else if(OrganizationConstant.EXPERIENCE_TYPE.equals(content.getType())){
+                content.setContent(sysOrganization.getExperience());
+            }else if(OrganizationConstant.CIVILIZATION_TYPE.equals(content.getType())){
+                content.setContent(sysOrganization.getCivilization());
+            }
+        });
+        sysOrganizationContentService.updateBatchById(organizationContentList);
+
 
         //删除已保存的组织文件关系
         if(StringUtils.isNotBlank(sysOrganization.getFileIds())){
@@ -191,7 +205,9 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
         removeById(id);
 
         //删除组织内容信息
-        sysOrganizationMapper.deleteContentByOrganizationId(id);
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("organization_id",id);
+        sysOrganizationContentService.remove(queryWrapper);
 
         return ResultBean.success();
     }

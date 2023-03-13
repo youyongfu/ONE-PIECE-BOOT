@@ -21,9 +21,4 @@ public interface SysOrganizationMapper extends BaseMapper<SysOrganization> {
 
     void deleteOrganizationFileByFileId(List<String> fileIds);
 
-    void batchSaveOrganizationContent(List<SysOrganizationContent> contentList);
-
-    List<SysOrganizationContent> getContentByOrganizationId(String organizationId);
-
-    void deleteContentByOrganizationId(String organizationId);
 }
