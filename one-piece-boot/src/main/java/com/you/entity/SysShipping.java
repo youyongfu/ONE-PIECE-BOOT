@@ -1,5 +1,6 @@
 package com.you.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -15,7 +16,9 @@ public class SysShipping extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-    //中文名
+    private String id;
+
+    //名称
     private String name;
 
     //外文名
@@ -24,31 +27,48 @@ public class SysShipping extends BaseEntity {
     //别名
     private String alias;
 
+    //型号
+    private String model;
+
     //建造日
-    private String birth;
+    private String bulidDate;
+
+    //全长
+    private String length;
 
     //总高
     private String height;
-
-    //全长
-    private String weight;
-
-    //型号
-    private String model;
 
     //设计者
     private String designer;
 
     //建造者
-    private String manufacturer;
+    private String producer;
 
-    //图片
-    private String picture;
+    //使用者
+    private String user;
+
+    //简介
+    private String synopsis;
+
+    //背景
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private String background;
+
+    //外观
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private String appearance;
 
     //功能
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
     private String function;
 
     //经历
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
     private String experience;
+
+    //文件id
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private String fileIds;
 
 }

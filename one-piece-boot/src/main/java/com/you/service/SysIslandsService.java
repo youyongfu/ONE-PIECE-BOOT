@@ -15,8 +15,14 @@ import java.util.List;
 public interface SysIslandsService extends IService<SysIslands> {
 
     ResultBean listPage(String keyword, Integer current, Integer size);
-
-    ResultBean getInfoById(Long id);
-
+    
     List<SysIslands> treeList();
+
+    ResultBean saveIslands(SysIslands sysIslands);
+
+    ResultBean getInfoById(String id);
+
+    ResultBean updateIslands(SysIslands sysIslands);
+
+    ResultBean deleteIslands(String id);
 }

@@ -1,9 +1,7 @@
 package com.you.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.you.entity.SysDevilnutFile;
-import com.you.entity.SysOrganizationFile;
-import com.you.entity.SysUploadFile;
+import com.you.entity.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -28,4 +26,22 @@ public interface SysUploadFileMapper extends BaseMapper<SysUploadFile> {
     List<SysUploadFile> getDevilnutFileRecord(String devilnutId);
 
     List<SysUploadFile> deleteDevilnutFileRecord(List<String> fileIds);
+
+    void saveIslandsFileRecord(SysIslandsFile sysIslandsFile);
+
+    List<SysUploadFile> getIslandsFileRecord(String islandsId);
+
+    List<SysUploadFile> deleteIslandsFileRecord(List<String> fileIds);
+
+    void saveShippingFileRecord(SysShippingFile sysShippingFile);
+
+    List<SysUploadFile> getShippingFileRecord(String shippingId);
+
+    List<SysUploadFile> deleteShippingFileRecord(List<String> fileIds);
+
+    void saveWeaponFileRecord(SysWeaponFile sysWeaponFile);
+
+    List<SysUploadFile> getWeaponFileRecord(String weaponId);
+
+    List<SysUploadFile> deleteWeaponFileRecord(List<String> fileIds);
 }

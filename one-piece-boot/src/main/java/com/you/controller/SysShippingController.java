@@ -12,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.Date;
 
 /**
  * 船只管理控制层
@@ -42,59 +41,52 @@ public class SysShippingController {
     }
 
     /**
-     * 新增船只
+     * 新增
      * @param sysShipping
      * @return
      */
-    @ApiOperation("新增船只")
+    @ApiOperation("新增")
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('sys:shipping:save')")      //提交权限
     public ResultBean save(@Validated @RequestBody SysShipping sysShipping) {
-        sysShipping.setCreatedTime(new Date());
-        sysShippingService.save(sysShipping);
-        return ResultBean.success(sysShipping);
+        return sysShippingService.saveShipping(sysShipping);
     }
 
     /**
-     * 根据id获取船只
+     * 根据id获取详情
      * @param id
      * @return
      */
-    @ApiOperation("根据id获取船只")
+    @ApiOperation("根据id获取详情")
     @GetMapping("/info/{id}")
     @PreAuthorize("hasAuthority('sys:shipping:list')")
-    public ResultBean info(@ApiParam("果实id") @PathVariable(name = "id") Long id) {
+    public ResultBean info(@PathVariable(name = "id") String id) {
         return sysShippingService.getInfoById(id);
     }
 
     /**
-     * 更新船只
+     * 更新
      * @param sysShipping
      * @return
      */
-    @ApiOperation("更新船只")
+    @ApiOperation("更新")
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('sys:shipping:update')")      //更新权限
-    public ResultBean update(@Validated @RequestBody SysShipping sysShipping) {
-        //更新操作
-        sysShipping.setUpdatedTime(new Date());
-        sysShippingService.updateById(sysShipping);
-
-        return ResultBean.success(sysShipping);
+    public ResultBean update(@Validated @RequestBody SysShipping sysShipping){
+        return sysShippingService.updateShipping(sysShipping);
     }
 
     /**
-     * 根据id删除船只
+     * 删除
      * @param id
      * @return
      */
-    @ApiOperation("根据id删除船只")
+    @ApiOperation("删除")
     @Transactional
     @PostMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('sys:shipping:delete')")
-    public ResultBean delete(@ApiParam("武器id") @PathVariable("id") Long id) {
-        sysShippingService.removeById(id);
-        return ResultBean.success();
+    public ResultBean delete(@PathVariable("id") String id) {
+        return sysShippingService.deleteShipping(id);
     }
 }
 

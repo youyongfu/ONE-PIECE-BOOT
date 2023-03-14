@@ -26,4 +26,10 @@ public class OssConstant {
 
     public static final String DEVILNUT_TYPE = "devilnut";
 
+    public static final String ISLANDS_TYPE = "islands";
+
+    public static final String SHIPPING_TYPE = "shipping";
+
+    public static final String WEAPON_TYPE = "weapon";
+
 }

@@ -2,9 +2,7 @@ package com.you.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.you.constant.OssConstant;
-import com.you.entity.SysDevilnutFile;
-import com.you.entity.SysOrganizationFile;
-import com.you.entity.SysUploadFile;
+import com.you.entity.*;
 import com.you.mapper.SysUploadFileMapper;
 import com.you.service.SysUploadFileService;
 import com.you.utils.OssUtils;
@@ -74,6 +72,24 @@ public class SysUploadFileServiceImpl extends ServiceImpl<SysUploadFileMapper, S
             sysDevilnutFile.setUploadFileId(sysUploadFile.getId());
             sysDevilnutFile.setDevilnutId(id);
             sysUploadFileMapper.saveDevilnutFileRecord(sysDevilnutFile);
+        }else if(OssConstant.ISLANDS_TYPE.equals(type)){
+            //添加岛屿文件关系
+            SysIslandsFile sysIslandsFile = new SysIslandsFile();
+            sysIslandsFile.setUploadFileId(sysUploadFile.getId());
+            sysIslandsFile.setIslandsId(id);
+            sysUploadFileMapper.saveIslandsFileRecord(sysIslandsFile);
+        }else if(OssConstant.SHIPPING_TYPE.equals(type)){
+            //添加船只文件关系
+            SysShippingFile sysShippingFile = new SysShippingFile();
+            sysShippingFile.setUploadFileId(sysUploadFile.getId());
+            sysShippingFile.setShippingId(id);
+            sysUploadFileMapper.saveShippingFileRecord(sysShippingFile);
+        }else if(OssConstant.WEAPON_TYPE.equals(type)){
+            //添加武器文件关系
+            SysWeaponFile sysWeaponFile = new SysWeaponFile();
+            sysWeaponFile.setUploadFileId(sysUploadFile.getId());
+            sysWeaponFile.setWeaponId(id);
+            sysUploadFileMapper.saveWeaponFileRecord(sysWeaponFile);
         }
 
     }
@@ -92,6 +108,15 @@ public class SysUploadFileServiceImpl extends ServiceImpl<SysUploadFileMapper, S
         }else if(OssConstant.DEVILNUT_TYPE.equals(type)){
             //果实文件保存记录
             fileList = sysUploadFileMapper.getDevilnutFileRecord(id);
+        }else if(OssConstant.ISLANDS_TYPE.equals(type)){
+            //岛屿文件保存记录
+            fileList = sysUploadFileMapper.getIslandsFileRecord(id);
+        }else if(OssConstant.SHIPPING_TYPE.equals(type)){
+            //船只文件保存记录
+            fileList = sysUploadFileMapper.getShippingFileRecord(id);
+        }else if(OssConstant.WEAPON_TYPE.equals(type)){
+            //武器文件保存记录
+            fileList = sysUploadFileMapper.getWeaponFileRecord(id);
         }
         return fileList;
     }
@@ -110,6 +135,15 @@ public class SysUploadFileServiceImpl extends ServiceImpl<SysUploadFileMapper, S
         }else if(OssConstant.DEVILNUT_TYPE.equals(type)){
             //删除果实文件保存记录
             fileList = sysUploadFileMapper.deleteDevilnutFileRecord(fileIds);
+        }else if(OssConstant.ISLANDS_TYPE.equals(type)){
+            //删除岛屿文件保存记录
+            fileList = sysUploadFileMapper.deleteIslandsFileRecord(fileIds);
+        }else if(OssConstant.ISLANDS_TYPE.equals(type)){
+            //删除船只文件保存记录
+            fileList = sysUploadFileMapper.deleteShippingFileRecord(fileIds);
+        }else if(OssConstant.WEAPON_TYPE.equals(type)){
+            //删除武器文件保存记录
+            fileList = sysUploadFileMapper.deleteWeaponFileRecord(fileIds);
         }
     }
 }

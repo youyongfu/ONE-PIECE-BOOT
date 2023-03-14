@@ -9,12 +9,10 @@
         <result column="name" property="name" />
         <result column="foreign_name" property="foreignName" />
         <result column="alias" property="alias" />
-        <result column="seat" property="seat" />
-        <result column="history" property="history" />
-        <result column="source" property="source" />
-        <result column="picture" property="picture" />
-        <result column="geography" property="geography" />
-        <result column="civilization" property="civilization" />
+        <result column="position" property="position" />
+        <result column="characteristic" property="characteristic" />
+        <result column="climate" property="climate" />
+        <result column="synopsis" property="synopsis" />
         <result column="created_time" property="createdTime" />
         <result column="updated_time" property="updatedTime" />
         <result column="statu" property="statu" />
@@ -22,7 +20,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id,parent_id, name, foreign_name, alias, seat, history, source,picture,geography,civilization, created_time, updated_time, statu
+        id,parent_id, name, foreign_name, alias, position, characteristic, climate,synopsis, created_time, updated_time, statu
     </sql>
 
 </mapper>

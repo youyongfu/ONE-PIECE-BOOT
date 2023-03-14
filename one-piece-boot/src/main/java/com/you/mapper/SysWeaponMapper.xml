@@ -6,11 +6,12 @@
     <resultMap id="BaseResultMap" type="com.you.entity.SysWeapon">
         <id column="id" property="id" />
         <result column="name" property="name" />
+        <result column="foreign_name" property="foreignName" />
         <result column="level" property="level" />
-        <result column="cost" property="cost" />
-        <result column="point" property="point" />
-        <result column="picture" property="picture" />
-        <result column="introduce" property="introduce" />
+        <result column="money" property="money" />
+        <result column="foundry" property="foundry" />
+        <result column="user" property="user" />
+        <result column="synopsis" property="synopsis" />
         <result column="created_time" property="createdTime" />
         <result column="updated_time" property="updatedTime" />
         <result column="statu" property="statu" />
@@ -18,7 +19,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, level, cost, point, picture, introduce, created_time, updated_time, statu
+        id, name,foreign_name, level, money, foundry, user, synopsis, created_time, updated_time, statu
     </sql>
 
 </mapper>

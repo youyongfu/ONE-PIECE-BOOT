@@ -1,5 +1,6 @@
 package com.you.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -15,22 +16,39 @@ public class SysWeapon extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-    //中文名
+    private String id;
+
+    //名称
     private String name;
+
+    //外文名
+    private String foreignName;
 
     //级别
     private String level;
 
     //价值
-    private String cost;
+    private String money;
 
-    //特点
-    private String point;
+    //铸造者
+    private String foundry;
 
-    //图片
-    private String picture;
+    //使用者
+    private String user;
 
-    //介绍
-    private String introduce;
+    //简介
+    private String synopsis;
+
+    //来历
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private String origin;
+
+    //造型
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private String modelling;
+
+    //文件id
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private String fileIds;
 
 }

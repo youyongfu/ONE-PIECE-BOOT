@@ -9,7 +9,7 @@ spring:
         driver-class-name: com.mysql.jdbc.Driver
         url: jdbc:mysql://127.0.0.1:3307/one-piece?characterEncoding=UTF-8
         username: root
-        password: root
+        password: 123456
 
         #配置初始化大小、最小、最大  注意 如果这里这三个配置大于数据库最大限制,会抛出异常
         initial-size: 5
@@ -64,8 +64,8 @@ jwt:
 # SSH通道连接服务器配置信息
 ssh:
   user: root          # 服务器登录名
-  password: Yyfyp@@123    # 登陆密码
-  host: 58.67.221.164     # 服务器公网IP
+  password: Yyfyp123++    # 登陆密码
+  host: 58.67.222.15     # 服务器公网IP
   port: 22              # 跳板机ssh开放的接口
   remote_host: localhost      # 要访问的mysql所在的host
   mysql_remote_port: 3306     # 服务器上数据库端口号

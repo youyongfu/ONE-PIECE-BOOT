@@ -49,10 +49,10 @@ CREATE TABLE sys_menu (
 ) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 
 INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (1, 0, '权限管理', '', 'sys:manage', '', 0, 'el-icon-s-operation', 1, NULL, '2023-03-07 19:36:53', 1);
-INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (2, 1, '用户管理', '/sys/users', 'sys:user:list', 'authority/User', 1, 'el-icon-s-custom', 1, NULL, NULL, NULL);
-INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (3, 1, '角色管理', '/sys/roles', 'sys:role:list', 'authority/Role', 1, 'el-icon-rank', 2, NULL, NULL, NULL);
-INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (4, 1, '菜单管理', '/sys/menus', 'sys:menu:list', 'authority/Menu', 1, 'el-icon-menu', 3, NULL, NULL, NULL);
-INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (5, 0, '系统设置', '', 'sys:tools', NULL, 0, 'el-icon-s-tools', 2, NULL, '2023-03-07 19:37:13', 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (2, 1, '用户管理', '/sys/user', 'sys:user:list', 'authority/User', 1, 'el-icon-s-custom', 1, NULL, '2023-03-08 03:36:06', 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (3, 1, '角色管理', '/sys/role', 'sys:role:list', 'authority/Role', 1, 'el-icon-rank', 2, NULL, '2023-03-08 03:36:34', 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (4, 1, '菜单管理', '/sys/menu', 'sys:menu:list', 'authority/Menu', 1, 'el-icon-menu', 3, NULL, '2023-03-08 03:36:58', 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (5, 0, '系统设置', '', 'sys:tools', NULL, 0, 'el-icon-s-tools', 3, NULL, '2023-03-08 03:33:53', 1);
 INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (6, 5, '数字字典', '/sys/dicts', 'sys:dict:list', 'set/Dict', 1, 'el-icon-s-order', 1, NULL, '2023-03-08 01:52:16', 1);
 INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (7, 3, '添加角色', '', 'sys:role:save', '', 2, '', 1, NULL, NULL, NULL);
 INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (8, 2, '添加用户', NULL, 'sys:user:save', NULL, 2, NULL, 1, NULL, NULL, NULL);
@@ -70,6 +70,27 @@ INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, or
 INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (20, 6, '修改字典', NULL, 'sys:dict:update', NULL, 2, NULL, 2, '2023-03-07 19:43:49', '2023-03-07 19:44:28', 1);
 INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (21, 6, '删除字典', NULL, 'sys:dict:delete', NULL, 2, NULL, 3, '2023-03-07 19:44:00', '2023-03-07 19:44:36', 1);
 INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (22, 2, '上传文件', NULL, 'sys:user:upload', NULL, 2, NULL, 5, '2023-03-08 00:11:58', NULL, 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (25, 0, '数据管理', NULL, 'sys:data', NULL, 0, 'el-icon-s-operation', 2, '2023-03-08 03:33:44', '2023-03-08 03:34:19', 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (26, 25, '组织管理', '/sys/organization', 'sys:organization:list', 'data/Organization', 1, 'el-icon-menu', 1, '2023-03-08 03:34:43', '2023-03-08 03:37:53', 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (27, 26, '添加组织', NULL, 'sys:organization:save', NULL, 2, NULL, 1, '2023-03-08 03:38:14', NULL, 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (28, 26, '修改组织', NULL, 'sys:organization:update', NULL, 2, NULL, 2, '2023-03-08 03:38:32', NULL, 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (29, 26, '删除组织', NULL, 'sys:organization:delete', NULL, 2, NULL, 3, '2023-03-08 03:38:51', NULL, 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (30, 25, '果实图鉴', '/sys/devilnut', 'sys:devilnut:list', 'data/Devilnut', 1, 'el-icon-menu', 2, '2023-03-13 20:04:37', '2023-03-13 20:05:17', 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (31, 30, '添加果实', NULL, 'sys:devilnut:save', NULL, 2, NULL, 1, '2023-03-13 20:06:03', NULL, 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (32, 30, '修改果实', NULL, 'sys:devilnut:update', NULL, 2, NULL, 2, '2023-03-13 20:06:25', NULL, 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (33, 30, '删除果实', NULL, 'sys:devilnut:delete', NULL, 2, NULL, 3, '2023-03-13 20:06:44', NULL, 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (34, 25, '岛屿管理', '/sys/islands', 'sys:islands:list', 'data/Islands', 1, 'el-icon-menu', 3, '2023-03-14 02:46:35', '2023-03-14 02:48:17', 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (35, 25, '船只管理', '/sys/shipping', 'sys:shipping:list', 'data/Shipping', 1, 'el-icon-menu', 4, '2023-03-14 02:47:23', '2023-03-14 02:48:28', 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (36, 25, '武器大全', '/sys/weapon', 'sys:weapon:list', 'data/Weapon', 1, 'el-icon-menu', 5, '2023-03-14 02:48:05', '2023-03-14 02:48:39', 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (37, 34, '添加岛屿', NULL, 'sys:islands:save', NULL, 2, NULL, 1, '2023-03-14 02:49:13', NULL, 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (38, 34, '修改岛屿', NULL, 'sys:islands:update', NULL, 2, NULL, 2, '2023-03-14 02:49:33', NULL, 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (39, 34, '删除岛屿', NULL, 'sys:islands:delete', NULL, 2, NULL, 3, '2023-03-14 02:51:03', NULL, 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (40, 35, '添加船只', NULL, 'sys:shipping:save', NULL, 2, NULL, 1, '2023-03-14 02:51:35', NULL, 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (41, 35, '修改船只', NULL, 'sys:shipping:update', NULL, 2, NULL, 2, '2023-03-14 02:51:55', NULL, 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (42, 35, '删除船只', NULL, 'sys:shipping:delete', NULL, 2, NULL, 3, '2023-03-14 02:52:14', NULL, 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (43, 36, '添加武器', NULL, 'sys:weapon:save', NULL, 2, NULL, 1, '2023-03-14 02:52:44', NULL, 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (44, 36, '修改武器', NULL, 'sys:weapon:update', NULL, 2, NULL, 2, '2023-03-14 02:53:03', NULL, 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (45, 36, '删除武器', NULL, 'sys:weapon:delete', NULL, 2, NULL, 3, '2023-03-14 02:53:20', NULL, 1);
 
 --------------------------------------用户角色关系表-----------------------------------------------------------------------------
 CREATE TABLE sys_user_role (
@@ -116,6 +137,10 @@ INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_tim
 INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (15, 0, '数据字典状态', 'DICT_STATU', NULL, '2023-03-08 02:12:35', '2023-03-08 02:15:33', 1);
 INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (16, 15, '正常', NULL, '1', '2023-03-08 02:13:02', NULL, 1);
 INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (17, 15, '禁用', NULL, '0', '2023-03-08 02:13:13', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (18, 0, '果实分类', 'DEVILNUT_CATEGORY', NULL, '2023-03-13 22:11:30', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (19, 18, '超人系', NULL, '1', '2023-03-13 22:11:52', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (20, 18, '自然系', NULL, '2', '2023-03-13 22:12:12', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (21, 18, '动物系', NULL, '3', '2023-03-13 22:12:31', NULL, 1);
 
 --------------------------------------文件上传信息表-----------------------------------------------------------------------------
 CREATE TABLE sys_upload_file (
@@ -188,6 +213,110 @@ CREATE TABLE sys_devilnut_file (
 CREATE TABLE sys_devilnut_content (
   id varchar(50) NOT NULL,
   devilnut_id varchar(32) DEFAULT NULL COMMENT '果实id',
+  content text COMMENT '内容',
+  type varchar(25) DEFAULT NULL COMMENT '类型',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--------------------------------------岛屿信息表-----------------------------------------------------------------------------
+CREATE TABLE sys_islands (
+  id varchar(32) NOT NULL,
+  parent_id varchar(32) DEFAULT NULL COMMENT '父区域ID，一级菜单为0',
+  name varchar(50) DEFAULT NULL COMMENT '名称',
+  foreign_name varchar(100) DEFAULT NULL COMMENT '外文名',
+  alias varchar(100) DEFAULT NULL COMMENT '别名',
+  position varchar(100) DEFAULT NULL COMMENT '地理位置',
+  characteristic varchar(100) DEFAULT NULL COMMENT '特征',
+  climate varchar(100) DEFAULT NULL COMMENT '气候条件',
+  synopsis varchar(1000) DEFAULT NULL COMMENT '简介',
+  created_time datetime DEFAULT NULL COMMENT '创建时间',
+  updated_time datetime DEFAULT NULL COMMENT '更新时间',
+  statu int(2) DEFAULT NULL COMMENT '状态',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--------------------------------------岛屿上传文件关系表-----------------------------------------------------------------------------
+CREATE TABLE sys_islands_file (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  islands_id varchar(32) DEFAULT NULL COMMENT '果实id',
+  upload_file_id varchar(32) DEFAULT NULL COMMENT '上传文件id',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
+
+--------------------------------------岛屿内容表-----------------------------------------------------------------------------
+CREATE TABLE sys_islands_content (
+  id varchar(50) NOT NULL,
+  islands_id varchar(32) DEFAULT NULL COMMENT '果实id',
+  content text COMMENT '内容',
+  type varchar(25) DEFAULT NULL COMMENT '类型',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--------------------------------------船只信息表-----------------------------------------------------------------------------
+CREATE TABLE sys_shipping (
+  id varchar(32) NOT NULL,
+  name varchar(50) DEFAULT NULL COMMENT '名称',
+  foreign_name varchar(100) DEFAULT NULL COMMENT '外文名',
+  alias varchar(100) DEFAULT NULL COMMENT '别名',
+  bulid_date varchar(100) DEFAULT NULL COMMENT '建造日',
+  length varchar(100) DEFAULT NULL COMMENT '全长',
+  height varchar(100) DEFAULT NULL COMMENT '总高',
+  designer varchar(100) DEFAULT NULL COMMENT '设计者',
+  producer varchar(100) DEFAULT NULL COMMENT '制造者',
+  user varchar(100) DEFAULT NULL COMMENT '食用者',
+  synopsis varchar(1000) DEFAULT NULL COMMENT '简介',
+  created_time datetime DEFAULT NULL COMMENT '创建时间',
+  updated_time datetime DEFAULT NULL COMMENT '更新时间',
+  statu int(2) DEFAULT NULL COMMENT '状态',
+  model varchar(100) DEFAULT NULL COMMENT '型号',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--------------------------------------船只上传文件关系表-----------------------------------------------------------------------------
+CREATE TABLE sys_shipping_file (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  shipping_id varchar(32) DEFAULT NULL COMMENT '果实id',
+  upload_file_id varchar(32) DEFAULT NULL COMMENT '上传文件id',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
+
+--------------------------------------船只内容表-----------------------------------------------------------------------------
+CREATE TABLE sys_shipping_content (
+  id varchar(50) NOT NULL,
+  shipping_id varchar(32) DEFAULT NULL COMMENT '果实id',
+  content text COMMENT '内容',
+  type varchar(25) DEFAULT NULL COMMENT '类型',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--------------------------------------武器信息表-----------------------------------------------------------------------------
+CREATE TABLE sys_weapon (
+  id varchar(32) NOT NULL,
+  name varchar(50) DEFAULT NULL COMMENT '名称',
+  foreign_name varchar(100) DEFAULT NULL COMMENT '外文名',
+  level varchar(100) DEFAULT NULL COMMENT '级别',
+  money varchar(100) DEFAULT NULL COMMENT '价值',
+  foundry varchar(100) DEFAULT NULL COMMENT '铸造者',
+  user varchar(100) DEFAULT NULL COMMENT '使用者',
+  synopsis varchar(1000) DEFAULT NULL COMMENT '简介',
+  created_time datetime DEFAULT NULL COMMENT '创建时间',
+  updated_time datetime DEFAULT NULL COMMENT '更新时间',
+  statu int(2) DEFAULT NULL COMMENT '状态',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--------------------------------------武器上传文件关系表-----------------------------------------------------------------------------
+CREATE TABLE sys_weapon_file (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  weapon_id varchar(32) DEFAULT NULL COMMENT '果实id',
+  upload_file_id varchar(32) DEFAULT NULL COMMENT '上传文件id',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
+
+--------------------------------------武器内容表-----------------------------------------------------------------------------
+CREATE TABLE sys_weapon_content (
+  id varchar(50) NOT NULL,
+  weapon_id varchar(32) DEFAULT NULL COMMENT '果实id',
   content text COMMENT '内容',
   type varchar(25) DEFAULT NULL COMMENT '类型',
   PRIMARY KEY (id)

@@ -12,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.Date;
 
 /**
  * 岛屿管理控制层
@@ -42,66 +41,6 @@ public class SysIslandsController {
     }
 
     /**
-     * 新增岛屿
-     * @param sysIslands
-     * @return
-     */
-    @ApiOperation("新增岛屿")
-    @PostMapping("/save")
-    @PreAuthorize("hasAuthority('sys:islands:save')")      //提交权限
-    public ResultBean save(@Validated @RequestBody SysIslands sysIslands) {
-        //未选择所属区域，则默认为一级区域
-        if(sysIslands.getParentId() == null){
-            sysIslands.setParentId(0L);
-        }
-        sysIslands.setCreatedTime(new Date());
-        sysIslandsService.save(sysIslands);
-        return ResultBean.success(sysIslands);
-    }
-
-    /**
-     * 根据id获取武器
-     * @param id
-     * @return
-     */
-    @ApiOperation("根据id获取武器")
-    @GetMapping("/info/{id}")
-    @PreAuthorize("hasAuthority('sys:islands:list')")
-    public ResultBean info(@ApiParam("岛屿id") @PathVariable(name = "id") Long id) {
-        return sysIslandsService.getInfoById(id);
-    }
-
-    /**
-     * 更新岛屿
-     * @param sysIslands
-     * @return
-     */
-    @ApiOperation("更新岛屿")
-    @PostMapping("/update")
-    @PreAuthorize("hasAuthority('sys:islands:update')")      //更新权限
-    public ResultBean update(@Validated @RequestBody SysIslands sysIslands) {
-        //更新操作
-        sysIslands.setUpdatedTime(new Date());
-        sysIslandsService.updateById(sysIslands);
-
-        return ResultBean.success(sysIslands);
-    }
-
-    /**
-     * 根据id删除岛屿
-     * @param id
-     * @return
-     */
-    @ApiOperation("根据id删除岛屿")
-    @Transactional
-    @PostMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('sys:islands:delete')")
-    public ResultBean delete(@ApiParam("岛屿id") @PathVariable("id") Long id) {
-        sysIslandsService.removeById(id);
-        return ResultBean.success();
-    }
-
-    /**
      * 获取树形数据
      * @return
      */
@@ -111,5 +50,56 @@ public class SysIslandsController {
     public ResultBean tree(){
         return ResultBean.success(sysIslandsService.treeList());
     }
+
+    /**
+     * 新增岛屿
+     * @param sysIslands
+     * @return
+     */
+    @ApiOperation("新增")
+    @PostMapping("/save")
+    @PreAuthorize("hasAuthority('sys:islands:save')")      //提交权限
+    public ResultBean save(@Validated @RequestBody SysIslands sysIslands) {
+        return sysIslandsService.saveIslands(sysIslands);
+    }
+
+    /**
+     * 根据id获取详情
+     * @param id
+     * @return
+     */
+    @ApiOperation("根据id获取详情")
+    @GetMapping("/info/{id}")
+    @PreAuthorize("hasAuthority('sys:islands:list')")
+    public ResultBean info(@PathVariable(name = "id") String id) {
+        return sysIslandsService.getInfoById(id);
+    }
+
+    /**
+     * 更新
+     * @param sysIslands
+     * @return
+     */
+    @ApiOperation("更新")
+    @PostMapping("/update")
+    @PreAuthorize("hasAuthority('sys:islands:update')")      //更新权限
+    public ResultBean update(@Validated @RequestBody SysIslands sysIslands) {
+        return sysIslandsService.updateIslands(sysIslands);
+    }
+
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
+    @ApiOperation("删除")
+    @Transactional
+    @PostMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('sys:islands:delete')")
+    public ResultBean delete(@PathVariable("id") String id) {
+        return sysIslandsService.deleteIslands(id);
+    }
+
+
 }
 

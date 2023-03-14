@@ -13,7 +13,12 @@ import com.you.entity.SysShipping;
 public interface SysShippingService extends IService<SysShipping> {
 
     ResultBean listPage(String keyword, Integer current, Integer size);
+    
+    ResultBean saveShipping(SysShipping sysShipping);
 
-    ResultBean getInfoById(Long id);
+    ResultBean getInfoById(String id);
 
+    ResultBean updateShipping(SysShipping sysShipping);
+
+    ResultBean deleteShipping(String id);
 }

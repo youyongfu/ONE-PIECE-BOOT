@@ -12,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.Date;
 
 /**
  * 武器大全控制层
@@ -42,28 +41,26 @@ public class SysWeaponController {
     }
 
     /**
-     * 新增武器
+     * 新增
      * @param sysWeapon
      * @return
      */
-    @ApiOperation("新增武器")
+    @ApiOperation("新增")
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('sys:weapon:save')")      //提交权限
     public ResultBean save(@Validated @RequestBody SysWeapon sysWeapon) {
-        sysWeapon.setCreatedTime(new Date());
-        sysWeaponService.save(sysWeapon);
-        return ResultBean.success(sysWeapon);
+        return sysWeaponService.saveWeapon(sysWeapon);
     }
 
     /**
-     * 根据id获取武器
+     * 根据id获取详情
      * @param id
      * @return
      */
-    @ApiOperation("根据id获取武器")
+    @ApiOperation("根据id获取详情")
     @GetMapping("/info/{id}")
     @PreAuthorize("hasAuthority('sys:weapon:list')")
-    public ResultBean info(@ApiParam("果实id") @PathVariable(name = "id") Long id) {
+    public ResultBean info(@PathVariable(name = "id") String id) {
         return sysWeaponService.getInfoById(id);
     }
 
@@ -76,25 +73,20 @@ public class SysWeaponController {
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('sys:weapon:update')")      //更新权限
     public ResultBean update(@Validated @RequestBody SysWeapon sysWeapon) {
-        //更新操作
-        sysWeapon.setUpdatedTime(new Date());
-        sysWeaponService.updateById(sysWeapon);
-
-        return ResultBean.success(sysWeapon);
+        return sysWeaponService.updateWeapon(sysWeapon);
     }
 
     /**
-     * 根据id删除武器
+     * 删除
      * @param id
      * @return
      */
-    @ApiOperation("根据id删除武器")
+    @ApiOperation("删除")
     @Transactional
     @PostMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('sys:weapon:delete')")
-    public ResultBean delete(@ApiParam("武器id") @PathVariable("id") Long id) {
-        sysWeaponService.removeById(id);
-        return ResultBean.success();
+    public ResultBean delete(@PathVariable("id") String id) {
+        return sysWeaponService.deleteWeapon(id);
     }
 }
 

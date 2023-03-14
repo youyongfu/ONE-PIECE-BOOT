@@ -64,4 +64,78 @@
         </foreach>
     </delete>
 
+    <!-- 新增岛屿文件关系 -->
+    <insert id="saveIslandsFileRecord" parameterType="com.you.entity.SysIslandsFile">
+        insert into sys_islands_file(islands_id, upload_file_id)
+        values (#{islandsId,jdbcType=VARCHAR}, #{uploadFileId,jdbcType=VARCHAR})
+    </insert>
+
+    <!-- 根据岛屿id获取上传文件信息-->
+    <select id="getIslandsFileRecord" parameterType="String" resultMap="BaseResultMap">
+        select
+            suf.*
+        from
+            sys_upload_file suf
+        left join sys_islands_file sif on suf.id = sif.upload_file_id
+        where
+            sif.islands_id = #{islandsId}
+    </select>
+
+    <!-- 根据上传文件id删除岛屿文件关系 -->
+    <delete id="deleteIslandsFileRecord">
+        delete from sys_islands_file where upload_file_id in
+        <foreach collection="fileIds" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!-- 新增船只文件关系 -->
+    <insert id="saveShippingFileRecord" parameterType="com.you.entity.SysShippingFile">
+        insert into sys_shipping_file(shipping_id, upload_file_id)
+        values (#{shippingId,jdbcType=VARCHAR}, #{uploadFileId,jdbcType=VARCHAR})
+    </insert>
+
+    <!-- 根据船只id获取上传文件信息-->
+    <select id="getShippingFileRecord" parameterType="String" resultMap="BaseResultMap">
+        select
+            suf.*
+        from
+            sys_upload_file suf
+        left join sys_shipping_file ssf on suf.id = ssf.upload_file_id
+        where
+            ssf.shipping_id = #{shippingId}
+    </select>
+
+    <!-- 根据上传文件id删除船只文件关系 -->
+    <delete id="deleteShippingFileRecord">
+        delete from sys_shipping_file where upload_file_id in
+        <foreach collection="fileIds" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!-- 新增武器文件关系 -->
+    <insert id="saveWeaponFileRecord" parameterType="com.you.entity.SysWeaponFile">
+        insert into sys_weapon_file(weapon_id, upload_file_id)
+        values (#{weaponId,jdbcType=VARCHAR}, #{uploadFileId,jdbcType=VARCHAR})
+    </insert>
+
+    <!-- 根据武器id获取上传文件信息-->
+    <select id="getWeaponFileRecord" parameterType="String" resultMap="BaseResultMap">
+        select
+            suf.*
+        from
+            sys_upload_file suf
+        left join sys_weapon_file ssf on suf.id = ssf.upload_file_id
+        where
+            ssf.weapon_id = #{weaponId}
+    </select>
+
+    <!-- 根据上传文件id删除武器文件关系 -->
+    <delete id="deleteWeaponFileRecord">
+        delete from sys_weapon_file where upload_file_id in
+        <foreach collection="fileIds" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
 </mapper>
