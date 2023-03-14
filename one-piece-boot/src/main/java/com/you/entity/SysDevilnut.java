@@ -1,5 +1,6 @@
 package com.you.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,11 +12,13 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class SysDevilnut extends BaseEntity {
+public class SysDevilnut extends BaseEntity{
 
     private static final long serialVersionUID = 1L;
 
-    //中文名
+    private String id;
+
+    //名称
     private String name;
 
     //外文名
@@ -28,15 +31,24 @@ public class SysDevilnut extends BaseEntity {
     private String category;
 
     //性质
-    private String properties;
+    private String nature;
 
-    //图片
-    private String picture;
+    //食用者
+    private String eater;
 
-    //介绍
-    private String introduce;
+    //简介
+    private String synopsis;
 
-    //招式
+    //果实能力
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private String ability;
+
+    //果实招式
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
     private String move;
+
+    //文件id
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private String fileIds;
 
 }

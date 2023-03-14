@@ -4,9 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,7 +15,7 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class SysOrganization implements Serializable {
+public class SysOrganization extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
@@ -49,15 +47,6 @@ public class SysOrganization implements Serializable {
 
     //简介
     private String synopsis;
-
-    //创建时间
-    private Date createdTime;
-
-    //更新时间
-    private Date updatedTime;
-
-    //状态
-    private Integer statu;
 
     //成立背景
     @TableField(exist = false)    //表示当前属性不是数据库的字段

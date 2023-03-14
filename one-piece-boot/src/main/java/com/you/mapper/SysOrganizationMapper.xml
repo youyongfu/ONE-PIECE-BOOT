@@ -24,18 +24,4 @@
         id, parent_id, name, foreign_name, nature, birth, leader, headquarters, debut, synopsis, created_time, updated_time, statu
     </sql>
 
-    <!-- 新增组织文件关系 -->
-    <insert id="saveOrganizationFile" parameterType="com.you.entity.SysOrganizationFile">
-        insert into sys_organization_file(organization_id, upload_file_id)
-        values (#{organizationId,jdbcType=VARCHAR}, #{uploadFileId,jdbcType=VARCHAR})
-    </insert>
-
-    <!-- 根据上传文件id删除组织文件关系 -->
-    <delete id="deleteOrganizationFileByFileId">
-        delete from sys_organization_file where upload_file_id in
-        <foreach collection="fileIds" item="item" index="index" open="(" separator="," close=")">
-            #{item}
-        </foreach>
-    </delete>
-
 </mapper>

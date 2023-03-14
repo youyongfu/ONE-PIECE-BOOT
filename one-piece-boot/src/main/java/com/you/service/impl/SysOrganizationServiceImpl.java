@@ -10,13 +10,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.you.common.ResultBean;
 import com.you.constant.OrganizationConstant;
+import com.you.constant.OssConstant;
 import com.you.entity.SysOrganization;
 import com.you.entity.SysOrganizationContent;
 import com.you.entity.SysUploadFile;
 import com.you.mapper.SysOrganizationMapper;
-import com.you.mapper.SysUploadFileMapper;
 import com.you.service.SysOrganizationContentService;
 import com.you.service.SysOrganizationService;
+import com.you.service.SysUploadFileService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -35,7 +36,7 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
     private SysOrganizationMapper sysOrganizationMapper;
 
     @Resource
-    private SysUploadFileMapper sysUploadFileMapper;
+    private SysUploadFileService sysUploadFileService;
 
     @Resource
     private SysOrganizationContentService sysOrganizationContentService;
@@ -134,7 +135,7 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
         map.put("organization",sysOrganization);
 
         //获取上传文件信息
-        List<SysUploadFile> fileList = sysUploadFileMapper.getFileByOrganizationId(sysOrganization.getId());
+        List<SysUploadFile> fileList = sysUploadFileService.getFileRecord(OssConstant.ORGANIZATION_TYPE,sysOrganization.getId());
         map.put("fileList",fileList);
 
         //获取组织内容信息
@@ -182,7 +183,7 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
         //删除已保存的组织文件关系
         if(StringUtils.isNotBlank(sysOrganization.getFileIds())){
             List<String> fileIds = Arrays.asList(sysOrganization.getFileIds().split(","));
-            sysOrganizationMapper.deleteOrganizationFileByFileId(fileIds);
+            sysUploadFileService.deleteFileRecord(OssConstant.ORGANIZATION_TYPE,fileIds);
         }
 
         return ResultBean.success(sysOrganization);
@@ -213,7 +214,7 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
     }
 
     /**
-     * 组装组织内容数据
+     * 组装内容数据
      * @param organizationId
      * @param content
      * @param type

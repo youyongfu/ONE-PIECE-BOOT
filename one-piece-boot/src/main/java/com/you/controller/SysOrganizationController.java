@@ -71,7 +71,7 @@ public class SysOrganizationController {
     @ApiOperation("根据id获取组织")
     @GetMapping("/info/{id}")
     @PreAuthorize("hasAuthority('sys:organization:list')")
-    public ResultBean info(@ApiParam("角色id") @PathVariable(name = "id") String id) {
+    public ResultBean info(@PathVariable(name = "id") String id) {
         return sysOrganizationService.getInfoById(id);
     }
 
@@ -96,7 +96,7 @@ public class SysOrganizationController {
     @Transactional
     @PostMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('sys:organization:delete')")
-    public ResultBean delete(@ApiParam("组织id") @PathVariable("id") String id) {
+    public ResultBean delete(@PathVariable("id") String id) {
         return sysOrganizationService.delete(id);
     }
 }

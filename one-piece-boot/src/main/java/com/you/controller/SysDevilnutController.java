@@ -12,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.Date;
 
 /**
  * 果实图鉴控制层
@@ -42,59 +41,52 @@ public class SysDevilnutController {
     }
 
     /**
-     * 新增果实
+     * 新增
      * @param sysDevilnut
      * @return
      */
-    @ApiOperation("新增果实")
+    @ApiOperation("新增")
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('sys:devilnut:save')")      //提交权限
     public ResultBean save(@Validated @RequestBody SysDevilnut sysDevilnut) {
-        sysDevilnut.setCreatedTime(new Date());
-        sysDevilnutService.save(sysDevilnut);
-        return ResultBean.success(sysDevilnut);
+        return sysDevilnutService.saveDevilnut(sysDevilnut);
     }
 
     /**
-     * 根据id获取果实
+     * 根据id获取详情
      * @param id
      * @return
      */
-    @ApiOperation("根据id获取果实")
+    @ApiOperation("根据id获取详情")
     @GetMapping("/info/{id}")
     @PreAuthorize("hasAuthority('sys:devilnut:list')")
-    public ResultBean info(@ApiParam("果实id") @PathVariable(name = "id") Long id) {
+    public ResultBean info(@PathVariable(name = "id") String id) {
         return sysDevilnutService.getInfoById(id);
     }
 
     /**
-     * 更新果实
+     * 更新
      * @param sysDevilnut
      * @return
      */
-    @ApiOperation("更新果实")
+    @ApiOperation("更新")
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('sys:devilnut:update')")      //更新权限
     public ResultBean update(@Validated @RequestBody SysDevilnut sysDevilnut) {
-        //更新操作
-        sysDevilnut.setUpdatedTime(new Date());
-        sysDevilnutService.updateById(sysDevilnut);
-
-        return ResultBean.success(sysDevilnut);
+        return sysDevilnutService.updateDevilnut(sysDevilnut);
     }
 
     /**
-     * 根据id删除果实
+     * 删除
      * @param id
      * @return
      */
-    @ApiOperation("根据id删除果实")
+    @ApiOperation("删除")
     @Transactional
     @PostMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('sys:devilnut:delete')")
-    public ResultBean delete(@ApiParam("果实id") @PathVariable("id") Long id) {
-        sysDevilnutService.removeById(id);
-        return ResultBean.success();
+    public ResultBean delete(@PathVariable("id") String id) {
+        return sysDevilnutService.deleteDevilnut(id);
     }
 }
 

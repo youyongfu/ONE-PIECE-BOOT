@@ -24,4 +24,6 @@ public class OssConstant {
 
     public static final String ORGANIZATION_TYPE = "organization";
 
+    public static final String DEVILNUT_TYPE = "devilnut";
+
 }

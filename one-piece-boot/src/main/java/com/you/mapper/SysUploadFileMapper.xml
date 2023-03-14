@@ -14,8 +14,14 @@
         id, name, url
     </sql>
 
+    <!-- 新增组织文件关系 -->
+    <insert id="saveOrganizationFileRecord" parameterType="com.you.entity.SysOrganizationFile">
+        insert into sys_organization_file(organization_id, upload_file_id)
+        values (#{organizationId,jdbcType=VARCHAR}, #{uploadFileId,jdbcType=VARCHAR})
+    </insert>
+
     <!-- 根据组织id获取上传文件信息-->
-    <select id="getFileByOrganizationId" parameterType="String" resultMap="BaseResultMap">
+    <select id="getOrganizationFileRecord" parameterType="String" resultMap="BaseResultMap">
         select
             suf.*
         from
@@ -24,4 +30,38 @@
         where
             sof.organization_id = #{organizationId}
     </select>
+
+    <!-- 根据上传文件id删除组织文件关系 -->
+    <delete id="deleteOrganizationFileRecord">
+        delete from sys_organization_file where upload_file_id in
+        <foreach collection="fileIds" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!-- 新增果实文件关系 -->
+    <insert id="saveDevilnutFileRecord" parameterType="com.you.entity.SysDevilnutFile">
+        insert into sys_devilnut_file(devilnut_id, upload_file_id)
+        values (#{devilnutId,jdbcType=VARCHAR}, #{uploadFileId,jdbcType=VARCHAR})
+    </insert>
+
+    <!-- 根据果实id获取上传文件信息-->
+    <select id="getDevilnutFileRecord" parameterType="String" resultMap="BaseResultMap">
+        select
+            suf.*
+        from
+            sys_upload_file suf
+        left join sys_devilnut_file sdf on suf.id = sdf.upload_file_id
+        where
+            sdf.devilnut_id = #{devilnutId}
+    </select>
+
+    <!-- 根据上传文件id删除果实文件关系 -->
+    <delete id="deleteDevilnutFileRecord">
+        delete from sys_devilnut_file where upload_file_id in
+        <foreach collection="fileIds" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
 </mapper>
