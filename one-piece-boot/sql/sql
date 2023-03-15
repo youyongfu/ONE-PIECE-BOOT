@@ -91,6 +91,10 @@ INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, or
 INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (43, 36, '添加武器', NULL, 'sys:weapon:save', NULL, 2, NULL, 1, '2023-03-14 02:52:44', NULL, 1);
 INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (44, 36, '修改武器', NULL, 'sys:weapon:update', NULL, 2, NULL, 2, '2023-03-14 02:53:03', NULL, 1);
 INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (45, 36, '删除武器', NULL, 'sys:weapon:delete', NULL, 2, NULL, 3, '2023-03-14 02:53:20', NULL, 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (46, 25, '人物大全', '/sys/figure', 'sys:figure:list', 'data/Figure', 1, 'el-icon-menu', 7, '2023-03-14 21:20:24', '2023-03-14 21:21:55', 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (47, 46, '添加人物', NULL, 'sys:figure:save', NULL, 2, NULL, 1, '2023-03-14 21:20:59', NULL, 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (48, 46, '修改人物', NULL, 'sys:figure:update', NULL, 2, NULL, 2, '2023-03-14 21:21:20', NULL, 1);
+INSERT INTO sys_menu(id, parent_id, name, path, perms, component, type, icon, order_num, created_time, updated_time, statu) VALUES (49, 46, '删除人物', NULL, 'sys:figure:delete', NULL, 2, NULL, 3, '2023-03-14 21:21:40', NULL, 1);
 
 --------------------------------------用户角色关系表-----------------------------------------------------------------------------
 CREATE TABLE sys_user_role (
@@ -141,6 +145,10 @@ INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_tim
 INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (19, 18, '超人系', NULL, '1', '2023-03-13 22:11:52', NULL, 1);
 INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (20, 18, '自然系', NULL, '2', '2023-03-13 22:12:12', NULL, 1);
 INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (21, 18, '动物系', NULL, '3', '2023-03-13 22:12:31', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (22, 0, '人物性别', 'FIGURE_SEX', NULL, '2023-03-14 21:32:17', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (23, 22, '男', NULL, '1', '2023-03-14 21:32:31', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (24, 22, '女', NULL, '2', '2023-03-14 21:32:45', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (25, 22, '人妖', NULL, '3', '2023-03-14 21:33:02', NULL, 1);
 
 --------------------------------------文件上传信息表-----------------------------------------------------------------------------
 CREATE TABLE sys_upload_file (
