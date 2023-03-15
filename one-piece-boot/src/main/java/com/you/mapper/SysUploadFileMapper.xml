@@ -138,4 +138,29 @@
             #{item}
         </foreach>
     </delete>
+
+    <!-- 新增人物文件关系 -->
+    <insert id="saveFigureFileRecord" parameterType="com.you.entity.SysFigureFile">
+        insert into sys_figure_file(figure_id, upload_file_id)
+        values (#{figureId,jdbcType=VARCHAR}, #{uploadFileId,jdbcType=VARCHAR})
+    </insert>
+
+    <!-- 根据人物id获取上传文件信息-->
+    <select id="getFigureFileRecord" parameterType="String" resultMap="BaseResultMap">
+        select
+            suf.*
+        from
+            sys_upload_file suf
+        left join sys_figure_file sff on suf.id = sff.upload_file_id
+        where
+            sff.figure_id = #{figureId}
+    </select>
+
+    <!-- 根据上传文件id删除人物文件关系 -->
+    <delete id="deleteFigureFileRecord">
+        delete from sys_figure_file where upload_file_id in
+        <foreach collection="fileIds" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
 </mapper>

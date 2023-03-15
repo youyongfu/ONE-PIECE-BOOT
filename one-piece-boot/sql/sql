@@ -321,3 +321,45 @@ CREATE TABLE sys_weapon_content (
   type varchar(25) DEFAULT NULL COMMENT '类型',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--------------------------------------人物信息表-----------------------------------------------------------------------------
+CREATE TABLE sys_figure (
+  id varchar(32) NOT NULL,
+  name varchar(50) DEFAULT NULL COMMENT '名称',
+  foreign_name varchar(100) DEFAULT NULL COMMENT '外文名',
+  alias varchar(100) DEFAULT NULL COMMENT '别名',
+  sex int(2) DEFAULT NULL COMMENT '性别',
+  birth datetime DEFAULT NULL COMMENT '生日',
+  age varchar(30) DEFAULT NULL COMMENT '年龄',
+  blood varchar(20) DEFAULT NULL COMMENT '血型',
+  height varchar(20) DEFAULT NULL COMMENT '身高',
+  bounty varchar(50) DEFAULT NULL COMMENT '悬赏金',
+  debut varchar(50) DEFAULT NULL COMMENT '初次登场',
+  position varchar(2) DEFAULT NULL COMMENT '职位',
+  eating_habits varchar(255) DEFAULT NULL COMMENT '饮食习惯',
+  overbearing varchar(255) DEFAULT NULL COMMENT '霸气',
+  constellation varchar(255) DEFAULT NULL COMMENT '星座',
+  justice_view varchar(255) DEFAULT NULL COMMENT '正义观',
+  synopsis varchar(1000) DEFAULT NULL COMMENT '简介',
+  created_time datetime DEFAULT NULL COMMENT '创建时间',
+  updated_time datetime DEFAULT NULL COMMENT '更新时间',
+  statu int(2) DEFAULT NULL COMMENT '状态',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--------------------------------------人物上传文件关系表-----------------------------------------------------------------------------
+CREATE TABLE sys_figure_file (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
+  upload_file_id varchar(32) DEFAULT NULL COMMENT '上传文件id',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
+
+--------------------------------------人物内容表-----------------------------------------------------------------------------
+CREATE TABLE sys_figure_content (
+  id varchar(50) NOT NULL,
+  figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
+  content text COMMENT '内容',
+  type varchar(50) DEFAULT NULL COMMENT '类型',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -90,6 +90,12 @@ public class SysUploadFileServiceImpl extends ServiceImpl<SysUploadFileMapper, S
             sysWeaponFile.setUploadFileId(sysUploadFile.getId());
             sysWeaponFile.setWeaponId(id);
             sysUploadFileMapper.saveWeaponFileRecord(sysWeaponFile);
+        }else if(OssConstant.FIGURE_TYPE.equals(type)){
+            //添加人物文件关系
+            SysFigureFile sysFigureFile = new SysFigureFile();
+            sysFigureFile.setUploadFileId(sysUploadFile.getId());
+            sysFigureFile.setFigureId(id);
+            sysUploadFileMapper.saveFigureFileRecord(sysFigureFile);
         }
 
     }
@@ -117,6 +123,9 @@ public class SysUploadFileServiceImpl extends ServiceImpl<SysUploadFileMapper, S
         }else if(OssConstant.WEAPON_TYPE.equals(type)){
             //武器文件保存记录
             fileList = sysUploadFileMapper.getWeaponFileRecord(id);
+        }else if(OssConstant.FIGURE_TYPE.equals(type)){
+            //人物文件保存记录
+            fileList = sysUploadFileMapper.getFigureFileRecord(id);
         }
         return fileList;
     }
@@ -144,6 +153,9 @@ public class SysUploadFileServiceImpl extends ServiceImpl<SysUploadFileMapper, S
         }else if(OssConstant.WEAPON_TYPE.equals(type)){
             //删除武器文件保存记录
             fileList = sysUploadFileMapper.deleteWeaponFileRecord(fileIds);
+        }else if(OssConstant.FIGURE_TYPE.equals(type)){
+            //删除人物文件保存记录
+            fileList = sysUploadFileMapper.deleteFigureFileRecord(fileIds);
         }
     }
 }

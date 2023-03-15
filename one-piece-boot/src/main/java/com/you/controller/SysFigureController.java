@@ -12,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.Date;
 
 /**
  * 人物大全控制层
@@ -50,20 +49,18 @@ public class SysFigureController {
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('sys:figure:save')")      //提交权限
     public ResultBean save(@Validated @RequestBody SysFigure sysFigure) {
-        sysFigure.setCreatedTime(new Date());
-        sysFigureService.save(sysFigure);
-        return ResultBean.success(sysFigure);
+        return sysFigureService.saveFigure(sysFigure);
     }
 
     /**
-     * 根据id获取人物
+     * 根据id获取人物详情
      * @param id
      * @return
      */
-    @ApiOperation("根据id获取人物")
+    @ApiOperation("根据id获取人物详情")
     @GetMapping("/info/{id}")
     @PreAuthorize("hasAuthority('sys:figure:list')")
-    public ResultBean info(@ApiParam("人物id") @PathVariable(name = "id") Long id) {
+    public ResultBean info(@ApiParam("人物id") @PathVariable(name = "id") String id) {
         return sysFigureService.getInfoById(id);
     }
 
@@ -76,11 +73,7 @@ public class SysFigureController {
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('sys:figure:update')")      //更新权限
     public ResultBean update(@Validated @RequestBody SysFigure sysFigure) {
-        //更新操作
-        sysFigure.setUpdatedTime(new Date());
-        sysFigureService.updateById(sysFigure);
-
-        return ResultBean.success(sysFigure);
+        return sysFigureService.updateFigure(sysFigure);
     }
 
     /**
@@ -92,9 +85,8 @@ public class SysFigureController {
     @Transactional
     @PostMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('sys:figure:delete')")
-    public ResultBean delete(@ApiParam("人物id") @PathVariable("id") Long id) {
-        sysFigureService.removeById(id);
-        return ResultBean.success();
+    public ResultBean delete(@ApiParam("人物id") @PathVariable("id") String id) {
+        return sysFigureService.deleteFigure(id);
     }
 }
 

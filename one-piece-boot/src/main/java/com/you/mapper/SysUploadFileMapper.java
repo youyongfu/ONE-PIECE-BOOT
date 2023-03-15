@@ -44,4 +44,10 @@ public interface SysUploadFileMapper extends BaseMapper<SysUploadFile> {
     List<SysUploadFile> getWeaponFileRecord(String weaponId);
 
     List<SysUploadFile> deleteWeaponFileRecord(List<String> fileIds);
+
+    void saveFigureFileRecord(SysFigureFile sysFigureFile);
+
+    List<SysUploadFile> getFigureFileRecord(String figureId);
+
+    List<SysUploadFile> deleteFigureFileRecord(List<String> fileIds);
 }

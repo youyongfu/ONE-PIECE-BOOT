@@ -32,4 +32,6 @@ public class OssConstant {
 
     public static final String WEAPON_TYPE = "weapon";
 
+    public static final String FIGURE_TYPE = "figure";
+
 }
