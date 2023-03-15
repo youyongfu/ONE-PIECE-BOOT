@@ -18,6 +18,8 @@ public interface SysIslandsService extends IService<SysIslands> {
     
     List<SysIslands> treeList();
 
+    ResultBean getAll();
+
     ResultBean saveIslands(SysIslands sysIslands);
 
     ResultBean getInfoById(String id);

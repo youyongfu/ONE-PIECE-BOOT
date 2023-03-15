@@ -92,6 +92,18 @@ public class SysIslandsServiceImpl extends ServiceImpl<SysIslandsMapper, SysIsla
     }
 
     /**
+     * 获取所有数据
+     * @return
+     */
+    @Override
+    public ResultBean getAll() {
+        //条件构造器
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.orderByAsc("created_time");
+        return ResultBean.success(sysIslandsMapper.selectList(queryWrapper));
+    }
+
+    /**
      * 保存
      * @param sysIslands
      * @return

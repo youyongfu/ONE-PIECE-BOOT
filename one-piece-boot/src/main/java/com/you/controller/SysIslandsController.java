@@ -52,6 +52,17 @@ public class SysIslandsController {
     }
 
     /**
+     * 获取所有数据
+     * @return
+     */
+    @ApiOperation("获取所有数据")
+    @GetMapping("/getAll")
+    @PreAuthorize("hasAuthority('sys:islands:list')")   //查看权限
+    public ResultBean getAll(){
+        return sysIslandsService.getAll();
+    }
+
+    /**
      * 新增岛屿
      * @param sysIslands
      * @return

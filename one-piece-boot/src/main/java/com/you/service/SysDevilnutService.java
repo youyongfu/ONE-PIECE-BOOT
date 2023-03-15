@@ -14,6 +14,8 @@ public interface SysDevilnutService extends IService<SysDevilnut> {
 
     ResultBean listPage(String keyword, Integer current, Integer size);
 
+    ResultBean getAll();
+
     ResultBean saveDevilnut(SysDevilnut sysDevilnut);
 
     ResultBean getInfoById(String id);

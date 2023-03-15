@@ -41,11 +41,23 @@ public class SysDevilnutController {
     }
 
     /**
+     * 获取所有数据
+     * @return
+     */
+    @ApiOperation("获取所有数据")
+    @GetMapping("/getAll")
+    @PreAuthorize("hasAuthority('sys:devilnut:list')")   //查看权限
+    public ResultBean getAll(){
+        return sysDevilnutService.getAll();
+    }
+
+    /**
      * 新增
      * @param sysDevilnut
      * @return
      */
     @ApiOperation("新增")
+    @Transactional
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('sys:devilnut:save')")      //提交权限
     public ResultBean save(@Validated @RequestBody SysDevilnut sysDevilnut) {
@@ -70,6 +82,7 @@ public class SysDevilnutController {
      * @return
      */
     @ApiOperation("更新")
+    @Transactional
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('sys:devilnut:update')")      //更新权限
     public ResultBean update(@Validated @RequestBody SysDevilnut sysDevilnut) {

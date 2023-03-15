@@ -52,6 +52,17 @@ public class SysOrganizationController {
     }
 
     /**
+     * 获取所有组织
+     * @return
+     */
+    @ApiOperation("获取所有组织")
+    @GetMapping("/getAll")
+    @PreAuthorize("hasAuthority('sys:organization:list')")   //查看权限
+    public ResultBean getAll(){
+        return sysOrganizationService.getAll();
+    }
+
+    /**
      * 新增组织
      * @param sysOrganization
      * @return

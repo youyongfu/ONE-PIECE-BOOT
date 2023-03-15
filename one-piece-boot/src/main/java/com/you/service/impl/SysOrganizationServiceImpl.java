@@ -94,6 +94,19 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
     }
 
     /**
+     * 获取所有组织
+     * @return
+     */
+    @Override
+    public ResultBean getAll() {
+        //条件构造器
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.orderByAsc("created_time");
+
+        return ResultBean.success(sysOrganizationMapper.selectList(queryWrapper));
+    }
+
+    /**
      * 新增组织
      * @param sysOrganization
      * @return

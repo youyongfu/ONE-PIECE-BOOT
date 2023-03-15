@@ -41,6 +41,17 @@ public class SysShippingController {
     }
 
     /**
+     * 获取所有数据
+     * @return
+     */
+    @ApiOperation("获取所有数据")
+    @GetMapping("/getAll")
+    @PreAuthorize("hasAuthority('sys:shipping:list')")   //查看权限
+    public ResultBean getAll(){
+        return sysShippingService.getAll();
+    }
+
+    /**
      * 新增
      * @param sysShipping
      * @return

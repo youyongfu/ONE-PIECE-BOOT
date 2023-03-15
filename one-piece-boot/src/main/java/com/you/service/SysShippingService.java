@@ -13,6 +13,8 @@ import com.you.entity.SysShipping;
 public interface SysShippingService extends IService<SysShipping> {
 
     ResultBean listPage(String keyword, Integer current, Integer size);
+
+    ResultBean getAll();
     
     ResultBean saveShipping(SysShipping sysShipping);
 
@@ -21,4 +23,5 @@ public interface SysShippingService extends IService<SysShipping> {
     ResultBean updateShipping(SysShipping sysShipping);
 
     ResultBean deleteShipping(String id);
+
 }

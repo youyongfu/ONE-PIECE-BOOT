@@ -8,21 +8,19 @@
         <result column="name" property="name" />
         <result column="foreign_name" property="foreignName" />
         <result column="alias" property="alias" />
+        <result column="sex" property="sex" />
         <result column="birth" property="birth" />
         <result column="age" property="age" />
         <result column="blood" property="blood" />
         <result column="height" property="height" />
-        <result column="sex" property="sex" />
         <result column="bounty" property="bounty" />
+        <result column="debut" property="debut" />
+        <result column="position" property="position" />
+        <result column="eating_habits" property="eatingHabits" />
         <result column="overbearing" property="overbearing" />
+        <result column="constellation" property="constellation" />
+        <result column="justice_view" property="justiceView" />
         <result column="synopsis" property="synopsis" />
-        <result column="source" property="source" />
-        <result column="image" property="image" />
-        <result column="life" property="life" />
-        <result column="ability" property="ability" />
-        <result column="experience" property="experience" />
-        <result column="war_record" property="warRecord" />
-        <result column="picture" property="picture" />
         <result column="created_time" property="createdTime" />
         <result column="updated_time" property="updatedTime" />
         <result column="statu" property="statu" />
@@ -30,7 +28,96 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, foreign_name, alias, birth, age, blood, height, sex, bounty, overbearing, synopsis, source, image, life, ability, experience, war_record, picture, created_time, updated_time, statu
+        id, name, foreign_name, alias, sex,birth,age,blood,height,bounty,debut,position,eating_habits,overbearing,constellation,justice_view,synopsis,created_time,updated_time,statu
     </sql>
 
+    <!-- 批量新增人物果实关系 -->
+    <insert id="batchSaveFigureDevilnut" parameterType="java.util.List">
+        insert into sys_figure_devilnut(figure_id, devilnut_id)
+        <foreach collection="list" item="item" separator="union all">
+            (select #{item.figureId,jdbcType=VARCHAR}, #{item.devilnutId,jdbcType=VARCHAR} from dual)
+        </foreach>
+    </insert>
+
+    <!-- 根据人物id获取人物果实关系 -->
+    <select id="getFigureDevilnutByFigureId" resultType="com.you.entity.SysFigureDevilnut">
+        select * from sys_figure_devilnut where figure_id = #{figureId}
+    </select>
+
+    <!-- 根据人物id删除人物果实关系 -->
+    <delete id="deleteFigureDevilnutByFigureId">
+        delete from sys_figure_devilnut where figure_id = #{figureId}
+    </delete>
+
+    <!-- 批量新增人物组织关系 -->
+    <insert id="batchSaveFigureOrganization" parameterType="java.util.List">
+        insert into sys_figure_organization(figure_id, organization_id)
+        <foreach collection="list" item="item" separator="union all">
+            (select #{item.figureId,jdbcType=VARCHAR}, #{item.organizationId,jdbcType=VARCHAR} from dual)
+        </foreach>
+    </insert>
+
+    <!-- 根据人物id获取人物组织关系 -->
+    <select id="getFigureOrganizationByFigureId" resultType="com.you.entity.SysFigureOrganization">
+        select * from sys_figure_organization where figure_id = #{figureId}
+    </select>
+
+    <!-- 根据人物id删除人物组织关系 -->
+    <delete id="deleteFigureOrganizationByFigureId">
+        delete from sys_figure_organization where figure_id = #{figureId}
+    </delete>
+
+    <!-- 批量新增人物岛屿关系 -->
+    <insert id="batchSaveFigureIslands" parameterType="java.util.List">
+        insert into sys_figure_islands(figure_id, islands_id)
+        <foreach collection="list" item="item" separator="union all">
+            (select #{item.figureId,jdbcType=VARCHAR}, #{item.islandsId,jdbcType=VARCHAR} from dual)
+        </foreach>
+    </insert>
+
+    <!-- 根据人物id获取人物岛屿关系 -->
+    <select id="getFigureIslandsByFigureId" resultType="com.you.entity.SysFigureIslands">
+        select * from sys_figure_islands where figure_id = #{figureId}
+    </select>
+
+    <!-- 根据人物id删除人物岛屿关系 -->
+    <delete id="deleteFigureIslandsByFigureId">
+        delete from sys_figure_islands where figure_id = #{figureId}
+    </delete>
+
+    <!-- 批量新增人物船只关系 -->
+    <insert id="batchSaveFigureShipping" parameterType="java.util.List">
+        insert into sys_figure_shipping(figure_id, shipping_id)
+        <foreach collection="list" item="item" separator="union all">
+            (select #{item.figureId,jdbcType=VARCHAR}, #{item.shippingId,jdbcType=VARCHAR} from dual)
+        </foreach>
+    </insert>
+
+    <!-- 根据人物id获取人物船只关系 -->
+    <select id="getFigureShippingByFigureId" resultType="com.you.entity.SysFigureShipping">
+        select * from sys_figure_shipping where figure_id = #{figureId}
+    </select>
+
+    <!-- 根据人物id删除人物船只关系 -->
+    <delete id="deleteFigureShippingByFigureId">
+        delete from sys_figure_shipping where figure_id = #{figureId}
+    </delete>
+
+    <!-- 批量新增人物武器关系 -->
+    <insert id="batchSaveFigureWeapon" parameterType="java.util.List">
+        insert into sys_figure_weapon(figure_id, weapon_id)
+        <foreach collection="list" item="item" separator="union all">
+            (select #{item.figureId,jdbcType=VARCHAR}, #{item.weaponId,jdbcType=VARCHAR} from dual)
+        </foreach>
+    </insert>
+
+    <!-- 根据人物id获取人物武器关系 -->
+    <select id="getFigureWeaponByFigureId" resultType="com.you.entity.SysFigureWeapon">
+        select * from sys_figure_weapon where figure_id = #{figureId}
+    </select>
+
+    <!-- 根据人物id删除人物武器关系 -->
+    <delete id="deleteFigureWeaponByFigureId">
+        delete from sys_figure_weapon where figure_id = #{figureId}
+    </delete>
 </mapper>

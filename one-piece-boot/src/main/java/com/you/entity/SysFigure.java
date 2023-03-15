@@ -68,6 +68,26 @@ public class SysFigure extends BaseEntity {
     // 简介
     private String synopsis;
 
+    //恶魔果实
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private String devilnutIds;
+
+    //所属组织
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private String organizationIds;
+
+    //所属岛屿
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private String islandsIds;
+
+    //所属船只
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private String shippingIds;
+
+    //所属武器
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private String weaponIds;
+
     //角色背景
     @TableField(exist = false)    //表示当前属性不是数据库的字段
     private String background;

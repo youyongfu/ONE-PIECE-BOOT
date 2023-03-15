@@ -363,3 +363,33 @@ CREATE TABLE sys_figure_content (
   type varchar(50) DEFAULT NULL COMMENT '类型',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--------------------------------------人物果实关系表-----------------------------------------------------------------------------
+CREATE TABLE sys_figure_devilnut (
+  figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
+  devilnut_id varchar(32) DEFAULT NULL COMMENT '果实id'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--------------------------------------人物组织关系表-----------------------------------------------------------------------------
+CREATE TABLE sys_figure_organization (
+  figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
+  organization_id varchar(32) DEFAULT NULL COMMENT '组织id'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--------------------------------------人物岛屿关系表-----------------------------------------------------------------------------
+CREATE TABLE sys_figure_islands (
+  figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
+  islands_id varchar(32) DEFAULT NULL COMMENT '岛屿id'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--------------------------------------人物船只关系表-----------------------------------------------------------------------------
+CREATE TABLE sys_figure_shipping (
+  figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
+  shipping_id varchar(32) DEFAULT NULL COMMENT '船只id'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--------------------------------------人物武器关系表-----------------------------------------------------------------------------
+CREATE TABLE sys_figure_weapon (
+  figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
+  weapon_id varchar(32) DEFAULT NULL COMMENT '武器id'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -18,6 +18,8 @@ public interface SysOrganizationService extends IService<SysOrganization> {
 
     List<SysOrganization> treeList();
 
+    ResultBean getAll();
+
     ResultBean saveOrganization(SysOrganization sysOrganization);
 
     ResultBean getInfoById(String id);
@@ -25,5 +27,4 @@ public interface SysOrganizationService extends IService<SysOrganization> {
     ResultBean updateOrganization(SysOrganization sysOrganization);
 
     ResultBean delete(String id);
-
 }

@@ -69,6 +69,18 @@ public class SysShippingServiceImpl extends ServiceImpl<SysShippingMapper, SysSh
     }
 
     /**
+     * 获取所有数据
+     * @return
+     */
+    @Override
+    public ResultBean getAll() {
+        //条件构造器
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.orderByAsc("created_time");
+        return ResultBean.success(sysShippingMapper.selectList(queryWrapper));
+    }
+
+    /**
      * 新增
      * @param sysShipping
      * @return

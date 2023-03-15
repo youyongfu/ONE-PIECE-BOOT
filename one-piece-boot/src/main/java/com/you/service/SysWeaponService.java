@@ -14,6 +14,8 @@ public interface SysWeaponService extends IService<SysWeapon> {
 
     ResultBean listPage(String keyword, Integer current, Integer size);
 
+    ResultBean getAll();
+
     ResultBean saveWeapon(SysWeapon sysWeapon);
 
     ResultBean getInfoById(String id);
@@ -21,4 +23,5 @@ public interface SysWeaponService extends IService<SysWeapon> {
     ResultBean updateWeapon(SysWeapon sysWeapon);
 
     ResultBean deleteWeapon(String id);
+
 }

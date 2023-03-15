@@ -11,9 +11,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.you.common.ResultBean;
 import com.you.constant.FigureConstant;
 import com.you.constant.OssConstant;
-import com.you.entity.SysFigure;
-import com.you.entity.SysFigureContent;
-import com.you.entity.SysUploadFile;
+import com.you.entity.*;
 import com.you.mapper.SysFigureMapper;
 import com.you.service.SysFigureContentService;
 import com.you.service.SysFigureService;
@@ -81,6 +79,21 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         sysFigure.setCreatedTime(new Date());
         save(sysFigure);
 
+        //保存人物果实关系
+        saveFigureDevilnut(sysFigure);
+
+        //保存人物组织关系
+        saveFigureOrganization(sysFigure);
+
+        //保存人物岛屿关系
+        saveFigureIslands(sysFigure);
+
+        //保存人物船只关系
+        saveFigureShipping(sysFigure);
+
+        //保存人物武器关系
+        saveFigureWeapon(sysFigure);
+
         //保存组织内容信息
         List<SysFigureContent> contentList = new ArrayList<>();
         contentList.add(assemblyData(figureId,sysFigure.getBackground(), FigureConstant.BACKGROUND_TYPE));
@@ -108,8 +121,53 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         SysFigure sysFigure = getById(id);
         map.put("figure",sysFigure);
 
+        //获取恶魔果实
+        List<String> devilnutList = new ArrayList<>();
+        List<SysFigureDevilnut> figureDevilnutByFigureList = sysFigureMapper.getFigureDevilnutByFigureId(id);
+        figureDevilnutByFigureList.forEach(figureDevilnutByFigure -> {
+            String devilnutId = figureDevilnutByFigure.getDevilnutId();
+            devilnutList.add(devilnutId);
+        });
+        map.put("devilnutList",devilnutList);
+
+        //获取所属组织
+        List<String> organizationList = new ArrayList<>();
+        List<SysFigureOrganization> figureOrganizationList = sysFigureMapper.getFigureOrganizationByFigureId(id);
+        figureOrganizationList.forEach(figureOrganization -> {
+            String organizationId = figureOrganization.getOrganizationId();
+            organizationList.add(organizationId);
+        });
+        map.put("organizationList",organizationList);
+
+        //获取所属岛屿
+        List<String> islandsList = new ArrayList<>();
+        List<SysFigureIslands> figureIslandsList = sysFigureMapper.getFigureIslandsByFigureId(id);
+        figureIslandsList.forEach(figureIslands -> {
+            String islandsId = figureIslands.getIslandsId();
+            islandsList.add(islandsId);
+        });
+        map.put("islandsList",islandsList);
+
+        //获取所属船只
+        List<String> shippingList = new ArrayList<>();
+        List<SysFigureShipping> figureShippingList = sysFigureMapper.getFigureShippingByFigureId(id);
+        figureShippingList.forEach(figureShipping -> {
+            String shippingId = figureShipping.getShippingId();
+            shippingList.add(shippingId);
+        });
+        map.put("shippingList",shippingList);
+
+        //获取所属武器
+        List<String> weaponList = new ArrayList<>();
+        List<SysFigureWeapon> figureWeaponList = sysFigureMapper.getFigureWeaponByFigureId(id);
+        figureWeaponList.forEach(figureWeapon -> {
+            String weaponId = figureWeapon.getWeaponId();
+            weaponList.add(weaponId);
+        });
+        map.put("weaponList",weaponList);
+
         //获取人物文件信息
-        List<SysUploadFile> fileList = sysUploadFileService.getFileRecord(OssConstant.FIGURE_TYPE,sysFigure.getId());
+        List<SysUploadFile> fileList = sysUploadFileService.getFileRecord(OssConstant.FIGURE_TYPE,id);
         map.put("fileList",fileList);
 
         //获取人物内容信息
@@ -134,6 +192,31 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         String figureId = sysFigure.getId();
         sysFigure.setUpdatedTime(new Date());
         updateById(sysFigure);
+
+        //删除原有人物果实关系
+        sysFigureMapper.deleteFigureDevilnutByFigureId(figureId);
+        //保存现有人物果实关系
+        saveFigureDevilnut(sysFigure);
+
+        //删除原有人物组织关系
+        sysFigureMapper.deleteFigureOrganizationByFigureId(figureId);
+        //保存现有人物组织关系
+        saveFigureOrganization(sysFigure);
+
+        //删除原有人物岛屿关系
+        sysFigureMapper.deleteFigureIslandsByFigureId(figureId);
+        //保存现有人物岛屿关系
+        saveFigureIslands(sysFigure);
+
+        //删除原有人物船只关系
+        sysFigureMapper.deleteFigureShippingByFigureId(figureId);
+        //保存现有人物船只关系
+        saveFigureShipping(sysFigure);
+
+        //删除原有人物武器关系
+        sysFigureMapper.deleteFigureWeaponByFigureId(figureId);
+        //保存现有人物武器关系
+        saveFigureWeapon(sysFigure);
 
         //更新人物内容信息
         QueryWrapper queryWrapper = new QueryWrapper();
@@ -178,12 +261,122 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         //删除人物
         removeById(id);
 
+        //删除人物果实关系
+        sysFigureMapper.deleteFigureDevilnutByFigureId(id);
+
+        //删除人物组织关系
+        sysFigureMapper.deleteFigureOrganizationByFigureId(id);
+
+        //删除人物岛屿关系
+        sysFigureMapper.deleteFigureIslandsByFigureId(id);
+
+        //删除人物船只关系
+        sysFigureMapper.deleteFigureShippingByFigureId(id);
+
+        //删除人物武器关系
+        sysFigureMapper.deleteFigureWeaponByFigureId(id);
+
         //删除人物内容信息
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("figure_id",id);
         sysFigureContentService.remove(queryWrapper);
 
         return ResultBean.success();
+    }
+
+    /**
+     * 保存人物果实关系
+     * @param sysFigure
+     */
+    private void saveFigureDevilnut(SysFigure sysFigure){
+        String devilnutIds = sysFigure.getDevilnutIds();
+        if(StringUtils.isNotBlank(devilnutIds)){
+            String[] devilnuts = devilnutIds.split(",");
+            List<SysFigureDevilnut> sysFigureDevilnutList = new ArrayList<>();
+            for (String devilnutId:devilnuts){
+                SysFigureDevilnut sysFigureDevilnut = new SysFigureDevilnut();
+                sysFigureDevilnut.setFigureId(sysFigure.getId());
+                sysFigureDevilnut.setDevilnutId(devilnutId);
+                sysFigureDevilnutList.add(sysFigureDevilnut);
+            }
+            sysFigureMapper.batchSaveFigureDevilnut(sysFigureDevilnutList);
+        }
+    }
+
+    /**
+     * 保存人物组织关系
+     * @param sysFigure
+     */
+    private void saveFigureOrganization(SysFigure sysFigure){
+        String organizationIds = sysFigure.getOrganizationIds();
+        if(StringUtils.isNotBlank(organizationIds)){
+            String[] organizationIdList = organizationIds.split(",");
+            List<SysFigureOrganization> sysFigureOrganizationList = new ArrayList<>();
+            for (String organizationId:organizationIdList){
+                SysFigureOrganization sysFigureOrganization = new SysFigureOrganization();
+                sysFigureOrganization.setFigureId(sysFigure.getId());
+                sysFigureOrganization.setOrganizationId(organizationId);
+                sysFigureOrganizationList.add(sysFigureOrganization);
+            }
+            sysFigureMapper.batchSaveFigureOrganization(sysFigureOrganizationList);
+        }
+    }
+
+    /**
+     * 保存人物岛屿关系
+     * @param sysFigure
+     */
+    private void saveFigureIslands(SysFigure sysFigure){
+        String islandsIds = sysFigure.getIslandsIds();
+        if(StringUtils.isNotBlank(islandsIds)){
+            String[] islandsIdList = islandsIds.split(",");
+            List<SysFigureIslands> sysFigureIslandsList = new ArrayList<>();
+            for (String islandsId:islandsIdList){
+                SysFigureIslands sysFigureIslands = new SysFigureIslands();
+                sysFigureIslands.setFigureId(sysFigure.getId());
+                sysFigureIslands.setIslandsId(islandsId);
+                sysFigureIslandsList.add(sysFigureIslands);
+            }
+            sysFigureMapper.batchSaveFigureIslands(sysFigureIslandsList);
+        }
+    }
+
+    /**
+     * 保存人物船只关系
+     * @param sysFigure
+     */
+    private void saveFigureShipping(SysFigure sysFigure){
+        String shippingIds = sysFigure.getShippingIds();
+        if(StringUtils.isNotBlank(shippingIds)){
+            String[] shippingIdList = shippingIds.split(",");
+            List<SysFigureShipping> sysFigureShippingList = new ArrayList<>();
+            for (String shippingId:shippingIdList){
+                SysFigureShipping sysFigureShipping = new SysFigureShipping();
+                sysFigureShipping.setFigureId(sysFigure.getId());
+                sysFigureShipping.setShippingId(shippingId);
+                sysFigureShippingList.add(sysFigureShipping);
+            }
+            sysFigureMapper.batchSaveFigureShipping(sysFigureShippingList);
+        }
+    }
+
+    /**
+     * 保存人物武器关系
+     * @param sysFigure
+     */
+    private void saveFigureWeapon(SysFigure sysFigure){
+        String weaponIds = sysFigure.getWeaponIds();
+        if(StringUtils.isNotBlank(weaponIds)){
+            String[] weaponIdList = weaponIds.split(",");
+            List<SysFigureWeapon> sysFigureWeaponList = new ArrayList<>();
+            for (String weaponId:weaponIdList){
+                SysFigureWeapon sysFigureWeapon = new SysFigureWeapon();
+                sysFigureWeapon.setFigureId(sysFigure.getId());
+                sysFigureWeapon.setWeaponId(weaponId);
+                sysFigureWeaponList.add(sysFigureWeapon);
+            }
+            sysFigureMapper.batchSaveFigureWeapon(sysFigureWeaponList);
+        }
     }
 
     /**
