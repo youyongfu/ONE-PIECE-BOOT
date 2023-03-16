@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.Date;
+import java.util.List;
 
 /**
  * 人物实体类
@@ -33,13 +33,13 @@ public class SysFigure extends BaseEntity {
     private Integer sex;
 
     //生日
-    private Date birth;
+    private String birth;
 
     //年龄
     private String age;
 
     //血型
-    private String blood;
+    private Integer blood;
 
     //身高
     private String height;
@@ -120,5 +120,7 @@ public class SysFigure extends BaseEntity {
     @TableField(exist = false)    //表示当前属性不是数据库的字段
     private String fileIds;
 
-
+    //经历id
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private List<SysFigureExperience> sysFigureExperienceList;
 }

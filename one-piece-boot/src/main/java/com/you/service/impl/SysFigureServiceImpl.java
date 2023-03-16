@@ -55,6 +55,8 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         if(jsonObject.size() > 0){
             String name = jsonObject.getString("name");
             queryWrapper.like(StrUtil.isNotBlank(name), "name", name);
+            String sex = jsonObject.getString("sex");
+            queryWrapper.eq(StrUtil.isNotBlank(sex), "sex", sex);
         }
 
         //分页插件
@@ -120,6 +122,10 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         //获取人物信息
         SysFigure sysFigure = getById(id);
         map.put("figure",sysFigure);
+
+        //获取霸气
+        List<String> overbearingList = Arrays.asList(sysFigure.getOverbearing().split(","));
+        map.put("overbearingList",overbearingList);
 
         //获取恶魔果实
         List<String> devilnutList = new ArrayList<>();
