@@ -49,24 +49,6 @@
         delete from sys_figure_devilnut where figure_id = #{figureId}
     </delete>
 
-    <!-- 批量新增人物组织关系 -->
-    <insert id="batchSaveFigureOrganization" parameterType="java.util.List">
-        insert into sys_figure_organization(figure_id, organization_id)
-        <foreach collection="list" item="item" separator="union all">
-            (select #{item.figureId,jdbcType=VARCHAR}, #{item.organizationId,jdbcType=VARCHAR} from dual)
-        </foreach>
-    </insert>
-
-    <!-- 根据人物id获取人物组织关系 -->
-    <select id="getFigureOrganizationByFigureId" resultType="com.you.entity.SysFigureOrganization">
-        select * from sys_figure_organization where figure_id = #{figureId}
-    </select>
-
-    <!-- 根据人物id删除人物组织关系 -->
-    <delete id="deleteFigureOrganizationByFigureId">
-        delete from sys_figure_organization where figure_id = #{figureId}
-    </delete>
-
     <!-- 批量新增人物岛屿关系 -->
     <insert id="batchSaveFigureIslands" parameterType="java.util.List">
         insert into sys_figure_islands(figure_id, islands_id)
@@ -83,24 +65,6 @@
     <!-- 根据人物id删除人物岛屿关系 -->
     <delete id="deleteFigureIslandsByFigureId">
         delete from sys_figure_islands where figure_id = #{figureId}
-    </delete>
-
-    <!-- 批量新增人物船只关系 -->
-    <insert id="batchSaveFigureShipping" parameterType="java.util.List">
-        insert into sys_figure_shipping(figure_id, shipping_id)
-        <foreach collection="list" item="item" separator="union all">
-            (select #{item.figureId,jdbcType=VARCHAR}, #{item.shippingId,jdbcType=VARCHAR} from dual)
-        </foreach>
-    </insert>
-
-    <!-- 根据人物id获取人物船只关系 -->
-    <select id="getFigureShippingByFigureId" resultType="com.you.entity.SysFigureShipping">
-        select * from sys_figure_shipping where figure_id = #{figureId}
-    </select>
-
-    <!-- 根据人物id删除人物船只关系 -->
-    <delete id="deleteFigureShippingByFigureId">
-        delete from sys_figure_shipping where figure_id = #{figureId}
     </delete>
 
     <!-- 批量新增人物武器关系 -->

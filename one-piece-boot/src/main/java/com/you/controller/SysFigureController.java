@@ -41,6 +41,17 @@ public class SysFigureController {
     }
 
     /**
+     * 获取所有数据
+     * @return
+     */
+    @ApiOperation("获取所有数据")
+    @GetMapping("/getAll")
+    @PreAuthorize("hasAuthority('sys:figure:list')")   //查看权限
+    public ResultBean getAll(){
+        return sysFigureService.getAll();
+    }
+
+    /**
      * 新增人物
      * @param sysFigure
      * @return

@@ -5,6 +5,7 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -13,13 +14,12 @@ import com.you.constant.FigureConstant;
 import com.you.constant.OssConstant;
 import com.you.entity.*;
 import com.you.mapper.SysFigureMapper;
-import com.you.service.SysFigureContentService;
-import com.you.service.SysFigureService;
-import com.you.service.SysUploadFileService;
+import com.you.service.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 人物大全服务实现类
@@ -34,6 +34,10 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
     private SysFigureMapper sysFigureMapper;
     @Resource
     private SysFigureContentService sysFigureContentService;
+    @Resource
+    private SysFigureExperienceService sysFigureExperienceService;
+    @Resource
+    private SysFigureRelationService sysFigureRelationService;
     @Resource
     private SysUploadFileService sysUploadFileService;
 
@@ -69,6 +73,18 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
     }
 
     /**
+     * 获取所有数据
+     * @return
+     */
+    @Override
+    public ResultBean getAll() {
+        //条件构造器
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.orderByAsc("created_time");
+        return ResultBean.success(list(queryWrapper));
+    }
+
+    /**
      * 新增
      * @param sysFigure
      * @return
@@ -81,20 +97,30 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         sysFigure.setCreatedTime(new Date());
         save(sysFigure);
 
-        //保存人物果实关系
-        saveFigureDevilnut(sysFigure);
-
-        //保存人物组织关系
-        saveFigureOrganization(sysFigure);
-
         //保存人物岛屿关系
         saveFigureIslands(sysFigure);
 
-        //保存人物船只关系
-        saveFigureShipping(sysFigure);
+        //保存人物果实关系
+        saveFigureDevilnut(sysFigure);
 
         //保存人物武器关系
         saveFigureWeapon(sysFigure);
+
+        //保存人物经历
+        sysFigure.getSysFigureExperienceList().forEach(sysFigureExperience -> {
+            String id = UUID.randomUUID().toString().replaceAll("-", "");
+            sysFigureExperience.setId(id);
+            sysFigureExperience.setFigureId(figureId);
+        });
+        sysFigureExperienceService.saveBatch(sysFigure.getSysFigureExperienceList());
+
+        //保存人物人际关系
+        sysFigure.getSysFigureRelationList().forEach(sysFigureRelation -> {
+            String id = UUID.randomUUID().toString().replaceAll("-", "");
+            sysFigureRelation.setId(id);
+            sysFigureRelation.setFigureId(figureId);
+        });
+        sysFigureRelationService.saveBatch(sysFigure.getSysFigureRelationList());
 
         //保存组织内容信息
         List<SysFigureContent> contentList = new ArrayList<>();
@@ -103,7 +129,6 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         contentList.add(assemblyData(figureId,sysFigure.getLife(), FigureConstant.LIFE_TYPE));
         contentList.add(assemblyData(figureId,sysFigure.getAbility(), FigureConstant.ABILITY_TYPE));
         contentList.add(assemblyData(figureId,sysFigure.getExperience(), FigureConstant.EXPERIENCE_TYPE));
-        contentList.add(assemblyData(figureId,sysFigure.getInterpersonalRelationship(), FigureConstant.INTERPERSONAL_RELATIONSHIP_TYPE));
         contentList.add(assemblyData(figureId,sysFigure.getWarRecord(), FigureConstant.WAR_RECORD_TYPE));
         sysFigureContentService.saveBatch(contentList);
 
@@ -121,6 +146,15 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
 
         //获取人物信息
         SysFigure sysFigure = getById(id);
+
+        //获取人物经历
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("figure_id",id);
+        sysFigure.setSysFigureExperienceList(sysFigureExperienceService.list(queryWrapper));
+
+        //获取人物人际关系
+        sysFigure.setSysFigureRelationList(sysFigureRelationService.list(queryWrapper));
+
         map.put("figure",sysFigure);
 
         //获取霸气
@@ -136,15 +170,6 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         });
         map.put("devilnutList",devilnutList);
 
-        //获取所属组织
-        List<String> organizationList = new ArrayList<>();
-        List<SysFigureOrganization> figureOrganizationList = sysFigureMapper.getFigureOrganizationByFigureId(id);
-        figureOrganizationList.forEach(figureOrganization -> {
-            String organizationId = figureOrganization.getOrganizationId();
-            organizationList.add(organizationId);
-        });
-        map.put("organizationList",organizationList);
-
         //获取所属岛屿
         List<String> islandsList = new ArrayList<>();
         List<SysFigureIslands> figureIslandsList = sysFigureMapper.getFigureIslandsByFigureId(id);
@@ -153,15 +178,6 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
             islandsList.add(islandsId);
         });
         map.put("islandsList",islandsList);
-
-        //获取所属船只
-        List<String> shippingList = new ArrayList<>();
-        List<SysFigureShipping> figureShippingList = sysFigureMapper.getFigureShippingByFigureId(id);
-        figureShippingList.forEach(figureShipping -> {
-            String shippingId = figureShipping.getShippingId();
-            shippingList.add(shippingId);
-        });
-        map.put("shippingList",shippingList);
 
         //获取所属武器
         List<String> weaponList = new ArrayList<>();
@@ -177,8 +193,6 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         map.put("fileList",fileList);
 
         //获取人物内容信息
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("figure_id",id);
         List<SysFigureContent> figureContentList = sysFigureContentService.list(queryWrapper);
         figureContentList.forEach(conten ->{
             map.put(conten.getType(),conten.getContent());
@@ -199,25 +213,68 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         sysFigure.setUpdatedTime(new Date());
         updateById(sysFigure);
 
+        //更新人物经历
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("figure_id",figureId);
+        List<SysFigureExperience> sysFigureExperienceAddList = new ArrayList<>();
+        List<SysFigureExperience> sysFigureExperienceUpdateList = new ArrayList<>();
+        List<SysFigureExperience> sysFigureExperienceDeleteList = sysFigureExperienceService.list(queryWrapper);
+        List<String> deleteIdList = new ArrayList<>();
+        if(CollectionUtils.isNotEmpty(sysFigureExperienceDeleteList)){
+            deleteIdList = sysFigureExperienceDeleteList.stream().map(m -> m.getId()).collect(Collectors.toList());
+        }
+        List<SysFigureExperience> sysFigureExperienceList = sysFigure.getSysFigureExperienceList();
+        List<String> finalDeleteIdList = deleteIdList;
+        sysFigureExperienceList.forEach(sysFigureExperience -> {
+            if(StringUtils.isBlank(sysFigureExperience.getId())){            //新增
+                String id = UUID.randomUUID().toString().replaceAll("-", "");
+                sysFigureExperience.setId(id);
+                sysFigureExperience.setFigureId(figureId);
+                sysFigureExperienceAddList.add(sysFigureExperience);
+            }else {
+                sysFigureExperienceUpdateList.add(sysFigureExperience);       //更新
+                finalDeleteIdList.remove(sysFigureExperience.getId());    //删除
+            }
+        });
+        sysFigureExperienceService.saveBatch(sysFigureExperienceAddList);
+        sysFigureExperienceService.updateBatchById(sysFigureExperienceUpdateList);
+        sysFigureExperienceService.removeByIds(finalDeleteIdList);
+
+        //更新人际关系
+        List<SysFigureRelation> sysFigureRelationAddList = new ArrayList<>();
+        List<SysFigureRelation> sysFigureRelationUpdateList = new ArrayList<>();
+        List<SysFigureRelation> sysFigureRelationDeleteList = sysFigureRelationService.list(queryWrapper);
+        List<String> deleteRelationIdList = new ArrayList<>();
+        if(CollectionUtils.isNotEmpty(sysFigureRelationDeleteList)){
+            deleteRelationIdList = sysFigureRelationDeleteList.stream().map(m -> m.getId()).collect(Collectors.toList());
+        }
+        List<SysFigureRelation> sysFigureRelationList = sysFigure.getSysFigureRelationList();
+        List<String> finalDeleteRelationIdList = deleteRelationIdList;
+        sysFigureRelationList.forEach(sysFigureRelation -> {
+            if(StringUtils.isBlank(sysFigureRelation.getId())){            //新增
+                String id = UUID.randomUUID().toString().replaceAll("-", "");
+                sysFigureRelation.setId(id);
+                sysFigureRelation.setFigureId(figureId);
+                sysFigureRelationAddList.add(sysFigureRelation);
+            }else {
+                sysFigureRelationUpdateList.add(sysFigureRelation);       //更新
+                finalDeleteRelationIdList.remove(sysFigureRelation.getId());    //删除
+            }
+        });
+        sysFigureRelationService.saveBatch(sysFigureRelationAddList);
+        sysFigureRelationService.updateBatchById(sysFigureRelationUpdateList);
+        sysFigureRelationService.removeByIds(finalDeleteRelationIdList);
+
+
         //删除原有人物果实关系
         sysFigureMapper.deleteFigureDevilnutByFigureId(figureId);
         //保存现有人物果实关系
         saveFigureDevilnut(sysFigure);
 
-        //删除原有人物组织关系
-        sysFigureMapper.deleteFigureOrganizationByFigureId(figureId);
-        //保存现有人物组织关系
-        saveFigureOrganization(sysFigure);
-
         //删除原有人物岛屿关系
         sysFigureMapper.deleteFigureIslandsByFigureId(figureId);
         //保存现有人物岛屿关系
         saveFigureIslands(sysFigure);
-
-        //删除原有人物船只关系
-        sysFigureMapper.deleteFigureShippingByFigureId(figureId);
-        //保存现有人物船只关系
-        saveFigureShipping(sysFigure);
 
         //删除原有人物武器关系
         sysFigureMapper.deleteFigureWeaponByFigureId(figureId);
@@ -225,8 +282,6 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         saveFigureWeapon(sysFigure);
 
         //更新人物内容信息
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("figure_id",figureId);
         List<SysFigureContent> figureContentList = sysFigureContentService.list(queryWrapper);
         figureContentList.forEach(content ->{
             if(FigureConstant.BACKGROUND_TYPE.equals(content.getType())){
@@ -237,8 +292,6 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
                 content.setContent(sysFigure.getLife());
             }else if(FigureConstant.ABILITY_TYPE.equals(content.getType())){
                 content.setContent(sysFigure.getAbility());
-            }else if(FigureConstant.INTERPERSONAL_RELATIONSHIP_TYPE.equals(content.getType())){
-                content.setContent(sysFigure.getInterpersonalRelationship());
             }else if(FigureConstant.WAR_RECORD_TYPE.equals(content.getType())){
                 content.setContent(sysFigure.getWarRecord());
             }else if(FigureConstant.EXPERIENCE_TYPE.equals(content.getType())){
@@ -267,24 +320,24 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         //删除人物
         removeById(id);
 
+        //删除人物经历
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("figure_id",id);
+        sysFigureExperienceService.remove(queryWrapper);
+
+        //删除人际关系
+        sysFigureRelationService.remove(queryWrapper);
+
         //删除人物果实关系
         sysFigureMapper.deleteFigureDevilnutByFigureId(id);
 
-        //删除人物组织关系
-        sysFigureMapper.deleteFigureOrganizationByFigureId(id);
-
         //删除人物岛屿关系
         sysFigureMapper.deleteFigureIslandsByFigureId(id);
-
-        //删除人物船只关系
-        sysFigureMapper.deleteFigureShippingByFigureId(id);
 
         //删除人物武器关系
         sysFigureMapper.deleteFigureWeaponByFigureId(id);
 
         //删除人物内容信息
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("figure_id",id);
         sysFigureContentService.remove(queryWrapper);
 
         return ResultBean.success();
@@ -310,25 +363,6 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
     }
 
     /**
-     * 保存人物组织关系
-     * @param sysFigure
-     */
-    private void saveFigureOrganization(SysFigure sysFigure){
-        String organizationIds = sysFigure.getOrganizationIds();
-        if(StringUtils.isNotBlank(organizationIds)){
-            String[] organizationIdList = organizationIds.split(",");
-            List<SysFigureOrganization> sysFigureOrganizationList = new ArrayList<>();
-            for (String organizationId:organizationIdList){
-                SysFigureOrganization sysFigureOrganization = new SysFigureOrganization();
-                sysFigureOrganization.setFigureId(sysFigure.getId());
-                sysFigureOrganization.setOrganizationId(organizationId);
-                sysFigureOrganizationList.add(sysFigureOrganization);
-            }
-            sysFigureMapper.batchSaveFigureOrganization(sysFigureOrganizationList);
-        }
-    }
-
-    /**
      * 保存人物岛屿关系
      * @param sysFigure
      */
@@ -344,25 +378,6 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
                 sysFigureIslandsList.add(sysFigureIslands);
             }
             sysFigureMapper.batchSaveFigureIslands(sysFigureIslandsList);
-        }
-    }
-
-    /**
-     * 保存人物船只关系
-     * @param sysFigure
-     */
-    private void saveFigureShipping(SysFigure sysFigure){
-        String shippingIds = sysFigure.getShippingIds();
-        if(StringUtils.isNotBlank(shippingIds)){
-            String[] shippingIdList = shippingIds.split(",");
-            List<SysFigureShipping> sysFigureShippingList = new ArrayList<>();
-            for (String shippingId:shippingIdList){
-                SysFigureShipping sysFigureShipping = new SysFigureShipping();
-                sysFigureShipping.setFigureId(sysFigure.getId());
-                sysFigureShipping.setShippingId(shippingId);
-                sysFigureShippingList.add(sysFigureShipping);
-            }
-            sysFigureMapper.batchSaveFigureShipping(sysFigureShippingList);
         }
     }
 

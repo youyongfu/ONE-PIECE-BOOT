@@ -1,7 +1,10 @@
 package com.you.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.you.entity.*;
+import com.you.entity.SysFigure;
+import com.you.entity.SysFigureDevilnut;
+import com.you.entity.SysFigureIslands;
+import com.you.entity.SysFigureWeapon;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -21,23 +24,11 @@ public interface SysFigureMapper extends BaseMapper<SysFigure> {
 
     void deleteFigureDevilnutByFigureId(String figureId);
 
-    void batchSaveFigureOrganization(List<SysFigureOrganization> sysFigureOrganizationList);
-
-    List<SysFigureOrganization> getFigureOrganizationByFigureId(String figureId);
-
-    void deleteFigureOrganizationByFigureId(String figureId);
-
     void batchSaveFigureIslands(List<SysFigureIslands> sysFigureIslandsList);
 
     List<SysFigureIslands> getFigureIslandsByFigureId(String figureId);
 
     void deleteFigureIslandsByFigureId(String figureId);
-
-    void batchSaveFigureShipping(List<SysFigureShipping> sysFigureShippingList);
-
-    List<SysFigureShipping> getFigureShippingByFigureId(String figureId);
-
-    void deleteFigureShippingByFigureId(String figureId);
 
     void batchSaveFigureWeapon(List<SysFigureWeapon> sysFigureWeaponList);
 

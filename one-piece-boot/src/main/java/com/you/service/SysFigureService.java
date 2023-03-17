@@ -14,6 +14,8 @@ public interface SysFigureService extends IService<SysFigure> {
 
     ResultBean listPage(String keyword, Integer current, Integer size);
 
+    ResultBean getAll();
+
     ResultBean saveFigure(SysFigure sysFigure);
 
     ResultBean getInfoById(String id);

@@ -108,10 +108,6 @@ public class SysFigure extends BaseEntity {
     @TableField(exist = false)    //表示当前属性不是数据库的字段
     private String experience;
 
-    //人际关系
-    @TableField(exist = false)    //表示当前属性不是数据库的字段
-    private String interpersonalRelationship;
-
     //对战记录
     @TableField(exist = false)    //表示当前属性不是数据库的字段
     private String warRecord;
@@ -120,7 +116,11 @@ public class SysFigure extends BaseEntity {
     @TableField(exist = false)    //表示当前属性不是数据库的字段
     private String fileIds;
 
-    //经历id
+    //经历
     @TableField(exist = false)    //表示当前属性不是数据库的字段
     private List<SysFigureExperience> sysFigureExperienceList;
+
+    //人际关系
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private List<SysFigureRelation> sysFigureRelationList;
 }
