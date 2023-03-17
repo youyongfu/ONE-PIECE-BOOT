@@ -123,4 +123,8 @@ public class SysFigure extends BaseEntity {
     //人际关系
     @TableField(exist = false)    //表示当前属性不是数据库的字段
     private List<SysFigureRelation> sysFigureRelationList;
+
+    //对战记录
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private List<SysFigureWarRecord> sysFigureWarRecordList;
 }

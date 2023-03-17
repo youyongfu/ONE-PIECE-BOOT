@@ -149,6 +149,24 @@ INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_tim
 INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (23, 22, '男', NULL, '1', '2023-03-14 21:32:31', NULL, 1);
 INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (24, 22, '女', NULL, '2', '2023-03-14 21:32:45', NULL, 1);
 INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (25, 22, '人妖', NULL, '3', '2023-03-14 21:33:02', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (26, 0, '人物血型', 'FIGURE_BLOOD', NULL, '2023-03-16 00:55:26', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (27, 26, 'O型', NULL, '1', '2023-03-16 00:56:48', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (28, 26, 'A型', NULL, '2', '2023-03-16 00:57:03', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (29, 26, 'B型', NULL, '3', '2023-03-16 00:57:18', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (30, 26, 'AB型', NULL, '4', '2023-03-16 00:57:30', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (31, 0, '人物霸气', 'FIGURE_OVERBEARING', NULL, '2023-03-16 01:13:57', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (32, 31, '见闻色霸气', NULL, '1', '2023-03-16 01:14:17', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (33, 31, '武装色霸气', NULL, '2', '2023-03-16 01:14:40', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (34, 31, '霸王色霸气', NULL, '3', '2023-03-16 01:14:57', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (35, 26, 'F型', NULL, '5', '2023-03-16 01:50:22', '2023-03-16 01:55:01', 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (36, 0, '人物状态', 'FIGURE_STATU', NULL, '2023-03-16 20:24:57', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (37, 36, '活跃', NULL, '1', '2023-03-16 20:26:29', '2023-03-16 20:26:42', 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (38, 36, '谢幕', NULL, '2', '2023-03-16 20:28:24', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (39, 0, '人物对战结果', 'FIGURE_BATTLERESULTS', NULL, '2023-03-17 04:15:50', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (40, 39, '胜利', NULL, '1', '2023-03-17 04:16:14', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (41, 39, '败北', NULL, '2', '2023-03-17 04:16:33', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (42, 39, '平手', NULL, '3', '2023-03-17 04:16:49', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (43, 39, '无果', NULL, '4', '2023-03-17 04:17:01', NULL, 1);
 
 --------------------------------------文件上传信息表-----------------------------------------------------------------------------
 CREATE TABLE sys_upload_file (
@@ -368,6 +386,16 @@ CREATE TABLE sys_figure_experience (
   active_time varchar(50) DEFAULT NULL COMMENT '活跃时间',
   position varchar(100) DEFAULT NULL COMMENT '身份',
   shipping_id varchar(32) DEFAULT NULL COMMENT '船只id',
+  figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--------------------------------------人物对战记录表-----------------------------------------------------------------------------
+CREATE TABLE sys_figure_war_record (
+  id varchar(32) NOT NULL,
+  opponent_figure_id varchar(32) DEFAULT NULL COMMENT '对战对手',
+  battle_results int(2) DEFAULT NULL COMMENT '对战结果',
+  synopsis varchar(255) DEFAULT NULL COMMENT '简介',
   figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

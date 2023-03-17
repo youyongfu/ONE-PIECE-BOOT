@@ -39,6 +39,8 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
     @Resource
     private SysFigureRelationService sysFigureRelationService;
     @Resource
+    private SysFigureWarRecordService sysFigureWarRecordService;
+    @Resource
     private SysUploadFileService sysUploadFileService;
     @Resource
     private SysUploadFileRecordService sysUploadFileRecordService;
@@ -124,6 +126,14 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         });
         sysFigureRelationService.saveBatch(sysFigure.getSysFigureRelationList());
 
+        //保存人物对战记录
+        sysFigure.getSysFigureWarRecordList().forEach(sysFigureWarRecord -> {
+            String id = UUID.randomUUID().toString().replaceAll("-", "");
+            sysFigureWarRecord.setId(id);
+            sysFigureWarRecord.setFigureId(figureId);
+        });
+        sysFigureWarRecordService.saveBatch(sysFigure.getSysFigureWarRecordList());
+
         //保存组织内容信息
         List<SysFigureContent> contentList = new ArrayList<>();
         contentList.add(assemblyData(figureId,sysFigure.getBackground(), FigureConstant.BACKGROUND_TYPE));
@@ -131,7 +141,6 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         contentList.add(assemblyData(figureId,sysFigure.getLife(), FigureConstant.LIFE_TYPE));
         contentList.add(assemblyData(figureId,sysFigure.getAbility(), FigureConstant.ABILITY_TYPE));
         contentList.add(assemblyData(figureId,sysFigure.getExperience(), FigureConstant.EXPERIENCE_TYPE));
-        contentList.add(assemblyData(figureId,sysFigure.getWarRecord(), FigureConstant.WAR_RECORD_TYPE));
         sysFigureContentService.saveBatch(contentList);
 
         return ResultBean.success(sysFigure);
@@ -156,6 +165,9 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
 
         //获取人物人际关系
         sysFigure.setSysFigureRelationList(sysFigureRelationService.list(queryWrapper));
+
+        //获取人物对战记录
+        sysFigure.setSysFigureWarRecordList(sysFigureWarRecordService.list(queryWrapper));
 
         map.put("figure",sysFigure);
 
@@ -267,6 +279,31 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         sysFigureRelationService.updateBatchById(sysFigureRelationUpdateList);
         sysFigureRelationService.removeByIds(finalDeleteRelationIdList);
 
+        //更新对战记录
+        List<SysFigureWarRecord> sysFigureWarRecordAddList = new ArrayList<>();
+        List<SysFigureWarRecord> sysFigureWarRecordUpdateList = new ArrayList<>();
+        List<SysFigureWarRecord> sysFigureWarRecordDeleteList = sysFigureWarRecordService.list(queryWrapper);
+        List<String> deleteWarIdList = new ArrayList<>();
+        if(CollectionUtils.isNotEmpty(sysFigureWarRecordDeleteList)){
+            deleteWarIdList = sysFigureWarRecordDeleteList.stream().map(m -> m.getId()).collect(Collectors.toList());
+        }
+        List<SysFigureWarRecord> sysFigureWarRecordList = sysFigure.getSysFigureWarRecordList();
+        List<String> finalDeleteWarIdList = deleteWarIdList;
+        sysFigureWarRecordList.forEach(sysFigureWarRecord -> {
+            if(StringUtils.isBlank(sysFigureWarRecord.getId())){            //新增
+                String id = UUID.randomUUID().toString().replaceAll("-", "");
+                sysFigureWarRecord.setId(id);
+                sysFigureWarRecord.setFigureId(figureId);
+                sysFigureWarRecordAddList.add(sysFigureWarRecord);
+            }else {
+                sysFigureWarRecordUpdateList.add(sysFigureWarRecord);       //更新
+                finalDeleteWarIdList.remove(sysFigureWarRecord.getId());    //删除
+            }
+        });
+        sysFigureWarRecordService.saveBatch(sysFigureWarRecordAddList);
+        sysFigureWarRecordService.updateBatchById(sysFigureWarRecordUpdateList);
+        sysFigureWarRecordService.removeByIds(finalDeleteWarIdList);
+
 
         //删除原有人物果实关系
         sysFigureMapper.deleteFigureDevilnutByFigureId(figureId);
@@ -294,8 +331,6 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
                 content.setContent(sysFigure.getLife());
             }else if(FigureConstant.ABILITY_TYPE.equals(content.getType())){
                 content.setContent(sysFigure.getAbility());
-            }else if(FigureConstant.WAR_RECORD_TYPE.equals(content.getType())){
-                content.setContent(sysFigure.getWarRecord());
             }else if(FigureConstant.EXPERIENCE_TYPE.equals(content.getType())){
                 content.setContent(sysFigure.getExperience());
             }
