@@ -15,6 +15,7 @@ import com.you.entity.SysUploadFile;
 import com.you.entity.SysWeapon;
 import com.you.entity.SysWeaponContent;
 import com.you.mapper.SysWeaponMapper;
+import com.you.service.SysUploadFileRecordService;
 import com.you.service.SysUploadFileService;
 import com.you.service.SysWeaponContentService;
 import com.you.service.SysWeaponService;
@@ -38,6 +39,8 @@ public class SysWeaponServiceImpl extends ServiceImpl<SysWeaponMapper, SysWeapon
     private SysWeaponContentService sysWeaponContentService;
     @Resource
     private SysUploadFileService sysUploadFileService;
+    @Resource
+    private SysUploadFileRecordService sysUploadFileRecordService;
 
     /**
      * 分页获取列表
@@ -116,7 +119,7 @@ public class SysWeaponServiceImpl extends ServiceImpl<SysWeaponMapper, SysWeapon
         map.put("weapon",sysWeapon);
 
         //获取上传文件信息
-        List<SysUploadFile> fileList = sysUploadFileService.getFileRecord(OssConstant.WEAPON_TYPE,sysWeapon.getId());
+        List<SysUploadFile> fileList = sysUploadFileService.getFileInfo(OssConstant.WEAPON_TYPE,sysWeapon.getId());
         map.put("fileList",fileList);
 
         //获取武器内容信息
@@ -159,7 +162,7 @@ public class SysWeaponServiceImpl extends ServiceImpl<SysWeaponMapper, SysWeapon
         //删除已保存的武器文件关系
         if(StringUtils.isNotBlank(sysWeapon.getFileIds())){
             List<String> fileIds = Arrays.asList(sysWeapon.getFileIds().split(","));
-            sysUploadFileService.deleteFileRecord(OssConstant.SHIPPING_TYPE,fileIds);
+            sysUploadFileRecordService.deleteFileRecord(OssConstant.SHIPPING_TYPE,fileIds);
         }
 
         return ResultBean.success(sysWeapon);

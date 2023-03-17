@@ -17,6 +17,7 @@ import com.you.entity.SysUploadFile;
 import com.you.mapper.SysDevilnutMapper;
 import com.you.service.SysDevilnutContentService;
 import com.you.service.SysDevilnutService;
+import com.you.service.SysUploadFileRecordService;
 import com.you.service.SysUploadFileService;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,8 @@ public class SysDevilnutServiceImpl extends ServiceImpl<SysDevilnutMapper, SysDe
     private SysDevilnutContentService sysDevilnutContentService;
     @Resource
     private SysUploadFileService sysUploadFileService;
+    @Resource
+    private SysUploadFileRecordService sysUploadFileRecordService;
 
     /**
      * 分页获取列表
@@ -117,7 +120,7 @@ public class SysDevilnutServiceImpl extends ServiceImpl<SysDevilnutMapper, SysDe
         map.put("devilnut",sysDevilnut);
 
         //获取上传文件信息
-        List<SysUploadFile> fileList = sysUploadFileService.getFileRecord(OssConstant.DEVILNUT_TYPE,sysDevilnut.getId());
+        List<SysUploadFile> fileList = sysUploadFileService.getFileInfo(OssConstant.DEVILNUT_TYPE,sysDevilnut.getId());
         map.put("fileList",fileList);
 
         //获取组织内容信息
@@ -160,7 +163,7 @@ public class SysDevilnutServiceImpl extends ServiceImpl<SysDevilnutMapper, SysDe
         //删除已保存的果实文件关系
         if(StringUtils.isNotBlank(sysDevilnut.getFileIds())){
             List<String> fileIds = Arrays.asList(sysDevilnut.getFileIds().split(","));
-            sysUploadFileService.deleteFileRecord(OssConstant.DEVILNUT_TYPE,fileIds);
+            sysUploadFileRecordService.deleteFileRecord(OssConstant.DEVILNUT_TYPE,fileIds);
         }
 
         return ResultBean.success(sysDevilnut);

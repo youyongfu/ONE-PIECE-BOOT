@@ -158,6 +158,15 @@ CREATE TABLE sys_upload_file (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--------------------------------------文件上传信息记录表-----------------------------------------------------------------------------
+CREATE TABLE sys_upload_file_record (
+  id varchar(32) NOT NULL,
+  file_id varchar(32) DEFAULT NULL COMMENT '文件id',
+  owner_id varchar(32) DEFAULT NULL COMMENT '文件所有者id',
+  type varchar(20) DEFAULT NULL COMMENT '类型',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 --------------------------------------组织信息表-----------------------------------------------------------------------------
 CREATE TABLE sys_organization (
   id varchar(32) NOT NULL,
@@ -175,14 +184,6 @@ CREATE TABLE sys_organization (
   statu int(2) DEFAULT NULL COMMENT '状态',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---------------------------------------组织上传文件关系表-----------------------------------------------------------------------------
-CREATE TABLE sys_organization_file (
-  id bigint(20) NOT NULL AUTO_INCREMENT,
-  organization_id varchar(50) DEFAULT NULL COMMENT '组织id',
-  upload_file_id varchar(50) DEFAULT NULL COMMENT '上传文件id',
-  PRIMARY KEY (id)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 
 --------------------------------------组织内容表-----------------------------------------------------------------------------
 CREATE TABLE sys_organization_content (
@@ -209,14 +210,6 @@ CREATE TABLE sys_devilnut (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---------------------------------------果实上传文件关系表-----------------------------------------------------------------------------
-CREATE TABLE sys_devilnut_file (
-  id bigint(20) NOT NULL AUTO_INCREMENT,
-  devilnut_id varchar(32) DEFAULT NULL COMMENT '果实id',
-  upload_file_id varchar(32) DEFAULT NULL COMMENT '上传文件id',
-  PRIMARY KEY (id)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
-
 --------------------------------------果实内容表-----------------------------------------------------------------------------
 CREATE TABLE sys_devilnut_content (
   id varchar(50) NOT NULL,
@@ -242,14 +235,6 @@ CREATE TABLE sys_islands (
   statu int(2) DEFAULT NULL COMMENT '状态',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---------------------------------------岛屿上传文件关系表-----------------------------------------------------------------------------
-CREATE TABLE sys_islands_file (
-  id bigint(20) NOT NULL AUTO_INCREMENT,
-  islands_id varchar(32) DEFAULT NULL COMMENT '果实id',
-  upload_file_id varchar(32) DEFAULT NULL COMMENT '上传文件id',
-  PRIMARY KEY (id)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 
 --------------------------------------岛屿内容表-----------------------------------------------------------------------------
 CREATE TABLE sys_islands_content (
@@ -280,14 +265,6 @@ CREATE TABLE sys_shipping (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---------------------------------------船只上传文件关系表-----------------------------------------------------------------------------
-CREATE TABLE sys_shipping_file (
-  id bigint(20) NOT NULL AUTO_INCREMENT,
-  shipping_id varchar(32) DEFAULT NULL COMMENT '果实id',
-  upload_file_id varchar(32) DEFAULT NULL COMMENT '上传文件id',
-  PRIMARY KEY (id)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
-
 --------------------------------------船只内容表-----------------------------------------------------------------------------
 CREATE TABLE sys_shipping_content (
   id varchar(50) NOT NULL,
@@ -312,14 +289,6 @@ CREATE TABLE sys_weapon (
   statu int(2) DEFAULT NULL COMMENT '状态',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---------------------------------------武器上传文件关系表-----------------------------------------------------------------------------
-CREATE TABLE sys_weapon_file (
-  id bigint(20) NOT NULL AUTO_INCREMENT,
-  weapon_id varchar(32) DEFAULT NULL COMMENT '果实id',
-  upload_file_id varchar(32) DEFAULT NULL COMMENT '上传文件id',
-  PRIMARY KEY (id)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 
 --------------------------------------武器内容表-----------------------------------------------------------------------------
 CREATE TABLE sys_weapon_content (
@@ -355,14 +324,6 @@ CREATE TABLE sys_figure (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---------------------------------------人物上传文件关系表-----------------------------------------------------------------------------
-CREATE TABLE sys_figure_file (
-  id bigint(20) NOT NULL AUTO_INCREMENT,
-  figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
-  upload_file_id varchar(32) DEFAULT NULL COMMENT '上传文件id',
-  PRIMARY KEY (id)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
-
 --------------------------------------人物内容表-----------------------------------------------------------------------------
 CREATE TABLE sys_figure_content (
   id varchar(50) NOT NULL,
@@ -378,26 +339,35 @@ CREATE TABLE sys_figure_devilnut (
   devilnut_id varchar(32) DEFAULT NULL COMMENT '果实id'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---------------------------------------人物组织关系表-----------------------------------------------------------------------------
-CREATE TABLE sys_figure_organization (
-  figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
-  organization_id varchar(32) DEFAULT NULL COMMENT '组织id'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 --------------------------------------人物岛屿关系表-----------------------------------------------------------------------------
 CREATE TABLE sys_figure_islands (
   figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
   islands_id varchar(32) DEFAULT NULL COMMENT '岛屿id'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---------------------------------------人物船只关系表-----------------------------------------------------------------------------
-CREATE TABLE sys_figure_shipping (
-  figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
-  shipping_id varchar(32) DEFAULT NULL COMMENT '船只id'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 --------------------------------------人物武器关系表-----------------------------------------------------------------------------
 CREATE TABLE sys_figure_weapon (
   figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
   weapon_id varchar(32) DEFAULT NULL COMMENT '武器id'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--------------------------------------人物人际关系表-----------------------------------------------------------------------------
+CREATE TABLE sys_figure_relation (
+  id varchar(32) NOT NULL,
+  relation_type varchar(50) DEFAULT NULL COMMENT '关系类型',
+  relation_figure_id varchar(32) DEFAULT NULL COMMENT '关系人id',
+  relation_synopsis varchar(255) DEFAULT NULL COMMENT '关系简介',
+  figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--------------------------------------人物经历表-----------------------------------------------------------------------------
+CREATE TABLE sys_figure_experience (
+  id varchar(32) NOT NULL,
+  organization_id varchar(32) DEFAULT NULL COMMENT '组织id',
+  active_time varchar(50) DEFAULT NULL COMMENT '活跃时间',
+  position varchar(100) DEFAULT NULL COMMENT '身份',
+  shipping_id varchar(32) DEFAULT NULL COMMENT '船只id',
+  figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

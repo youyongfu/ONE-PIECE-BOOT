@@ -17,6 +17,7 @@ import com.you.entity.SysUploadFile;
 import com.you.mapper.SysOrganizationMapper;
 import com.you.service.SysOrganizationContentService;
 import com.you.service.SysOrganizationService;
+import com.you.service.SysUploadFileRecordService;
 import com.you.service.SysUploadFileService;
 import org.springframework.stereotype.Service;
 
@@ -34,12 +35,12 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
 
     @Resource
     private SysOrganizationMapper sysOrganizationMapper;
-
     @Resource
     private SysUploadFileService sysUploadFileService;
-
     @Resource
     private SysOrganizationContentService sysOrganizationContentService;
+    @Resource
+    private SysUploadFileRecordService sysUploadFileRecordService;
 
     /**
      * 分页获取组织列表
@@ -148,7 +149,7 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
         map.put("organization",sysOrganization);
 
         //获取上传文件信息
-        List<SysUploadFile> fileList = sysUploadFileService.getFileRecord(OssConstant.ORGANIZATION_TYPE,sysOrganization.getId());
+        List<SysUploadFile> fileList = sysUploadFileService.getFileInfo(OssConstant.ORGANIZATION_TYPE,sysOrganization.getId());
         map.put("fileList",fileList);
 
         //获取组织内容信息
@@ -196,7 +197,7 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
         //删除已保存的组织文件关系
         if(StringUtils.isNotBlank(sysOrganization.getFileIds())){
             List<String> fileIds = Arrays.asList(sysOrganization.getFileIds().split(","));
-            sysUploadFileService.deleteFileRecord(OssConstant.ORGANIZATION_TYPE,fileIds);
+            sysUploadFileRecordService.deleteFileRecord(OssConstant.ORGANIZATION_TYPE,fileIds);
         }
 
         return ResultBean.success(sysOrganization);

@@ -17,6 +17,7 @@ import com.you.entity.SysUploadFile;
 import com.you.mapper.SysShippingMapper;
 import com.you.service.SysShippingContentService;
 import com.you.service.SysShippingService;
+import com.you.service.SysUploadFileRecordService;
 import com.you.service.SysUploadFileService;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,8 @@ public class SysShippingServiceImpl extends ServiceImpl<SysShippingMapper, SysSh
     private SysShippingContentService sysShippingContentService;
     @Resource
     private SysUploadFileService sysUploadFileService;
+    @Resource
+    private SysUploadFileRecordService sysUploadFileRecordService;
 
     /**
      * 分页获取列表
@@ -118,7 +121,7 @@ public class SysShippingServiceImpl extends ServiceImpl<SysShippingMapper, SysSh
         map.put("shipping",sysShipping);
 
         //获取上传文件信息
-        List<SysUploadFile> fileList = sysUploadFileService.getFileRecord(OssConstant.SHIPPING_TYPE,sysShipping.getId());
+        List<SysUploadFile> fileList = sysUploadFileService.getFileInfo(OssConstant.SHIPPING_TYPE,sysShipping.getId());
         map.put("fileList",fileList);
 
         //获取组织内容信息
@@ -165,7 +168,7 @@ public class SysShippingServiceImpl extends ServiceImpl<SysShippingMapper, SysSh
         //删除已保存的船只文件关系
         if(StringUtils.isNotBlank(sysShipping.getFileIds())){
             List<String> fileIds = Arrays.asList(sysShipping.getFileIds().split(","));
-            sysUploadFileService.deleteFileRecord(OssConstant.SHIPPING_TYPE,fileIds);
+            sysUploadFileRecordService.deleteFileRecord(OssConstant.SHIPPING_TYPE,fileIds);
         }
 
         return ResultBean.success(sysShipping);

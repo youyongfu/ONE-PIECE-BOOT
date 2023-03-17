@@ -40,6 +40,8 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
     private SysFigureRelationService sysFigureRelationService;
     @Resource
     private SysUploadFileService sysUploadFileService;
+    @Resource
+    private SysUploadFileRecordService sysUploadFileRecordService;
 
     /**
      * 分页获取列表
@@ -189,7 +191,7 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         map.put("weaponList",weaponList);
 
         //获取人物文件信息
-        List<SysUploadFile> fileList = sysUploadFileService.getFileRecord(OssConstant.FIGURE_TYPE,id);
+        List<SysUploadFile> fileList = sysUploadFileService.getFileInfo(OssConstant.FIGURE_TYPE,id);
         map.put("fileList",fileList);
 
         //获取人物内容信息
@@ -304,7 +306,7 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         //删除已保存的人物文件关系
         if(StringUtils.isNotBlank(sysFigure.getFileIds())){
             List<String> fileIds = Arrays.asList(sysFigure.getFileIds().split(","));
-            sysUploadFileService.deleteFileRecord(OssConstant.FIGURE_TYPE,fileIds);
+            sysUploadFileRecordService.deleteFileRecord(OssConstant.FIGURE_TYPE,fileIds);
         }
 
         return ResultBean.success(sysFigure);

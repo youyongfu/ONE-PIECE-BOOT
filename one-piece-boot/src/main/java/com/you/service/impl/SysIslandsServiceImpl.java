@@ -17,6 +17,7 @@ import com.you.entity.SysUploadFile;
 import com.you.mapper.SysIslandsMapper;
 import com.you.service.SysIslandsContentService;
 import com.you.service.SysIslandsService;
+import com.you.service.SysUploadFileRecordService;
 import com.you.service.SysUploadFileService;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,8 @@ public class SysIslandsServiceImpl extends ServiceImpl<SysIslandsMapper, SysIsla
     private SysIslandsContentService sysIslandsContentService;
     @Resource
     private SysUploadFileService sysUploadFileService;
+    @Resource
+    private SysUploadFileRecordService sysUploadFileRecordService;
 
     /**
      * 分页获取列表
@@ -144,7 +147,7 @@ public class SysIslandsServiceImpl extends ServiceImpl<SysIslandsMapper, SysIsla
         map.put("islands",sysIslands);
 
         //获取上传文件信息
-        List<SysUploadFile> fileList = sysUploadFileService.getFileRecord(OssConstant.ISLANDS_TYPE,sysIslands.getId());
+        List<SysUploadFile> fileList = sysUploadFileService.getFileInfo(OssConstant.ISLANDS_TYPE,sysIslands.getId());
         map.put("fileList",fileList);
 
         //获取组织内容信息
@@ -192,7 +195,7 @@ public class SysIslandsServiceImpl extends ServiceImpl<SysIslandsMapper, SysIsla
         //删除已保存的组织文件关系
         if(StringUtils.isNotBlank(sysIslands.getFileIds())){
             List<String> fileIds = Arrays.asList(sysIslands.getFileIds().split(","));
-            sysUploadFileService.deleteFileRecord(OssConstant.ISLANDS_TYPE,fileIds);
+            sysUploadFileRecordService.deleteFileRecord(OssConstant.ISLANDS_TYPE,fileIds);
         }
 
         return ResultBean.success(sysIslands);

@@ -1,6 +1,8 @@
 package com.you.controller;
 
 import com.you.common.ResultBean;
+import com.you.entity.SysUploadFile;
+import com.you.service.SysUploadFileRecordService;
 import com.you.service.SysUploadFileService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,6 +29,8 @@ public class SysUploadFileController {
 
     @Resource
     private SysUploadFileService uploadFileService;
+    @Resource
+    private SysUploadFileRecordService uploadFileRecordService;
 
     /**
      * 上传文件
@@ -45,7 +49,10 @@ public class SysUploadFileController {
     @PostMapping("/uploadFileAndRecord")
     @PreAuthorize("hasAuthority('sys:user:upload')")
     public ResultBean uploadFileAndRecord(MultipartFile file,String type,String id) {
-        uploadFileService.uploadFileAndRecord(file,type,id);
+        //上传文件
+        SysUploadFile sysUploadFile = uploadFileService.uploadFile(file, type);
+        //保存文件记录
+        uploadFileRecordService.saveFileRecord(type,sysUploadFile.getId(),id);
         return ResultBean.success();
     }
 

@@ -16,9 +16,6 @@ public interface SysUploadFileService extends IService<SysUploadFile> {
 
     SysUploadFile uploadFile(MultipartFile file,String type);
 
-    void uploadFileAndRecord(MultipartFile file, String type, String id);
+    List<SysUploadFile> getFileInfo(String type,String id);
 
-    List<SysUploadFile> getFileRecord(String type,String id);
-
-    void deleteFileRecord(String type, List<String> fileIds);
 }
