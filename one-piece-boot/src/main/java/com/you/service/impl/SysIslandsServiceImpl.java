@@ -11,11 +11,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.you.common.ResultBean;
 import com.you.constant.IslandsConstant;
 import com.you.constant.OssConstant;
+import com.you.entity.SysClobContent;
 import com.you.entity.SysIslands;
-import com.you.entity.SysIslandsContent;
 import com.you.entity.SysUploadFile;
 import com.you.mapper.SysIslandsMapper;
-import com.you.service.SysIslandsContentService;
+import com.you.service.SysClobContentService;
 import com.you.service.SysIslandsService;
 import com.you.service.SysUploadFileRecordService;
 import com.you.service.SysUploadFileService;
@@ -36,7 +36,7 @@ public class SysIslandsServiceImpl extends ServiceImpl<SysIslandsMapper, SysIsla
     @Resource
     private SysIslandsMapper sysIslandsMapper;
     @Resource
-    private SysIslandsContentService sysIslandsContentService;
+    private SysClobContentService sysClobContentService;
     @Resource
     private SysUploadFileService sysUploadFileService;
     @Resource
@@ -124,11 +124,11 @@ public class SysIslandsServiceImpl extends ServiceImpl<SysIslandsMapper, SysIsla
         save(sysIslands);
 
         //保存岛屿内容信息
-        List<SysIslandsContent> contentList = new ArrayList<>();
-        contentList.add(assemblyData(islandsId,sysIslands.getSource(), IslandsConstant.SOURCE_TYPE));
-        contentList.add(assemblyData(islandsId,sysIslands.getGeography(), IslandsConstant.GEOGRAPHY_TYPE));
-        contentList.add(assemblyData(islandsId,sysIslands.getAppearances(), IslandsConstant.APPEARANCES_TYPE));
-        sysIslandsContentService.saveBatch(contentList);
+        List<SysClobContent> contentList = new ArrayList<>();
+        contentList.add(sysClobContentService.assemblyData(islandsId,sysIslands.getSource(), IslandsConstant.SOURCE_TYPE));
+        contentList.add(sysClobContentService.assemblyData(islandsId,sysIslands.getGeography(), IslandsConstant.GEOGRAPHY_TYPE));
+        contentList.add(sysClobContentService.assemblyData(islandsId,sysIslands.getAppearances(), IslandsConstant.APPEARANCES_TYPE));
+        sysClobContentService.saveBatch(contentList);
 
         return ResultBean.success(sysIslands);
     }
@@ -151,9 +151,7 @@ public class SysIslandsServiceImpl extends ServiceImpl<SysIslandsMapper, SysIsla
         map.put("fileList",fileList);
 
         //获取组织内容信息
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("islands_id",id);
-        List<SysIslandsContent> islandsContentList = sysIslandsContentService.list(queryWrapper);
+        List<SysClobContent> islandsContentList = sysClobContentService.contentListByOwnerId(id);
         islandsContentList.forEach(conten ->{
             map.put(conten.getType(),conten.getContent());
         });
@@ -177,9 +175,7 @@ public class SysIslandsServiceImpl extends ServiceImpl<SysIslandsMapper, SysIsla
         updateById(sysIslands);
 
         //更新岛屿内容信息
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("islands_id",islandsId);
-        List<SysIslandsContent> islandsContentList = sysIslandsContentService.list(queryWrapper);
+        List<SysClobContent> islandsContentList = sysClobContentService.contentListByOwnerId(islandsId);
         islandsContentList.forEach(content ->{
             if(IslandsConstant.SOURCE_TYPE.equals(content.getType())){
                 content.setContent(sysIslands.getSource());
@@ -189,7 +185,7 @@ public class SysIslandsServiceImpl extends ServiceImpl<SysIslandsMapper, SysIsla
                 content.setContent(sysIslands.getAppearances());
             }
         });
-        sysIslandsContentService.updateBatchById(islandsContentList);
+        sysClobContentService.updateBatchById(islandsContentList);
 
 
         //删除已保存的组织文件关系
@@ -218,26 +214,9 @@ public class SysIslandsServiceImpl extends ServiceImpl<SysIslandsMapper, SysIsla
         removeById(id);
 
         //删除岛屿内容信息
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("islands_id",id);
-        sysIslandsContentService.remove(queryWrapper);
+        sysClobContentService.removeContentByOwnerId(id);
 
         return ResultBean.success();
     }
 
-    /**
-     * 组装内容数据
-     * @param islandsId
-     * @param content
-     * @param type
-     * @return
-     */
-    private SysIslandsContent assemblyData(String islandsId,String content,String type){
-        SysIslandsContent islandsContent = new SysIslandsContent();
-        islandsContent.setId(UUID.randomUUID().toString().replaceAll("-",""));
-        islandsContent.setIslandsId(islandsId);
-        islandsContent.setContent(content);
-        islandsContent.setType(type);
-        return islandsContent;
-    }
 }

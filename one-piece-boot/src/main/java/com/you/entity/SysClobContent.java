@@ -6,22 +6,22 @@ import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 
 /**
- * 组织内容实体类
+ * 大字段内容实体类
  * @author yyf
  * @version 1.0
  * @date 2023/2/9
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class SysOrganizationContent implements Serializable {
+public class SysClobContent implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     //id
     private String id;
 
-    //组织id
-    private String organizationId;
+    //所有者id
+    private String ownerId;
 
     //内容
     private String content;

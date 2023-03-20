@@ -185,6 +185,15 @@ CREATE TABLE sys_upload_file_record (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--------------------------------------大字段内容信息记录表-----------------------------------------------------------------------------
+CREATE TABLE sys_clob_content (
+  id varchar(50) NOT NULL,
+  owner_id varchar(32) DEFAULT NULL COMMENT '所有者id',
+  content text COMMENT '内容',
+  type varchar(50) DEFAULT NULL COMMENT '类型',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 --------------------------------------组织信息表-----------------------------------------------------------------------------
 CREATE TABLE sys_organization (
   id varchar(32) NOT NULL,
@@ -200,15 +209,6 @@ CREATE TABLE sys_organization (
   created_time datetime DEFAULT NULL COMMENT '创建时间',
   updated_time datetime DEFAULT NULL COMMENT '更新时间',
   statu int(2) DEFAULT NULL COMMENT '状态',
-  PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---------------------------------------组织内容表-----------------------------------------------------------------------------
-CREATE TABLE sys_organization_content (
-  id varchar(50) NOT NULL,
-  organization_id varchar(32) DEFAULT NULL COMMENT '组织id',
-  content text COMMENT '内容',
-  type varchar(25) DEFAULT NULL COMMENT '类型',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -228,15 +228,6 @@ CREATE TABLE sys_devilnut (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---------------------------------------果实内容表-----------------------------------------------------------------------------
-CREATE TABLE sys_devilnut_content (
-  id varchar(50) NOT NULL,
-  devilnut_id varchar(32) DEFAULT NULL COMMENT '果实id',
-  content text COMMENT '内容',
-  type varchar(25) DEFAULT NULL COMMENT '类型',
-  PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 --------------------------------------岛屿信息表-----------------------------------------------------------------------------
 CREATE TABLE sys_islands (
   id varchar(32) NOT NULL,
@@ -251,15 +242,6 @@ CREATE TABLE sys_islands (
   created_time datetime DEFAULT NULL COMMENT '创建时间',
   updated_time datetime DEFAULT NULL COMMENT '更新时间',
   statu int(2) DEFAULT NULL COMMENT '状态',
-  PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---------------------------------------岛屿内容表-----------------------------------------------------------------------------
-CREATE TABLE sys_islands_content (
-  id varchar(50) NOT NULL,
-  islands_id varchar(32) DEFAULT NULL COMMENT '果实id',
-  content text COMMENT '内容',
-  type varchar(25) DEFAULT NULL COMMENT '类型',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -283,15 +265,6 @@ CREATE TABLE sys_shipping (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---------------------------------------船只内容表-----------------------------------------------------------------------------
-CREATE TABLE sys_shipping_content (
-  id varchar(50) NOT NULL,
-  shipping_id varchar(32) DEFAULT NULL COMMENT '果实id',
-  content text COMMENT '内容',
-  type varchar(25) DEFAULT NULL COMMENT '类型',
-  PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 --------------------------------------武器信息表-----------------------------------------------------------------------------
 CREATE TABLE sys_weapon (
   id varchar(32) NOT NULL,
@@ -305,15 +278,6 @@ CREATE TABLE sys_weapon (
   created_time datetime DEFAULT NULL COMMENT '创建时间',
   updated_time datetime DEFAULT NULL COMMENT '更新时间',
   statu int(2) DEFAULT NULL COMMENT '状态',
-  PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---------------------------------------武器内容表-----------------------------------------------------------------------------
-CREATE TABLE sys_weapon_content (
-  id varchar(50) NOT NULL,
-  weapon_id varchar(32) DEFAULT NULL COMMENT '果实id',
-  content text COMMENT '内容',
-  type varchar(25) DEFAULT NULL COMMENT '类型',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -339,15 +303,6 @@ CREATE TABLE sys_figure (
   created_time datetime DEFAULT NULL COMMENT '创建时间',
   updated_time datetime DEFAULT NULL COMMENT '更新时间',
   statu int(2) DEFAULT NULL COMMENT '状态',
-  PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---------------------------------------人物内容表-----------------------------------------------------------------------------
-CREATE TABLE sys_figure_content (
-  id varchar(50) NOT NULL,
-  figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
-  content text COMMENT '内容',
-  type varchar(50) DEFAULT NULL COMMENT '类型',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

@@ -11,13 +11,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.you.common.ResultBean;
 import com.you.constant.OssConstant;
 import com.you.constant.WeaponConstant;
+import com.you.entity.SysClobContent;
 import com.you.entity.SysUploadFile;
 import com.you.entity.SysWeapon;
-import com.you.entity.SysWeaponContent;
 import com.you.mapper.SysWeaponMapper;
+import com.you.service.SysClobContentService;
 import com.you.service.SysUploadFileRecordService;
 import com.you.service.SysUploadFileService;
-import com.you.service.SysWeaponContentService;
 import com.you.service.SysWeaponService;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +36,7 @@ public class SysWeaponServiceImpl extends ServiceImpl<SysWeaponMapper, SysWeapon
     @Resource
     private SysWeaponMapper sysWeaponMapper;
     @Resource
-    private SysWeaponContentService sysWeaponContentService;
+    private SysClobContentService sysClobContentService;
     @Resource
     private SysUploadFileService sysUploadFileService;
     @Resource
@@ -97,10 +97,10 @@ public class SysWeaponServiceImpl extends ServiceImpl<SysWeaponMapper, SysWeapon
         save(sysWeapon);
 
         //保存武器内容信息
-        List<SysWeaponContent> contentList = new ArrayList<>();
-        contentList.add(assemblyData(weaponId,sysWeapon.getOrigin(), WeaponConstant.ORIGIN_TYPE));
-        contentList.add(assemblyData(weaponId,sysWeapon.getModelling(), WeaponConstant.MODELLING_TYPE));
-        sysWeaponContentService.saveBatch(contentList);
+        List<SysClobContent> contentList = new ArrayList<>();
+        contentList.add(sysClobContentService.assemblyData(weaponId,sysWeapon.getOrigin(), WeaponConstant.ORIGIN_TYPE));
+        contentList.add(sysClobContentService.assemblyData(weaponId,sysWeapon.getModelling(), WeaponConstant.MODELLING_TYPE));
+        sysClobContentService.saveBatch(contentList);
 
         return ResultBean.success(sysWeapon);
     }
@@ -123,9 +123,7 @@ public class SysWeaponServiceImpl extends ServiceImpl<SysWeaponMapper, SysWeapon
         map.put("fileList",fileList);
 
         //获取武器内容信息
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("weapon_id",id);
-        List<SysWeaponContent> weaponContentList = sysWeaponContentService.list(queryWrapper);
+        List<SysClobContent> weaponContentList = sysClobContentService.contentListByOwnerId(id);
         weaponContentList.forEach(conten ->{
             map.put(conten.getType(),conten.getContent());
         });
@@ -146,9 +144,7 @@ public class SysWeaponServiceImpl extends ServiceImpl<SysWeaponMapper, SysWeapon
         updateById(sysWeapon);
 
         //更新船只内容信息
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("weapon_id",weaponId);
-        List<SysWeaponContent> weaponContentList = sysWeaponContentService.list(queryWrapper);
+        List<SysClobContent> weaponContentList = sysClobContentService.contentListByOwnerId(weaponId);
         weaponContentList.forEach(content ->{
             if(WeaponConstant.ORIGIN_TYPE.equals(content.getType())){
                 content.setContent(sysWeapon.getOrigin());
@@ -156,7 +152,7 @@ public class SysWeaponServiceImpl extends ServiceImpl<SysWeaponMapper, SysWeapon
                 content.setContent(sysWeapon.getModelling());
             }
         });
-        sysWeaponContentService.updateBatchById(weaponContentList);
+        sysClobContentService.updateBatchById(weaponContentList);
 
 
         //删除已保存的武器文件关系
@@ -179,26 +175,9 @@ public class SysWeaponServiceImpl extends ServiceImpl<SysWeaponMapper, SysWeapon
         removeById(id);
 
         //删除武器内容信息
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("weapon_id",id);
-        sysWeaponContentService.remove(queryWrapper);
+        sysClobContentService.removeContentByOwnerId(id);
 
         return ResultBean.success();
     }
 
-    /**
-     * 组装内容数据
-     * @param weaponId
-     * @param content
-     * @param type
-     * @return
-     */
-    private SysWeaponContent assemblyData(String weaponId, String content, String type){
-        SysWeaponContent sysWeaponContent = new SysWeaponContent();
-        sysWeaponContent.setId(UUID.randomUUID().toString().replaceAll("-",""));
-        sysWeaponContent.setWeaponId(weaponId);
-        sysWeaponContent.setContent(content);
-        sysWeaponContent.setType(type);
-        return sysWeaponContent;
-    }
 }

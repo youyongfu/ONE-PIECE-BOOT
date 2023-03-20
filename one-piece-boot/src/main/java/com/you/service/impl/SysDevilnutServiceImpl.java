@@ -11,11 +11,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.you.common.ResultBean;
 import com.you.constant.DevilnutConstant;
 import com.you.constant.OssConstant;
+import com.you.entity.SysClobContent;
 import com.you.entity.SysDevilnut;
-import com.you.entity.SysDevilnutContent;
 import com.you.entity.SysUploadFile;
 import com.you.mapper.SysDevilnutMapper;
-import com.you.service.SysDevilnutContentService;
+import com.you.service.SysClobContentService;
 import com.you.service.SysDevilnutService;
 import com.you.service.SysUploadFileRecordService;
 import com.you.service.SysUploadFileService;
@@ -36,7 +36,7 @@ public class SysDevilnutServiceImpl extends ServiceImpl<SysDevilnutMapper, SysDe
     @Resource
     private SysDevilnutMapper sysDevilnutMapper;
     @Resource
-    private SysDevilnutContentService sysDevilnutContentService;
+    private SysClobContentService sysClobContentService;
     @Resource
     private SysUploadFileService sysUploadFileService;
     @Resource
@@ -98,10 +98,10 @@ public class SysDevilnutServiceImpl extends ServiceImpl<SysDevilnutMapper, SysDe
         save(sysDevilnut);
 
         //保存组织内容信息
-        List<SysDevilnutContent> contentList = new ArrayList<>();
-        contentList.add(assemblyData(devilnutId,sysDevilnut.getAbility(), DevilnutConstant.ABILITY_TYPE));
-        contentList.add(assemblyData(devilnutId,sysDevilnut.getMove(), DevilnutConstant.MOVE_TYPE));
-        sysDevilnutContentService.saveBatch(contentList);
+        List<SysClobContent> contentList = new ArrayList<>();
+        contentList.add(sysClobContentService.assemblyData(devilnutId,sysDevilnut.getAbility(), DevilnutConstant.ABILITY_TYPE));
+        contentList.add(sysClobContentService.assemblyData(devilnutId,sysDevilnut.getMove(), DevilnutConstant.MOVE_TYPE));
+        sysClobContentService.saveBatch(contentList);
 
         return ResultBean.success(sysDevilnut);
     }
@@ -124,9 +124,7 @@ public class SysDevilnutServiceImpl extends ServiceImpl<SysDevilnutMapper, SysDe
         map.put("fileList",fileList);
 
         //获取组织内容信息
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("devilnut_id",id);
-        List<SysDevilnutContent> devilnutContentList = sysDevilnutContentService.list(queryWrapper);
+        List<SysClobContent> devilnutContentList = sysClobContentService.contentListByOwnerId(id);
         devilnutContentList.forEach(conten ->{
             map.put(conten.getType(),conten.getContent());
         });
@@ -147,9 +145,7 @@ public class SysDevilnutServiceImpl extends ServiceImpl<SysDevilnutMapper, SysDe
         updateById(sysDevilnut);
 
         //更新果实内容信息
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("devilnut_id",devilnutId);
-        List<SysDevilnutContent> devilnutContentList = sysDevilnutContentService.list(queryWrapper);
+        List<SysClobContent> devilnutContentList = sysClobContentService.contentListByOwnerId(devilnutId);
         devilnutContentList.forEach(content ->{
             if(DevilnutConstant.ABILITY_TYPE.equals(content.getType())){
                 content.setContent(sysDevilnut.getAbility());
@@ -157,7 +153,7 @@ public class SysDevilnutServiceImpl extends ServiceImpl<SysDevilnutMapper, SysDe
                 content.setContent(sysDevilnut.getMove());
             }
         });
-        sysDevilnutContentService.updateBatchById(devilnutContentList);
+        sysClobContentService.updateBatchById(devilnutContentList);
 
 
         //删除已保存的果实文件关系
@@ -180,27 +176,9 @@ public class SysDevilnutServiceImpl extends ServiceImpl<SysDevilnutMapper, SysDe
         removeById(id);
 
         //删除果实内容信息
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("devilnut_id",id);
-        sysDevilnutContentService.remove(queryWrapper);
+        sysClobContentService.removeContentByOwnerId(id);
 
         return ResultBean.success();
-    }
-
-    /**
-     * 组装内容数据
-     * @param devilnutId
-     * @param content
-     * @param type
-     * @return
-     */
-    private SysDevilnutContent assemblyData(String devilnutId,String content,String type){
-        SysDevilnutContent sysDevilnutContent = new SysDevilnutContent();
-        sysDevilnutContent.setId(UUID.randomUUID().toString().replaceAll("-",""));
-        sysDevilnutContent.setDevilnutId(devilnutId);
-        sysDevilnutContent.setContent(content);
-        sysDevilnutContent.setType(type);
-        return sysDevilnutContent;
     }
 
 }

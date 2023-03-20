@@ -11,11 +11,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.you.common.ResultBean;
 import com.you.constant.OrganizationConstant;
 import com.you.constant.OssConstant;
+import com.you.entity.SysClobContent;
 import com.you.entity.SysOrganization;
-import com.you.entity.SysOrganizationContent;
 import com.you.entity.SysUploadFile;
 import com.you.mapper.SysOrganizationMapper;
-import com.you.service.SysOrganizationContentService;
+import com.you.service.SysClobContentService;
 import com.you.service.SysOrganizationService;
 import com.you.service.SysUploadFileRecordService;
 import com.you.service.SysUploadFileService;
@@ -38,7 +38,7 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
     @Resource
     private SysUploadFileService sysUploadFileService;
     @Resource
-    private SysOrganizationContentService sysOrganizationContentService;
+    private SysClobContentService sysClobContentService;
     @Resource
     private SysUploadFileRecordService sysUploadFileRecordService;
 
@@ -125,11 +125,11 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
         save(sysOrganization);
 
         //保存组织内容信息
-        List<SysOrganizationContent> contentList = new ArrayList<>();
-        contentList.add(assemblyData(organizationId,sysOrganization.getBackground(), OrganizationConstant.BACKGROUND_TYPE));
-        contentList.add(assemblyData(organizationId,sysOrganization.getExperience(), OrganizationConstant.EXPERIENCE_TYPE));
-        contentList.add(assemblyData(organizationId,sysOrganization.getCivilization(), OrganizationConstant.CIVILIZATION_TYPE));
-        sysOrganizationContentService.saveBatch(contentList);
+        List<SysClobContent> contentList = new ArrayList<>();
+        contentList.add(sysClobContentService.assemblyData(organizationId,sysOrganization.getBackground(), OrganizationConstant.BACKGROUND_TYPE));
+        contentList.add(sysClobContentService.assemblyData(organizationId,sysOrganization.getExperience(), OrganizationConstant.EXPERIENCE_TYPE));
+        contentList.add(sysClobContentService.assemblyData(organizationId,sysOrganization.getCivilization(), OrganizationConstant.CIVILIZATION_TYPE));
+        sysClobContentService.saveBatch(contentList);
 
         return ResultBean.success(sysOrganization);
     }
@@ -153,9 +153,7 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
         map.put("fileList",fileList);
 
         //获取组织内容信息
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("organization_id",id);
-        List<SysOrganizationContent> organizationContentList = sysOrganizationContentService.list(queryWrapper);
+        List<SysClobContent> organizationContentList = sysClobContentService.contentListByOwnerId(id);
         organizationContentList.forEach(conten ->{
             map.put(conten.getType(),conten.getContent());
         });
@@ -181,7 +179,7 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
         //更新组织内容信息
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("organization_id",organizationId);
-        List<SysOrganizationContent> organizationContentList = sysOrganizationContentService.list(queryWrapper);
+        List<SysClobContent> organizationContentList = sysClobContentService.contentListByOwnerId(organizationId);
         organizationContentList.forEach(content ->{
             if(OrganizationConstant.BACKGROUND_TYPE.equals(content.getType())){
                 content.setContent(sysOrganization.getBackground());
@@ -191,7 +189,7 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
                 content.setContent(sysOrganization.getCivilization());
             }
         });
-        sysOrganizationContentService.updateBatchById(organizationContentList);
+        sysClobContentService.updateBatchById(organizationContentList);
 
 
         //删除已保存的组织文件关系
@@ -220,27 +218,9 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
         removeById(id);
 
         //删除组织内容信息
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("organization_id",id);
-        sysOrganizationContentService.remove(queryWrapper);
+        sysClobContentService.removeContentByOwnerId(id);
 
         return ResultBean.success();
-    }
-
-    /**
-     * 组装内容数据
-     * @param organizationId
-     * @param content
-     * @param type
-     * @return
-     */
-    private SysOrganizationContent assemblyData(String organizationId,String content,String type){
-        SysOrganizationContent organizationContent = new SysOrganizationContent();
-        organizationContent.setId(UUID.randomUUID().toString().replaceAll("-",""));
-        organizationContent.setOrganizationId(organizationId);
-        organizationContent.setContent(content);
-        organizationContent.setType(type);
-        return organizationContent;
     }
 
 }
