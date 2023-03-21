@@ -31,7 +31,7 @@ public class SysOrganization extends BaseEntity {
     private String foreignName;
 
     //组织性质
-    private String nature;
+    private Integer nature;
 
     //诞生时间
     private String birth;
@@ -79,4 +79,8 @@ public class SysOrganization extends BaseEntity {
     //文件id
     @TableField(exist = false)    //表示当前属性不是数据库的字段
     private String fileIds;
+
+    //组织关系
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private List<SysOrganizationRelation> sysOrganizationRelationList = new ArrayList<>();
 }

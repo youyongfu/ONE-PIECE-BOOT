@@ -5,24 +5,21 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.you.common.ResultBean;
 import com.you.constant.OrganizationConstant;
 import com.you.constant.OssConstant;
-import com.you.entity.SysClobContent;
-import com.you.entity.SysOrganization;
-import com.you.entity.SysUploadFile;
+import com.you.entity.*;
 import com.you.mapper.SysOrganizationMapper;
-import com.you.service.SysClobContentService;
-import com.you.service.SysOrganizationService;
-import com.you.service.SysUploadFileRecordService;
-import com.you.service.SysUploadFileService;
+import com.you.service.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 组织管理服务实现类
@@ -41,6 +38,10 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
     private SysClobContentService sysClobContentService;
     @Resource
     private SysUploadFileRecordService sysUploadFileRecordService;
+    @Resource
+    private SysOrganizationRelationService sysOrganizationRelationService;
+    @Resource
+    private SysFigureExperienceService sysFigureExperienceService;
 
     /**
      * 分页获取组织列表
@@ -60,6 +61,10 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
         if(jsonObject.size() > 0){
             String name = jsonObject.getString("name");
             queryWrapper.like(StrUtil.isNotBlank(name), "name", name);
+            String nature = jsonObject.getString("nature");
+            queryWrapper.eq(StrUtil.isNotBlank(nature), "nature", nature);
+            String parentId = jsonObject.getString("parentId");
+            queryWrapper.eq(StrUtil.isNotBlank(parentId), "parent_id", parentId);
         }
 
         //分页插件
@@ -124,12 +129,11 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
         sysOrganization.setCreatedTime(new Date());
         save(sysOrganization);
 
+        //保存组织关系
+        saveOrUpdateOrganizationRelation(sysOrganization,"save");
+
         //保存组织内容信息
-        List<SysClobContent> contentList = new ArrayList<>();
-        contentList.add(sysClobContentService.assemblyData(organizationId,sysOrganization.getBackground(), OrganizationConstant.BACKGROUND_TYPE));
-        contentList.add(sysClobContentService.assemblyData(organizationId,sysOrganization.getExperience(), OrganizationConstant.EXPERIENCE_TYPE));
-        contentList.add(sysClobContentService.assemblyData(organizationId,sysOrganization.getCivilization(), OrganizationConstant.CIVILIZATION_TYPE));
-        sysClobContentService.saveBatch(contentList);
+        saveOrUpdateContent(sysOrganization,"save");
 
         return ResultBean.success(sysOrganization);
     }
@@ -146,6 +150,12 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
 
         //获取组织信息
         SysOrganization sysOrganization = getById(id);
+
+        //获取组织关系
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("owner_id",id);
+        sysOrganization.setSysOrganizationRelationList(sysOrganizationRelationService.list(queryWrapper));
+
         map.put("organization",sysOrganization);
 
         //获取上传文件信息
@@ -176,21 +186,11 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
         sysOrganization.setUpdatedTime(new Date());
         updateById(sysOrganization);
 
-        //更新组织内容信息
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("organization_id",organizationId);
-        List<SysClobContent> organizationContentList = sysClobContentService.contentListByOwnerId(organizationId);
-        organizationContentList.forEach(content ->{
-            if(OrganizationConstant.BACKGROUND_TYPE.equals(content.getType())){
-                content.setContent(sysOrganization.getBackground());
-            }else if(OrganizationConstant.EXPERIENCE_TYPE.equals(content.getType())){
-                content.setContent(sysOrganization.getExperience());
-            }else if(OrganizationConstant.CIVILIZATION_TYPE.equals(content.getType())){
-                content.setContent(sysOrganization.getCivilization());
-            }
-        });
-        sysClobContentService.updateBatchById(organizationContentList);
+        //更新组织关系
+        saveOrUpdateOrganizationRelation(sysOrganization,"update");
 
+        //更新组织内容信息
+        saveOrUpdateContent(sysOrganization,"update");
 
         //删除已保存的组织文件关系
         if(StringUtils.isNotBlank(sysOrganization.getFileIds())){
@@ -211,11 +211,26 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
         //判断该菜单是否存在子菜单，存在无法删除
         int count = count(new QueryWrapper<SysOrganization>().eq("parent_id", id));
         if (count > 0) {
-            return ResultBean.fail("请先删除子组织");
+            return ResultBean.fail("该组织存在下属组织，无法删除！");
+        }
+
+        count = sysFigureExperienceService.count(new QueryWrapper<SysFigureExperience>().eq("organization_id", id));
+        if (count > 0) {
+            return ResultBean.fail("该组织已被人物引用，无法删除！");
+        }
+
+        count = sysOrganizationRelationService.count(new QueryWrapper<SysOrganizationRelation>().eq("relation_organization_id", id));
+        if (count > 0) {
+            return ResultBean.fail("该组织已被其他组织引用，无法删除！");
         }
 
         //删除组织
         removeById(id);
+
+        //删除组织关系
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("owner_id",id);
+        sysOrganizationRelationService.remove(queryWrapper);
 
         //删除组织内容信息
         sysClobContentService.removeContentByOwnerId(id);
@@ -223,4 +238,81 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
         return ResultBean.success();
     }
 
+    /**
+     * 保存/更新组织关系
+     * @param sysOrganization
+     * @param type
+     */
+    private void saveOrUpdateOrganizationRelation(SysOrganization sysOrganization, String type) {
+        String organizationId = sysOrganization.getId();
+        if("save".equals(type)){
+            //保存
+            sysOrganization.getSysOrganizationRelationList().forEach(sysOrganizationRelation -> {
+                String id = UUID.randomUUID().toString().replaceAll("-", "");
+                sysOrganizationRelation.setId(id);
+                sysOrganizationRelation.setOwnerId(organizationId);
+            });
+            sysOrganizationRelationService.saveBatch(sysOrganization.getSysOrganizationRelationList());
+        }else {
+            //更新
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.eq("owner_id",organizationId);
+            List<SysOrganizationRelation> addList = new ArrayList<>();
+            List<SysOrganizationRelation> updateList = new ArrayList<>();
+            List<SysOrganizationRelation> deleteList = sysOrganizationRelationService.list(queryWrapper);
+            List<String> deleteIdList = new ArrayList<>();
+            if(CollectionUtils.isNotEmpty(deleteList)){
+                deleteIdList = deleteList.stream().map(m -> m.getId()).collect(Collectors.toList());
+            }
+            List<SysOrganizationRelation> sysOrganizationRelationList = sysOrganization.getSysOrganizationRelationList();
+            List<String> finalDeleteIdList = deleteIdList;
+            sysOrganizationRelationList.forEach(sysOrganizationRelation -> {
+                if(StringUtils.isBlank(sysOrganizationRelation.getId())){            //新增
+                    String id = UUID.randomUUID().toString().replaceAll("-", "");
+                    sysOrganizationRelation.setId(id);
+                    sysOrganizationRelation.setOwnerId(organizationId);
+                    addList.add(sysOrganizationRelation);
+                }else {
+                    updateList.add(sysOrganizationRelation);       //更新
+                    finalDeleteIdList.remove(sysOrganizationRelation.getId());    //删除
+                }
+            });
+            sysOrganizationRelationService.saveBatch(addList);
+            sysOrganizationRelationService.updateBatchById(updateList);
+            sysOrganizationRelationService.removeByIds(finalDeleteIdList);
+        }
+
+    }
+
+    /**
+     * 保存/更新组织内容
+     * @param sysOrganization
+     * @param type
+     */
+    private void saveOrUpdateContent(SysOrganization sysOrganization, String type) {
+        String organizationId = sysOrganization.getId();
+        if("save".equals(type)) {
+            //保存
+            List<SysClobContent> contentList = new ArrayList<>();
+            contentList.add(sysClobContentService.assemblyData(organizationId,sysOrganization.getBackground(), OrganizationConstant.BACKGROUND_TYPE));
+            contentList.add(sysClobContentService.assemblyData(organizationId,sysOrganization.getExperience(), OrganizationConstant.EXPERIENCE_TYPE));
+            contentList.add(sysClobContentService.assemblyData(organizationId,sysOrganization.getCivilization(), OrganizationConstant.CIVILIZATION_TYPE));
+            sysClobContentService.saveBatch(contentList);
+        }else {
+            //更新
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.eq("organization_id",organizationId);
+            List<SysClobContent> organizationContentList = sysClobContentService.contentListByOwnerId(organizationId);
+            organizationContentList.forEach(content ->{
+                if(OrganizationConstant.BACKGROUND_TYPE.equals(content.getType())){
+                    content.setContent(sysOrganization.getBackground());
+                }else if(OrganizationConstant.EXPERIENCE_TYPE.equals(content.getType())){
+                    content.setContent(sysOrganization.getExperience());
+                }else if(OrganizationConstant.CIVILIZATION_TYPE.equals(content.getType())){
+                    content.setContent(sysOrganization.getCivilization());
+                }
+            });
+            sysClobContentService.updateBatchById(organizationContentList);
+        }
+    }
 }
