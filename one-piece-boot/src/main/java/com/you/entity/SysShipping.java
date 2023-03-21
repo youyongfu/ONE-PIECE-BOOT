@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 /**
  * 船只实体类
  * @author yyf
@@ -28,7 +30,7 @@ public class SysShipping extends BaseEntity {
     private String alias;
 
     //型号
-    private String model;
+    private Integer model;
 
     //建造日
     private String bulidDate;
@@ -70,5 +72,9 @@ public class SysShipping extends BaseEntity {
     //文件id
     @TableField(exist = false)    //表示当前属性不是数据库的字段
     private String fileIds;
+
+    //相关角色
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private List<SysShippingRole> sysShippingRoleList;
 
 }

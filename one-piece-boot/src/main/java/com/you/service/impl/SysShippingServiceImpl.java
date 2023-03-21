@@ -5,24 +5,21 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.you.common.ResultBean;
 import com.you.constant.OssConstant;
 import com.you.constant.ShippingConstant;
-import com.you.entity.SysClobContent;
-import com.you.entity.SysShipping;
-import com.you.entity.SysUploadFile;
+import com.you.entity.*;
 import com.you.mapper.SysShippingMapper;
-import com.you.service.SysClobContentService;
-import com.you.service.SysShippingService;
-import com.you.service.SysUploadFileRecordService;
-import com.you.service.SysUploadFileService;
+import com.you.service.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 船只管理服务实现类
@@ -41,6 +38,10 @@ public class SysShippingServiceImpl extends ServiceImpl<SysShippingMapper, SysSh
     private SysUploadFileService sysUploadFileService;
     @Resource
     private SysUploadFileRecordService sysUploadFileRecordService;
+    @Resource
+    private SysShippingRoleService sysShippingRoleService;
+    @Resource
+    private SysFigureExperienceService sysFigureExperienceService;
 
     /**
      * 分页获取列表
@@ -97,12 +98,10 @@ public class SysShippingServiceImpl extends ServiceImpl<SysShippingMapper, SysSh
         save(sysShipping);
 
         //保存组织内容信息
-        List<SysClobContent> contentList = new ArrayList<>();
-        contentList.add(sysClobContentService.assemblyData(shippingId,sysShipping.getBackground(), ShippingConstant.BACKGROUND_TYPE));
-        contentList.add(sysClobContentService.assemblyData(shippingId,sysShipping.getAppearance(), ShippingConstant.APPEARANCE_TYPE));
-        contentList.add(sysClobContentService.assemblyData(shippingId,sysShipping.getFunction(), ShippingConstant.FUNCTION_TYPE));
-        contentList.add(sysClobContentService.assemblyData(shippingId,sysShipping.getExperience(), ShippingConstant.EXPERIENCE_TYPE));
-        sysClobContentService.saveBatch(contentList);
+        saveOrUpdateContent(sysShipping,"save");
+
+        //保存相关角色
+        saveOrUpdateShippingRole(sysShipping,"save");
 
         return ResultBean.success(sysShipping);
     }
@@ -118,6 +117,12 @@ public class SysShippingServiceImpl extends ServiceImpl<SysShippingMapper, SysSh
 
         //获取船只信息
         SysShipping sysShipping = getById(id);
+
+        //获取相关角色
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("shipping_id",id);
+        sysShipping.setSysShippingRoleList(sysShippingRoleService.list(queryWrapper));
+
         map.put("shipping",sysShipping);
 
         //获取上传文件信息
@@ -141,25 +146,14 @@ public class SysShippingServiceImpl extends ServiceImpl<SysShippingMapper, SysSh
     @Override
     public ResultBean updateShipping(SysShipping sysShipping) {
         //更新操作
-        String shippingId = sysShipping.getId();
         sysShipping.setUpdatedTime(new Date());
         updateById(sysShipping);
 
         //更新船只内容信息
-        List<SysClobContent> shippingContentList = sysClobContentService.contentListByOwnerId(shippingId);
-        shippingContentList.forEach(content ->{
-            if(ShippingConstant.BACKGROUND_TYPE.equals(content.getType())){
-                content.setContent(sysShipping.getBackground());
-            }else if(ShippingConstant.APPEARANCE_TYPE.equals(content.getType())){
-                content.setContent(sysShipping.getAppearance());
-            }else if(ShippingConstant.FUNCTION_TYPE.equals(content.getType())){
-                content.setContent(sysShipping.getFunction());
-            }else if(ShippingConstant.EXPERIENCE_TYPE.equals(content.getType())){
-                content.setContent(sysShipping.getExperience());
-            }
-        });
-        sysClobContentService.updateBatchById(shippingContentList);
+        saveOrUpdateContent(sysShipping,"update");
 
+        //更新相关角色
+        saveOrUpdateShippingRole(sysShipping,"update");
 
         //删除已保存的船只文件关系
         if(StringUtils.isNotBlank(sysShipping.getFileIds())){
@@ -177,13 +171,99 @@ public class SysShippingServiceImpl extends ServiceImpl<SysShippingMapper, SysSh
      */
     @Override
     public ResultBean deleteShipping(String id) {
+
+        int count = sysFigureExperienceService.count(new QueryWrapper<SysFigureExperience>().eq("shipping_id", id));
+        if (count > 0) {
+            return ResultBean.fail("该船只已被人物引用，无法删除！");
+        }
+
         //删除船只
         removeById(id);
 
         //删除船只内容信息
         sysClobContentService.removeContentByOwnerId(id);
 
+        //删除船只相关角色
+        sysShippingRoleService.remove(new QueryWrapper<SysShippingRole>().eq("shipping_id",id));
+
         return ResultBean.success();
     }
 
+    /**
+     * 保存/更新船只内容
+     * @param sysShipping
+     * @param type
+     */
+    private void saveOrUpdateContent(SysShipping sysShipping, String type) {
+        String shippingId = sysShipping.getId();
+        if("save".equals(type)){
+            //保存
+            List<SysClobContent> contentList = new ArrayList<>();
+            contentList.add(sysClobContentService.assemblyData(shippingId,sysShipping.getBackground(), ShippingConstant.BACKGROUND_TYPE));
+            contentList.add(sysClobContentService.assemblyData(shippingId,sysShipping.getAppearance(), ShippingConstant.APPEARANCE_TYPE));
+            contentList.add(sysClobContentService.assemblyData(shippingId,sysShipping.getFunction(), ShippingConstant.FUNCTION_TYPE));
+            contentList.add(sysClobContentService.assemblyData(shippingId,sysShipping.getExperience(), ShippingConstant.EXPERIENCE_TYPE));
+            sysClobContentService.saveBatch(contentList);
+        }else {
+            //更新
+            List<SysClobContent> shippingContentList = sysClobContentService.contentListByOwnerId(shippingId);
+            shippingContentList.forEach(content ->{
+                if(ShippingConstant.BACKGROUND_TYPE.equals(content.getType())){
+                    content.setContent(sysShipping.getBackground());
+                }else if(ShippingConstant.APPEARANCE_TYPE.equals(content.getType())){
+                    content.setContent(sysShipping.getAppearance());
+                }else if(ShippingConstant.FUNCTION_TYPE.equals(content.getType())){
+                    content.setContent(sysShipping.getFunction());
+                }else if(ShippingConstant.EXPERIENCE_TYPE.equals(content.getType())){
+                    content.setContent(sysShipping.getExperience());
+                }
+            });
+            sysClobContentService.updateBatchById(shippingContentList);
+        }
+    }
+
+    /**
+     * 保存/更新相关角色
+     * @param sysShipping
+     * @param type
+     */
+    private void saveOrUpdateShippingRole(SysShipping sysShipping, String type) {
+        String shippingId = sysShipping.getId();
+        if("save".equals(type)){
+            //保存
+            sysShipping.getSysShippingRoleList().forEach(sysShippingRole -> {
+                String id = UUID.randomUUID().toString().replaceAll("-", "");
+                sysShippingRole.setId(id);
+                sysShippingRole.setShippingId(shippingId);
+            });
+            sysShippingRoleService.saveBatch(sysShipping.getSysShippingRoleList());
+        }else {
+            //更新
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.eq("shipping_id",shippingId);
+            List<SysShippingRole> addList = new ArrayList<>();
+            List<SysShippingRole> updateList = new ArrayList<>();
+            List<SysShippingRole> deleteList = sysShippingRoleService.list(queryWrapper);
+            List<String> deleteIdList = new ArrayList<>();
+            if(CollectionUtils.isNotEmpty(deleteList)){
+                deleteIdList = deleteList.stream().map(m -> m.getId()).collect(Collectors.toList());
+            }
+            List<SysShippingRole> sysShippingRoleList = sysShipping.getSysShippingRoleList();
+            List<String> finalDeleteIdList = deleteIdList;
+            sysShippingRoleList.forEach(sysShippingRole -> {
+                if(StringUtils.isBlank(sysShippingRole.getId())){            //新增
+                    String id = UUID.randomUUID().toString().replaceAll("-", "");
+                    sysShippingRole.setId(id);
+                    sysShippingRole.setShippingId(shippingId);
+                    addList.add(sysShippingRole);
+                }else {
+                    updateList.add(sysShippingRole);       //更新
+                    finalDeleteIdList.remove(sysShippingRole.getId());    //删除
+                }
+            });
+            sysShippingRoleService.saveBatch(addList);
+            sysShippingRoleService.updateBatchById(updateList);
+            sysShippingRoleService.removeByIds(finalDeleteIdList);
+        }
+    }
 }
