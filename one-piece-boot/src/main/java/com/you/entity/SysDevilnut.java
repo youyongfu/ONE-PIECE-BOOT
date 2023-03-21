@@ -33,8 +33,8 @@ public class SysDevilnut extends BaseEntity{
     //性质
     private String nature;
 
-    //食用者
-    private String eater;
+    //初次出现
+    private String debut;
 
     //简介
     private String synopsis;

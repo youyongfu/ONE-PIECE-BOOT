@@ -13,12 +13,10 @@ import com.you.constant.DevilnutConstant;
 import com.you.constant.OssConstant;
 import com.you.entity.SysClobContent;
 import com.you.entity.SysDevilnut;
+import com.you.entity.SysFigureDevilnut;
 import com.you.entity.SysUploadFile;
 import com.you.mapper.SysDevilnutMapper;
-import com.you.service.SysClobContentService;
-import com.you.service.SysDevilnutService;
-import com.you.service.SysUploadFileRecordService;
-import com.you.service.SysUploadFileService;
+import com.you.service.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -41,6 +39,8 @@ public class SysDevilnutServiceImpl extends ServiceImpl<SysDevilnutMapper, SysDe
     private SysUploadFileService sysUploadFileService;
     @Resource
     private SysUploadFileRecordService sysUploadFileRecordService;
+    @Resource
+    private SysFigureDevilnutService sysFigureDevilnutService;
 
     /**
      * 分页获取列表
@@ -60,6 +60,8 @@ public class SysDevilnutServiceImpl extends ServiceImpl<SysDevilnutMapper, SysDe
         if(jsonObject.size() > 0){
             String name = jsonObject.getString("name");
             queryWrapper.like(StrUtil.isNotBlank(name), "name", name);
+            String category = jsonObject.getString("category");
+            queryWrapper.eq(StrUtil.isNotBlank(category), "category", category);
         }
 
         //分页插件
@@ -97,11 +99,8 @@ public class SysDevilnutServiceImpl extends ServiceImpl<SysDevilnutMapper, SysDe
         sysDevilnut.setCreatedTime(new Date());
         save(sysDevilnut);
 
-        //保存组织内容信息
-        List<SysClobContent> contentList = new ArrayList<>();
-        contentList.add(sysClobContentService.assemblyData(devilnutId,sysDevilnut.getAbility(), DevilnutConstant.ABILITY_TYPE));
-        contentList.add(sysClobContentService.assemblyData(devilnutId,sysDevilnut.getMove(), DevilnutConstant.MOVE_TYPE));
-        sysClobContentService.saveBatch(contentList);
+        //保存果实内容信息
+        saveOrUpdateCotent(sysDevilnut,"save");
 
         return ResultBean.success(sysDevilnut);
     }
@@ -115,7 +114,7 @@ public class SysDevilnutServiceImpl extends ServiceImpl<SysDevilnutMapper, SysDe
     public ResultBean getInfoById(String id) {
         MapBuilder<Object, Object> map = MapUtil.builder();
 
-        //获取组织信息
+        //获取果实信息
         SysDevilnut sysDevilnut = getById(id);
         map.put("devilnut",sysDevilnut);
 
@@ -123,7 +122,7 @@ public class SysDevilnutServiceImpl extends ServiceImpl<SysDevilnutMapper, SysDe
         List<SysUploadFile> fileList = sysUploadFileService.getFileInfo(OssConstant.DEVILNUT_TYPE,sysDevilnut.getId());
         map.put("fileList",fileList);
 
-        //获取组织内容信息
+        //获取果实内容信息
         List<SysClobContent> devilnutContentList = sysClobContentService.contentListByOwnerId(id);
         devilnutContentList.forEach(conten ->{
             map.put(conten.getType(),conten.getContent());
@@ -140,21 +139,11 @@ public class SysDevilnutServiceImpl extends ServiceImpl<SysDevilnutMapper, SysDe
     @Override
     public ResultBean updateDevilnut(SysDevilnut sysDevilnut) {
         //更新操作
-        String devilnutId = sysDevilnut.getId();
         sysDevilnut.setUpdatedTime(new Date());
         updateById(sysDevilnut);
 
         //更新果实内容信息
-        List<SysClobContent> devilnutContentList = sysClobContentService.contentListByOwnerId(devilnutId);
-        devilnutContentList.forEach(content ->{
-            if(DevilnutConstant.ABILITY_TYPE.equals(content.getType())){
-                content.setContent(sysDevilnut.getAbility());
-            }else if(DevilnutConstant.MOVE_TYPE.equals(content.getType())){
-                content.setContent(sysDevilnut.getMove());
-            }
-        });
-        sysClobContentService.updateBatchById(devilnutContentList);
-
+        saveOrUpdateCotent(sysDevilnut,"update");
 
         //删除已保存的果实文件关系
         if(StringUtils.isNotBlank(sysDevilnut.getFileIds())){
@@ -172,13 +161,46 @@ public class SysDevilnutServiceImpl extends ServiceImpl<SysDevilnutMapper, SysDe
      */
     @Override
     public ResultBean deleteDevilnut(String id) {
-        //删除组织
+
+        int count = sysFigureDevilnutService.count(new QueryWrapper<SysFigureDevilnut>().eq("devilnut_id", id));
+        if (count > 0) {
+            return ResultBean.fail("该果实已被人物引用，无法删除！");
+        }
+
+        //删除果实
         removeById(id);
 
         //删除果实内容信息
         sysClobContentService.removeContentByOwnerId(id);
 
         return ResultBean.success();
+    }
+
+    /**
+     * 保存、更新果实内容
+     * @param sysDevilnut
+     */
+    private void saveOrUpdateCotent(SysDevilnut sysDevilnut,String type) {
+        String devilnutId = sysDevilnut.getId();
+        if("save".equals(type)){
+            //保存
+            List<SysClobContent> contentList = new ArrayList<>();
+            contentList.add(sysClobContentService.assemblyData(devilnutId,sysDevilnut.getAbility(), DevilnutConstant.ABILITY_TYPE));
+            contentList.add(sysClobContentService.assemblyData(devilnutId,sysDevilnut.getMove(), DevilnutConstant.MOVE_TYPE));
+            sysClobContentService.saveBatch(contentList);
+        }else {
+            //更新
+            List<SysClobContent> devilnutContentList = sysClobContentService.contentListByOwnerId(devilnutId);
+            devilnutContentList.forEach(content ->{
+                if(DevilnutConstant.ABILITY_TYPE.equals(content.getType())){
+                    content.setContent(sysDevilnut.getAbility());
+                }else if(DevilnutConstant.MOVE_TYPE.equals(content.getType())){
+                    content.setContent(sysDevilnut.getMove());
+                }
+            });
+            sysClobContentService.updateBatchById(devilnutContentList);
+        }
+
     }
 
 }
