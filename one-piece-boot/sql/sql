@@ -167,6 +167,21 @@ INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_tim
 INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (41, 39, '败北', NULL, '2', '2023-03-17 04:16:33', NULL, 1);
 INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (42, 39, '平手', NULL, '3', '2023-03-17 04:16:49', NULL, 1);
 INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (43, 39, '无果', NULL, '4', '2023-03-17 04:17:01', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (44, 0, '组织性质', 'ORGANIZATION_NATURE', NULL, '2023-03-20 21:24:06', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (45, 44, '国际政治体', NULL, '1', '2023-03-20 21:24:40', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (46, 0, '组织状态', 'ORGANIZATION_STATU', NULL, '2023-03-20 21:37:40', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (47, 46, '活跃', NULL, '1', '2023-03-20 21:38:07', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (48, 46, '谢幕', NULL, '2', '2023-03-20 21:38:22', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (49, 44, '海贼团', NULL, '2', '2023-03-20 21:44:00', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (50, 0, '组织关系类型', 'ORGANIZATION_RELATION_TYPE', NULL, '2023-03-20 22:21:30', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (51, 50, '下属组织', NULL, '1', '2023-03-20 22:21:53', '2023-03-20 22:22:28', 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (52, 50, '敌对势力', NULL, '2', '2023-03-20 22:22:45', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (53, 0, '船只型号', 'SHIPPING_MODEL', NULL, '2023-03-21 02:51:35', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (54, 53, '双桅帆船', NULL, '1', '2023-03-21 02:51:50', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (55, 53, '船尾中央舵式快速帆船', NULL, '2', '2023-03-21 02:52:05', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (56, 0, '船只状态', 'SHIPPING_STATU', NULL, '2023-03-21 03:19:58', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (57, 56, '活跃', NULL, '1', '2023-03-21 03:20:11', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (58, 56, '谢幕', NULL, '2', '2023-03-21 03:20:24', NULL, 1);
 
 --------------------------------------文件上传信息表-----------------------------------------------------------------------------
 CREATE TABLE sys_upload_file (
@@ -200,15 +215,25 @@ CREATE TABLE sys_organization (
   parent_id varchar(50) DEFAULT NULL COMMENT '上级组织',
   name varchar(50) DEFAULT NULL COMMENT '名称',
   foreign_name varchar(100) DEFAULT NULL COMMENT '外文名',
-  nature varchar(50) DEFAULT NULL COMMENT '组织性质',
+  nature int(2) DEFAULT NULL COMMENT '组织性质',
   birth varchar(50) DEFAULT NULL COMMENT '诞生时间',
-  leader varchar(50) DEFAULT NULL COMMENT '组织领导',
-  headquarters varchar(50) DEFAULT NULL COMMENT '组织总部',
+  leader varchar(32) DEFAULT NULL COMMENT '组织领导',
+  headquarters varchar(32) DEFAULT NULL COMMENT '组织总部',
   debut varchar(50) DEFAULT NULL COMMENT '初次登场',
   synopsis varchar(1000) DEFAULT NULL COMMENT '简介',
   created_time datetime DEFAULT NULL COMMENT '创建时间',
   updated_time datetime DEFAULT NULL COMMENT '更新时间',
   statu int(2) DEFAULT NULL COMMENT '状态',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--------------------------------------组织关系表-----------------------------------------------------------------------------
+CREATE TABLE sys_organization_relation (
+  id varchar(32) NOT NULL,
+  relation_type int(2) DEFAULT NULL COMMENT '关系类型',
+  owner_id varchar(32) DEFAULT NULL COMMENT '所属组织id',
+  synopsis varchar(500) DEFAULT NULL COMMENT '简介',
+  relation_organization_id varchar(32) DEFAULT NULL COMMENT '关联组织id',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -220,7 +245,7 @@ CREATE TABLE sys_devilnut (
   alias varchar(100) DEFAULT NULL COMMENT '别名',
   category varchar(2) DEFAULT NULL COMMENT '类别',
   nature varchar(100) DEFAULT NULL COMMENT '性质',
-  eater varchar(100) DEFAULT NULL COMMENT '食用者',
+  debut varchar(100) DEFAULT NULL COMMENT '初次出现',
   synopsis varchar(1000) DEFAULT NULL COMMENT '简介',
   created_time datetime DEFAULT NULL COMMENT '创建时间',
   updated_time datetime DEFAULT NULL COMMENT '更新时间',
@@ -256,12 +281,23 @@ CREATE TABLE sys_shipping (
   height varchar(100) DEFAULT NULL COMMENT '总高',
   designer varchar(100) DEFAULT NULL COMMENT '设计者',
   producer varchar(100) DEFAULT NULL COMMENT '制造者',
-  user varchar(100) DEFAULT NULL COMMENT '食用者',
+  user varchar(32) DEFAULT NULL COMMENT '使用者',
   synopsis varchar(1000) DEFAULT NULL COMMENT '简介',
   created_time datetime DEFAULT NULL COMMENT '创建时间',
   updated_time datetime DEFAULT NULL COMMENT '更新时间',
   statu int(2) DEFAULT NULL COMMENT '状态',
-  model varchar(100) DEFAULT NULL COMMENT '型号',
+  model int(2) DEFAULT NULL COMMENT '型号',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--------------------------------------船只相关角色表-----------------------------------------------------------------------------
+CREATE TABLE sys_shipping_role (
+  id varchar(32) NOT NULL,
+  relation_identity int(2) DEFAULT NULL COMMENT '身份类型',
+  relation_id varchar(32) DEFAULT NULL COMMENT '关系人/关系组织',
+  relation varchar(50) DEFAULT NULL COMMENT '关系类型',
+  shipping_id varchar(32) DEFAULT NULL COMMENT '船只id',
+  synopsis varchar(500) DEFAULT NULL COMMENT '简介',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
