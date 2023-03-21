@@ -114,7 +114,7 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         saveOrUpdateFigureDevilnut(sysFigure);
 
         //保存人物武器关系
-        saveOrUpdateFigureWeapon(sysFigure,"save");
+        saveOrUpdateFigureWeapon(sysFigure);
 
         //保存人物经历
         saveOrUpdateFigureExperience(sysFigure,"save");
@@ -219,7 +219,7 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         saveOrUpdateFigureDevilnut(sysFigure);
 
         //更新人物武器关系
-        saveOrUpdateFigureWeapon(sysFigure,"update");
+        saveOrUpdateFigureWeapon(sysFigure);
 
         //更新人物经历
         saveOrUpdateFigureExperience(sysFigure,"update");
@@ -293,26 +293,30 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         //页面勾选的岛屿
         String islandsIds = sysFigure.getIslandsIds();
 
-        List<SysFigureIslands> sysFigureIslandsAddList = new ArrayList<>();
-        if(StringUtils.isNotBlank(islandsIds) && CollectionUtils.isEmpty(sysFigureIslandsList)){
-            //页面勾选岛屿但已保存的人物岛屿关系为空，则新增人物岛屿关系
-            String[] islandsIdList = islandsIds.split(",");
-            for (String islandsId:islandsIdList){
+        if (StringUtils.isBlank(islandsIds)){
+            //页面未勾选岛屿但有已保存的人物岛屿关系，则删除已保存的人物岛屿关系
+            sysFigureIslandsService.remove(queryWrapper);
+        }else {
+            List<String> islandsIdList = Arrays.asList(islandsIds.split(","));          //页面勾选岛屿id列表
+            List<String> islandsIdListDb = sysFigureIslandsList.stream().map(sysFigureIslands -> sysFigureIslands.getIslandsId()).collect(Collectors.toList());  //数据库存储岛屿id列表
+            List<String> intersecion = islandsIdList.stream().filter(islandsIdListDb::contains).collect(Collectors.toList());           //交集
+
+            List<String> addIds = islandsIdList.stream().filter(item -> !intersecion.contains(item)).collect(Collectors.toList());      //需要保存的岛屿id列表
+            List<SysFigureIslands> sysFigureIslandsAddList = new ArrayList<>();
+            for (String islandsId:addIds){
                 SysFigureIslands sysFigureIslands = new SysFigureIslands();
                 sysFigureIslands.setFigureId(figureId);
                 sysFigureIslands.setIslandsId(islandsId);
                 sysFigureIslandsAddList.add(sysFigureIslands);
             }
-        }else if (StringUtils.isBlank(islandsIds) && CollectionUtils.isNotEmpty(sysFigureIslandsList)){
-            //页面未勾选岛屿但有已保存的人物岛屿关系，则删除已保存的人物岛屿关系
-            sysFigureIslandsService.remove(queryWrapper);
-        }else if(StringUtils.isNotBlank(islandsIds) && CollectionUtils.isNotEmpty(sysFigureIslandsList)){
-            //页面勾选岛屿且有已保存的人物岛屿关系
-            List<String> islandsIdList = Arrays.asList(islandsIds.split(","));
-            List<String> islandsIdListDb = sysFigureIslandsList.stream().map(sysFigureIslands -> sysFigureIslands.getIslandsId()).collect(Collectors.toList());
+            sysFigureIslandsService.saveBatch(sysFigureIslandsAddList);
 
+            List<String> deleteIds = islandsIdListDb.stream().filter(item -> !intersecion.contains(item)).collect(Collectors.toList());     //需要删除的岛屿id列表
+            if(CollectionUtils.isNotEmpty(deleteIds)){
+                queryWrapper.in("islands_id",deleteIds);
+                sysFigureIslandsService.remove(queryWrapper);
+            }
         }
-        sysFigureIslandsService.saveBatch(sysFigureIslandsAddList);
     }
 
     /**
@@ -325,55 +329,75 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         String figureId = sysFigure.getId();
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("figure_id",figureId);
-        List<SysFigureDevilnut> sysFigureDevilnutList = sysFigureDevilnutService.list(queryWrapper);
+        List<SysFigureDevilnut> dbList = sysFigureDevilnutService.list(queryWrapper);
 
         //页面勾选的果实
         String devilnutIds = sysFigure.getDevilnutIds();
 
-        List<SysFigureDevilnut> sysFigureDevilnutAddList = new ArrayList<>();
-        if(StringUtils.isNotBlank(devilnutIds) && CollectionUtils.isEmpty(sysFigureDevilnutList)){
-            //页面勾选果实但已保存的人物果实关系为空，则新增人物果实关系
-            String[] devilnuts = devilnutIds.split(",");
-            for (String devilnutId:devilnuts){
-                SysFigureDevilnut sysFigureDevilnut = new SysFigureDevilnut();
-                sysFigureDevilnut.setFigureId(figureId);
-                sysFigureDevilnut.setDevilnutId(devilnutId);
-                sysFigureDevilnutAddList.add(sysFigureDevilnut);
-            }
-        }else if (StringUtils.isBlank(devilnutIds) && CollectionUtils.isNotEmpty(sysFigureDevilnutList)){
+        if (StringUtils.isBlank(devilnutIds)){
             //页面未勾选果实但有已保存的人物果实关系，则删除已保存的人物果实关系
             sysFigureDevilnutService.remove(queryWrapper);
-        }else if(StringUtils.isNotBlank(devilnutIds) && CollectionUtils.isNotEmpty(sysFigureDevilnutList)){
-            //页面勾选果实且有已保存的人物果实关系
-            List<String> devilnutIdList = Arrays.asList(devilnutIds.split(","));
-            List<String> devilnutIdListDb = sysFigureDevilnutList.stream().map(sysFigureDevilnut -> sysFigureDevilnut.getDevilnutId()).collect(Collectors.toList());
+        }else {
+            List<String> idList = Arrays.asList(devilnutIds.split(","));                //页面勾选果实id列表
+            List<String> dbIdList = dbList.stream().map(item -> item.getDevilnutId()).collect(Collectors.toList());    //数据库存储果实id列表
+            List<String> intersecion = idList.stream().filter(dbIdList::contains).collect(Collectors.toList());     //交集
 
+            List<String> addIds = idList.stream().filter(item -> !intersecion.contains(item)).collect(Collectors.toList());         //需要保存的果实id列表
+            List<SysFigureDevilnut> addList = new ArrayList<>();
+            for (String id:addIds){
+                SysFigureDevilnut sysFigureDevilnut = new SysFigureDevilnut();
+                sysFigureDevilnut.setFigureId(figureId);
+                sysFigureDevilnut.setDevilnutId(id);
+                addList.add(sysFigureDevilnut);
+            }
+            sysFigureDevilnutService.saveBatch(addList);
+
+            List<String> deleteIds = dbIdList.stream().filter(item -> !intersecion.contains(item)).collect(Collectors.toList());   //需要删除的果实id列表
+            if(CollectionUtils.isNotEmpty(deleteIds)){
+                queryWrapper.in("devilnut_id",deleteIds);
+                sysFigureDevilnutService.remove(queryWrapper);
+            }
         }
-        sysFigureDevilnutService.saveBatch(sysFigureDevilnutAddList);
     }
 
     /**
      * 保存/更新人物武器关系
      * @param sysFigure
      */
-    private void saveOrUpdateFigureWeapon(SysFigure sysFigure,String type){
+    private void saveOrUpdateFigureWeapon(SysFigure sysFigure){
+
+        //已保存的人物武器关系
         String figureId = sysFigure.getId();
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("figure_id",figureId);
+        List<SysFigureWeapon> dbList = sysFigureWeaponService.list(queryWrapper);
+
+        //页面勾选的果实
         String weaponIds = sysFigure.getWeaponIds();
-        if("save".equals(type)){
-            //保存
-            if(StringUtils.isNotBlank(weaponIds)){
-                String[] weaponIdList = weaponIds.split(",");
-                List<SysFigureWeapon> sysFigureWeaponList = new ArrayList<>();
-                for (String weaponId:weaponIdList){
-                    SysFigureWeapon sysFigureWeapon = new SysFigureWeapon();
-                    sysFigureWeapon.setFigureId(figureId);
-                    sysFigureWeapon.setWeaponId(weaponId);
-                    sysFigureWeaponList.add(sysFigureWeapon);
-                }
-                sysFigureWeaponService.saveBatch(sysFigureWeaponList);
-            }
+
+        if (StringUtils.isBlank(weaponIds)){
+            //页面未勾选武器但有已保存的人物武器关系，则删除已保存的人物武器关系
+            sysFigureWeaponService.remove(queryWrapper);
         }else {
-            //更新
+            List<String> idList = Arrays.asList(weaponIds.split(","));           //页面勾选武器id列表
+            List<String> dbIdList = dbList.stream().map(item -> item.getWeaponId()).collect(Collectors.toList());      //数据库存储武器id列表
+            List<String> intersecion = idList.stream().filter(dbIdList::contains).collect(Collectors.toList());       //交集
+
+            List<String> addIds = idList.stream().filter(item -> !intersecion.contains(item)).collect(Collectors.toList());     //需要保存的武器id列表
+            List<SysFigureWeapon> addList = new ArrayList<>();
+            for (String id:addIds){
+                SysFigureWeapon sysFigureWeapon = new SysFigureWeapon();
+                sysFigureWeapon.setFigureId(figureId);
+                sysFigureWeapon.setWeaponId(id);
+                addList.add(sysFigureWeapon);
+            }
+            sysFigureWeaponService.saveBatch(addList);
+
+            List<String> deleteIds = dbIdList.stream().filter(item -> !intersecion.contains(item)).collect(Collectors.toList());   //需要删除的武器id列表
+            if(CollectionUtils.isNotEmpty(deleteIds)){
+                queryWrapper.in("weapon_id",deleteIds);
+                sysFigureWeaponService.remove(queryWrapper);
+            }
         }
     }
 
