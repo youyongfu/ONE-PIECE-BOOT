@@ -26,4 +26,6 @@ public class SysUploadFile implements Serializable {
     //文件地址
     private String url;
 
+    //文件夹地址
+    private String foldName;
 }
