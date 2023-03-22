@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,7 +16,7 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class SysFigure extends BaseEntity {
+public class SysFigure implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -30,7 +32,7 @@ public class SysFigure extends BaseEntity {
     private String alias;
 
     //性别
-    private Integer sex;
+    private String sex;
 
     //生日
     private String birth;
@@ -39,7 +41,7 @@ public class SysFigure extends BaseEntity {
     private String age;
 
     //血型
-    private Integer blood;
+    private String blood;
 
     //身高
     private String height;
@@ -67,6 +69,15 @@ public class SysFigure extends BaseEntity {
 
     // 简介
     private String synopsis;
+
+    //状态
+    private String statu;
+
+    //创建时间
+    private Date createdTime;
+
+    //更新时间
+    private Date updatedTime;
 
     //恶魔果实
     @TableField(exist = false)    //表示当前属性不是数据库的字段

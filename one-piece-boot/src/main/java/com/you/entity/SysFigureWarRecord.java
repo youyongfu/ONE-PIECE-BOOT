@@ -23,7 +23,7 @@ public class SysFigureWarRecord implements Serializable {
     private String opponentFigureId;
 
     //对战结果
-    private Integer battleResults;
+    private String battleResults;
 
     //简介
     private String synopsis;

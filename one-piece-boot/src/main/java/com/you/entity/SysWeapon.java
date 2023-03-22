@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
+import java.util.Date;
+
 /**
  * 武器实体类
  * @author yyf
@@ -12,7 +15,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class SysWeapon extends BaseEntity {
+public class SysWeapon implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -25,7 +28,7 @@ public class SysWeapon extends BaseEntity {
     private String foreignName;
 
     //级别
-    private Integer level;
+    private String level;
 
     //价值
     private String money;
@@ -41,6 +44,15 @@ public class SysWeapon extends BaseEntity {
 
     //初次登场
     private String debut;
+
+    //状态
+    private String statu;
+
+    //创建时间
+    private Date createdTime;
+
+    //更新时间
+    private Date updatedTime;
 
     //来历
     @TableField(exist = false)    //表示当前属性不是数据库的字段

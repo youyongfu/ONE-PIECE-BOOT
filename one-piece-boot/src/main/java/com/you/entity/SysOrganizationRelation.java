@@ -20,7 +20,7 @@ public class SysOrganizationRelation implements Serializable {
     private String id;
 
     //关系类型
-    private Integer relationType;
+    private String relationType;
 
     //关联组织id
     private String relationOrganizationId;

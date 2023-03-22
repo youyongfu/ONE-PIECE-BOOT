@@ -20,7 +20,7 @@ public class SysShippingRole implements Serializable {
     private String id;
 
     //身份类型
-    private Integer relationIdentity;
+    private String relationIdentity;
 
     //关系类型
     private String relation;

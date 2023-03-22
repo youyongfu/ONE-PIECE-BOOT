@@ -220,7 +220,7 @@ CREATE TABLE sys_organization (
   parent_id varchar(50) DEFAULT NULL COMMENT '上级组织',
   name varchar(50) DEFAULT NULL COMMENT '名称',
   foreign_name varchar(100) DEFAULT NULL COMMENT '外文名',
-  nature int(2) DEFAULT NULL COMMENT '组织性质',
+  nature varchar(2) DEFAULT NULL COMMENT '组织性质',
   birth varchar(50) DEFAULT NULL COMMENT '诞生时间',
   leader varchar(32) DEFAULT NULL COMMENT '组织领导',
   headquarters varchar(32) DEFAULT NULL COMMENT '组织总部',
@@ -228,14 +228,14 @@ CREATE TABLE sys_organization (
   synopsis varchar(1000) DEFAULT NULL COMMENT '简介',
   created_time datetime DEFAULT NULL COMMENT '创建时间',
   updated_time datetime DEFAULT NULL COMMENT '更新时间',
-  statu int(2) DEFAULT NULL COMMENT '状态',
+  statu varchar(2) DEFAULT NULL COMMENT '状态',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --------------------------------------组织关系表-----------------------------------------------------------------------------
 CREATE TABLE sys_organization_relation (
   id varchar(32) NOT NULL,
-  relation_type int(2) DEFAULT NULL COMMENT '关系类型',
+  relation_type varchar(2) DEFAULT NULL COMMENT '关系类型',
   owner_id varchar(32) DEFAULT NULL COMMENT '所属组织id',
   synopsis varchar(500) DEFAULT NULL COMMENT '简介',
   relation_organization_id varchar(32) DEFAULT NULL COMMENT '关联组织id',
@@ -290,15 +290,15 @@ CREATE TABLE sys_shipping (
   synopsis varchar(1000) DEFAULT NULL COMMENT '简介',
   created_time datetime DEFAULT NULL COMMENT '创建时间',
   updated_time datetime DEFAULT NULL COMMENT '更新时间',
-  statu int(2) DEFAULT NULL COMMENT '状态',
-  model int(2) DEFAULT NULL COMMENT '型号',
+  statu varchar(2) DEFAULT NULL COMMENT '状态',
+  model varchar(2) DEFAULT NULL COMMENT '型号',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --------------------------------------船只相关角色表-----------------------------------------------------------------------------
 CREATE TABLE sys_shipping_role (
   id varchar(32) NOT NULL,
-  relation_identity int(2) DEFAULT NULL COMMENT '身份类型',
+  relation_identity varchar(2) DEFAULT NULL COMMENT '身份类型',
   relation_id varchar(32) DEFAULT NULL COMMENT '关系人/关系组织',
   relation varchar(50) DEFAULT NULL COMMENT '关系类型',
   shipping_id varchar(32) DEFAULT NULL COMMENT '船只id',
@@ -311,14 +311,14 @@ CREATE TABLE sys_weapon (
   id varchar(32) NOT NULL,
   name varchar(50) DEFAULT NULL COMMENT '名称',
   foreign_name varchar(100) DEFAULT NULL COMMENT '外文名',
-  level int(2) DEFAULT NULL COMMENT '级别',
+  level varchar(2) DEFAULT NULL COMMENT '级别',
   money varchar(100) DEFAULT NULL COMMENT '价值',
   foundry varchar(100) DEFAULT NULL COMMENT '铸造者',
   user varchar(100) DEFAULT NULL COMMENT '使用者',
   synopsis varchar(1000) DEFAULT NULL COMMENT '简介',
   created_time datetime DEFAULT NULL COMMENT '创建时间',
   updated_time datetime DEFAULT NULL COMMENT '更新时间',
-  statu int(2) DEFAULT NULL COMMENT '状态',
+  statu varchar(2) DEFAULT NULL COMMENT '状态',
   debut varchar(255) DEFAULT NULL COMMENT '初次登场',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -329,10 +329,10 @@ CREATE TABLE sys_figure (
   name varchar(50) DEFAULT NULL COMMENT '名称',
   foreign_name varchar(100) DEFAULT NULL COMMENT '外文名',
   alias varchar(100) DEFAULT NULL COMMENT '别名',
-  sex int(2) DEFAULT NULL COMMENT '性别',
+  sex varchar(2) DEFAULT NULL COMMENT '性别',
   birth varchar(20) DEFAULT NULL COMMENT '生日',
   age varchar(30) DEFAULT NULL COMMENT '年龄',
-  blood int(2) DEFAULT NULL COMMENT '血型',
+  blood varchar(2) DEFAULT NULL COMMENT '血型',
   height varchar(20) DEFAULT NULL COMMENT '身高',
   bounty varchar(50) DEFAULT NULL COMMENT '悬赏金',
   debut varchar(50) DEFAULT NULL COMMENT '初次登场',
@@ -344,7 +344,7 @@ CREATE TABLE sys_figure (
   synopsis varchar(1000) DEFAULT NULL COMMENT '简介',
   created_time datetime DEFAULT NULL COMMENT '创建时间',
   updated_time datetime DEFAULT NULL COMMENT '更新时间',
-  statu int(2) DEFAULT NULL COMMENT '状态',
+  statu varchar(2) DEFAULT NULL COMMENT '状态',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -391,7 +391,7 @@ CREATE TABLE sys_figure_experience (
 CREATE TABLE sys_figure_war_record (
   id varchar(32) NOT NULL,
   opponent_figure_id varchar(32) DEFAULT NULL COMMENT '对战对手',
-  battle_results int(2) DEFAULT NULL COMMENT '对战结果',
+  battle_results varchar(2) DEFAULT NULL COMMENT '对战结果',
   synopsis varchar(255) DEFAULT NULL COMMENT '简介',
   figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
   PRIMARY KEY (id)
