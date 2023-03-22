@@ -40,7 +40,7 @@ public class OssUtils {
      * @param file
      * @return
      */
-    public String upload(String classify,MultipartFile file) {
+    public String upload(String classify,MultipartFile file,Boolean preview) {
 
         if (file.isEmpty()) {
             throw new ServiceException("上传文件不能为空");
@@ -55,7 +55,10 @@ public class OssUtils {
             // 获取文件的名称
             String fileName = file.getOriginalFilename();
             ObjectMetadata objectMetadata = new ObjectMetadata();
-            objectMetadata.setContentType(getcontentType(fileName.substring(fileName.lastIndexOf("."))));
+            if(preview){
+                //预览
+                objectMetadata.setContentType(getcontentType(fileName.substring(fileName.lastIndexOf("."))));
+            }
 
             String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
             fileName = classify + "/" + date + "/" + fileName;

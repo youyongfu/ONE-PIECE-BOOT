@@ -32,10 +32,10 @@ public class SysUploadFileServiceImpl extends ServiceImpl<SysUploadFileMapper, S
      * @return
      */
     @Override
-    public SysUploadFile uploadFile(MultipartFile file,String type) {
+    public SysUploadFile uploadFile(MultipartFile file,String type,Boolean preview) {
 
         //上传文件
-        String url = String.valueOf(ossUtils.upload(type,file));
+        String url = String.valueOf(ossUtils.upload(type,file,preview));
 
         //保存文件信息
         String id = UUID.randomUUID().toString().replaceAll("-","");

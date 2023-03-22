@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface SysUploadFileService extends IService<SysUploadFile> {
 
-    SysUploadFile uploadFile(MultipartFile file,String type);
+    SysUploadFile uploadFile(MultipartFile file,String type,Boolean preview);
 
     List<SysUploadFile> getFileInfo(String type,String id);
 

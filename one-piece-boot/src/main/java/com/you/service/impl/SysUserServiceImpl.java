@@ -130,7 +130,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public ResultBean uploadAvatar(MultipartFile file, String name,String type) {
 
         //上传图片
-        SysUploadFile sysUploadFile = uploadFileService.uploadFile(file,type);
+        SysUploadFile sysUploadFile = uploadFileService.uploadFile(file,type,true);
 
         //保存上传文件id
         SysUser sysUser = getByUsername(name);

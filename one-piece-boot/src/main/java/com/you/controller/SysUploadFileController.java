@@ -39,7 +39,7 @@ public class SysUploadFileController {
     @PostMapping("/uploadFile")
     @PreAuthorize("hasAuthority('sys:user:upload')")
     public ResultBean uploadFile(MultipartFile file,String type) {
-        return ResultBean.success(uploadFileService.uploadFile(file,type));
+        return ResultBean.success(uploadFileService.uploadFile(file,type,true));
     }
 
     /**
@@ -50,7 +50,7 @@ public class SysUploadFileController {
     @PreAuthorize("hasAuthority('sys:user:upload')")
     public ResultBean uploadFileAndRecord(MultipartFile file,String type,String id) {
         //上传文件
-        SysUploadFile sysUploadFile = uploadFileService.uploadFile(file, type);
+        SysUploadFile sysUploadFile = uploadFileService.uploadFile(file, type,true);
         //保存文件记录
         uploadFileRecordService.saveFileRecord(type,sysUploadFile.getId(),id);
         return ResultBean.success();
