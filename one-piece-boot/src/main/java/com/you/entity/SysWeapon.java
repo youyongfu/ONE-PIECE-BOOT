@@ -25,7 +25,7 @@ public class SysWeapon extends BaseEntity {
     private String foreignName;
 
     //级别
-    private String level;
+    private Integer level;
 
     //价值
     private String money;
@@ -38,6 +38,9 @@ public class SysWeapon extends BaseEntity {
 
     //简介
     private String synopsis;
+
+    //初次登场
+    private String debut;
 
     //来历
     @TableField(exist = false)    //表示当前属性不是数据库的字段

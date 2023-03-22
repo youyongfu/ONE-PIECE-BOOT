@@ -12,13 +12,11 @@ import com.you.common.ResultBean;
 import com.you.constant.OssConstant;
 import com.you.constant.WeaponConstant;
 import com.you.entity.SysClobContent;
+import com.you.entity.SysFigureWeapon;
 import com.you.entity.SysUploadFile;
 import com.you.entity.SysWeapon;
 import com.you.mapper.SysWeaponMapper;
-import com.you.service.SysClobContentService;
-import com.you.service.SysUploadFileRecordService;
-import com.you.service.SysUploadFileService;
-import com.you.service.SysWeaponService;
+import com.you.service.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -41,6 +39,8 @@ public class SysWeaponServiceImpl extends ServiceImpl<SysWeaponMapper, SysWeapon
     private SysUploadFileService sysUploadFileService;
     @Resource
     private SysUploadFileRecordService sysUploadFileRecordService;
+    @Resource
+    private SysFigureWeaponService sysFigureWeaponService;
 
     /**
      * 分页获取列表
@@ -97,10 +97,7 @@ public class SysWeaponServiceImpl extends ServiceImpl<SysWeaponMapper, SysWeapon
         save(sysWeapon);
 
         //保存武器内容信息
-        List<SysClobContent> contentList = new ArrayList<>();
-        contentList.add(sysClobContentService.assemblyData(weaponId,sysWeapon.getOrigin(), WeaponConstant.ORIGIN_TYPE));
-        contentList.add(sysClobContentService.assemblyData(weaponId,sysWeapon.getModelling(), WeaponConstant.MODELLING_TYPE));
-        sysClobContentService.saveBatch(contentList);
+        saveOrUpdateContent(sysWeapon,"save");
 
         return ResultBean.success(sysWeapon);
     }
@@ -139,21 +136,11 @@ public class SysWeaponServiceImpl extends ServiceImpl<SysWeaponMapper, SysWeapon
     @Override
     public ResultBean updateWeapon(SysWeapon sysWeapon) {
         //更新操作
-        String weaponId = sysWeapon.getId();
         sysWeapon.setUpdatedTime(new Date());
         updateById(sysWeapon);
 
         //更新船只内容信息
-        List<SysClobContent> weaponContentList = sysClobContentService.contentListByOwnerId(weaponId);
-        weaponContentList.forEach(content ->{
-            if(WeaponConstant.ORIGIN_TYPE.equals(content.getType())){
-                content.setContent(sysWeapon.getOrigin());
-            }else if(WeaponConstant.MODELLING_TYPE.equals(content.getType())){
-                content.setContent(sysWeapon.getModelling());
-            }
-        });
-        sysClobContentService.updateBatchById(weaponContentList);
-
+        saveOrUpdateContent(sysWeapon,"update");
 
         //删除已保存的武器文件关系
         if(StringUtils.isNotBlank(sysWeapon.getFileIds())){
@@ -171,6 +158,12 @@ public class SysWeaponServiceImpl extends ServiceImpl<SysWeaponMapper, SysWeapon
      */
     @Override
     public ResultBean deleteWeapon(String id) {
+
+        int count = sysFigureWeaponService.count(new QueryWrapper<SysFigureWeapon>().eq("weapon_id", id));
+        if (count > 0) {
+            return ResultBean.fail("该武器被人物引用，无法删除！");
+        }
+
         //删除武器
         removeById(id);
 
@@ -180,4 +173,30 @@ public class SysWeaponServiceImpl extends ServiceImpl<SysWeaponMapper, SysWeapon
         return ResultBean.success();
     }
 
+    /**
+     * 保存/更新武器内容
+     * @param sysWeapon
+     * @param type
+     */
+    private void saveOrUpdateContent(SysWeapon sysWeapon, String type) {
+        String weaponId = sysWeapon.getId();
+        if("save".equals(type)){
+            //保存
+            List<SysClobContent> contentList = new ArrayList<>();
+            contentList.add(sysClobContentService.assemblyData(weaponId,sysWeapon.getOrigin(), WeaponConstant.ORIGIN_TYPE));
+            contentList.add(sysClobContentService.assemblyData(weaponId,sysWeapon.getModelling(), WeaponConstant.MODELLING_TYPE));
+            sysClobContentService.saveBatch(contentList);
+        }else {
+            //更新
+            List<SysClobContent> weaponContentList = sysClobContentService.contentListByOwnerId(weaponId);
+            weaponContentList.forEach(content ->{
+                if(WeaponConstant.ORIGIN_TYPE.equals(content.getType())){
+                    content.setContent(sysWeapon.getOrigin());
+                }else if(WeaponConstant.MODELLING_TYPE.equals(content.getType())){
+                    content.setContent(sysWeapon.getModelling());
+                }
+            });
+            sysClobContentService.updateBatchById(weaponContentList);
+        }
+    }
 }

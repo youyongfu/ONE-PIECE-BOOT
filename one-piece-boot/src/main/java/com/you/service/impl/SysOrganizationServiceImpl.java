@@ -179,7 +179,6 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
     @Override
     public ResultBean updateOrganization(SysOrganization sysOrganization) {
         //更新操作
-        String organizationId = sysOrganization.getId();
         if(StringUtils.isBlank(sysOrganization.getParentId())){
             sysOrganization.setParentId("0");
         }
