@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.you.common.ResultBean;
+import com.you.constant.CommonConstant;
 import com.you.constant.OrganizationConstant;
 import com.you.constant.OssConstant;
 import com.you.entity.*;
@@ -130,10 +131,10 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
         save(sysOrganization);
 
         //保存组织关系
-        saveOrUpdateOrganizationRelation(sysOrganization,"save");
+        saveOrUpdateOrganizationRelation(sysOrganization, CommonConstant.SAVE_OPERATE);
 
         //保存组织内容信息
-        saveOrUpdateContent(sysOrganization,"save");
+        saveOrUpdateContent(sysOrganization,CommonConstant.SAVE_OPERATE);
 
         return ResultBean.success(sysOrganization);
     }
@@ -186,10 +187,10 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
         updateById(sysOrganization);
 
         //更新组织关系
-        saveOrUpdateOrganizationRelation(sysOrganization,"update");
+        saveOrUpdateOrganizationRelation(sysOrganization,CommonConstant.UPDATE_OPERATE);
 
         //更新组织内容信息
-        saveOrUpdateContent(sysOrganization,"update");
+        saveOrUpdateContent(sysOrganization,CommonConstant.UPDATE_OPERATE);
 
         //删除已保存的组织文件关系
         if(StringUtils.isNotBlank(sysOrganization.getFileIds())){
@@ -244,7 +245,7 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
      */
     private void saveOrUpdateOrganizationRelation(SysOrganization sysOrganization, String type) {
         String organizationId = sysOrganization.getId();
-        if("save".equals(type)){
+        if(CommonConstant.SAVE_OPERATE.equals(type)){
             //保存
             sysOrganization.getSysOrganizationRelationList().forEach(sysOrganizationRelation -> {
                 String id = UUID.randomUUID().toString().replaceAll("-", "");
@@ -290,7 +291,7 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
      */
     private void saveOrUpdateContent(SysOrganization sysOrganization, String type) {
         String organizationId = sysOrganization.getId();
-        if("save".equals(type)) {
+        if(CommonConstant.SAVE_OPERATE.equals(type)) {
             //保存
             List<SysClobContent> contentList = new ArrayList<>();
             contentList.add(sysClobContentService.assemblyData(organizationId,sysOrganization.getBackground(), OrganizationConstant.BACKGROUND_TYPE));

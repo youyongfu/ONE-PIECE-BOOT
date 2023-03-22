@@ -182,6 +182,11 @@ INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_tim
 INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (56, 0, '船只状态', 'SHIPPING_STATU', NULL, '2023-03-21 03:19:58', NULL, 1);
 INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (57, 56, '活跃', NULL, '1', '2023-03-21 03:20:11', NULL, 1);
 INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (58, 56, '谢幕', NULL, '2', '2023-03-21 03:20:24', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (59, 0, '武器位阶', 'WEAPON_LEVEL', NULL, '2023-03-21 04:56:33', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (60, 59, '快刀', NULL, '1', '2023-03-21 04:56:53', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (61, 0, '武器状态', 'WEAPON_STATU', NULL, '2023-03-21 05:04:49', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (62, 61, '活跃', NULL, '1', '2023-03-21 05:05:02', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (63, 61, '谢幕', NULL, '2', '2023-03-21 05:05:15', NULL, 1);
 
 --------------------------------------文件上传信息表-----------------------------------------------------------------------------
 CREATE TABLE sys_upload_file (
@@ -306,7 +311,7 @@ CREATE TABLE sys_weapon (
   id varchar(32) NOT NULL,
   name varchar(50) DEFAULT NULL COMMENT '名称',
   foreign_name varchar(100) DEFAULT NULL COMMENT '外文名',
-  level varchar(100) DEFAULT NULL COMMENT '级别',
+  level int(2) DEFAULT NULL COMMENT '级别',
   money varchar(100) DEFAULT NULL COMMENT '价值',
   foundry varchar(100) DEFAULT NULL COMMENT '铸造者',
   user varchar(100) DEFAULT NULL COMMENT '使用者',
@@ -314,6 +319,7 @@ CREATE TABLE sys_weapon (
   created_time datetime DEFAULT NULL COMMENT '创建时间',
   updated_time datetime DEFAULT NULL COMMENT '更新时间',
   statu int(2) DEFAULT NULL COMMENT '状态',
+  debut varchar(255) DEFAULT NULL COMMENT '初次登场',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

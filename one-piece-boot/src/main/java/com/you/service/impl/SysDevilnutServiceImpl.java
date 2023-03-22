@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.you.common.ResultBean;
+import com.you.constant.CommonConstant;
 import com.you.constant.DevilnutConstant;
 import com.you.constant.OssConstant;
 import com.you.entity.SysClobContent;
@@ -100,7 +101,7 @@ public class SysDevilnutServiceImpl extends ServiceImpl<SysDevilnutMapper, SysDe
         save(sysDevilnut);
 
         //保存果实内容信息
-        saveOrUpdateCotent(sysDevilnut,"save");
+        saveOrUpdateCotent(sysDevilnut, CommonConstant.SAVE_OPERATE);
 
         return ResultBean.success(sysDevilnut);
     }
@@ -143,7 +144,7 @@ public class SysDevilnutServiceImpl extends ServiceImpl<SysDevilnutMapper, SysDe
         updateById(sysDevilnut);
 
         //更新果实内容信息
-        saveOrUpdateCotent(sysDevilnut,"update");
+        saveOrUpdateCotent(sysDevilnut,CommonConstant.UPDATE_OPERATE);
 
         //删除已保存的果实文件关系
         if(StringUtils.isNotBlank(sysDevilnut.getFileIds())){
@@ -182,7 +183,7 @@ public class SysDevilnutServiceImpl extends ServiceImpl<SysDevilnutMapper, SysDe
      */
     private void saveOrUpdateCotent(SysDevilnut sysDevilnut,String type) {
         String devilnutId = sysDevilnut.getId();
-        if("save".equals(type)){
+        if(CommonConstant.SAVE_OPERATE.equals(type)){
             //保存
             List<SysClobContent> contentList = new ArrayList<>();
             contentList.add(sysClobContentService.assemblyData(devilnutId,sysDevilnut.getAbility(), DevilnutConstant.ABILITY_TYPE));

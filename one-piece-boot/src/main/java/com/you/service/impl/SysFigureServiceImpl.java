@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.you.common.ResultBean;
+import com.you.constant.CommonConstant;
 import com.you.constant.FigureConstant;
 import com.you.constant.OssConstant;
 import com.you.entity.*;
@@ -117,16 +118,16 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         saveOrUpdateFigureWeapon(sysFigure);
 
         //保存人物经历
-        saveOrUpdateFigureExperience(sysFigure,"save");
+        saveOrUpdateFigureExperience(sysFigure,CommonConstant.SAVE_OPERATE);
 
         //保存人物人际关系
-        saveOrUpdateFigureRelation(sysFigure,"save");
+        saveOrUpdateFigureRelation(sysFigure,CommonConstant.SAVE_OPERATE);
 
         //保存人物对战记录
-        saveOrUpdateFigureWarRecord(sysFigure,"save");
+        saveOrUpdateFigureWarRecord(sysFigure,CommonConstant.SAVE_OPERATE);
 
         //保存组织内容信息
-        saveOrUpdateFigureContent(sysFigure,"save");
+        saveOrUpdateFigureContent(sysFigure,CommonConstant.SAVE_OPERATE);
 
         return ResultBean.success(sysFigure);
     }
@@ -222,16 +223,16 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         saveOrUpdateFigureWeapon(sysFigure);
 
         //更新人物经历
-        saveOrUpdateFigureExperience(sysFigure,"update");
+        saveOrUpdateFigureExperience(sysFigure, CommonConstant.UPDATE_OPERATE);
 
         //更新人际关系
-        saveOrUpdateFigureRelation(sysFigure,"update");
+        saveOrUpdateFigureRelation(sysFigure,CommonConstant.UPDATE_OPERATE);
 
         //更新对战记录
-        saveOrUpdateFigureWarRecord(sysFigure,"update");
+        saveOrUpdateFigureWarRecord(sysFigure,CommonConstant.UPDATE_OPERATE);
 
         //更新人物内容信息
-        saveOrUpdateFigureContent(sysFigure,"update");
+        saveOrUpdateFigureContent(sysFigure,CommonConstant.UPDATE_OPERATE);
 
         //删除已保存的人物文件关系
         if(StringUtils.isNotBlank(sysFigure.getFileIds())){
@@ -407,7 +408,7 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
      */
     private void saveOrUpdateFigureExperience(SysFigure sysFigure,String type) {
         String figureId = sysFigure.getId();
-        if("save".equals(type)){
+        if(CommonConstant.SAVE_OPERATE.equals(type)){
             //保存
             sysFigure.getSysFigureExperienceList().forEach(sysFigureExperience -> {
                 String id = UUID.randomUUID().toString().replaceAll("-", "");
@@ -451,7 +452,7 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
      */
     private void saveOrUpdateFigureRelation(SysFigure sysFigure,String type) {
         String figureId = sysFigure.getId();
-        if("save".equals(type)){
+        if(CommonConstant.SAVE_OPERATE.equals(type)){
             //保存
             sysFigure.getSysFigureRelationList().forEach(sysFigureRelation -> {
                 String id = UUID.randomUUID().toString().replaceAll("-", "");
@@ -495,7 +496,7 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
      */
     private void saveOrUpdateFigureWarRecord(SysFigure sysFigure,String type) {
         String figureId = sysFigure.getId();
-        if("save".equals(type)){
+        if(CommonConstant.SAVE_OPERATE.equals(type)){
             //保存
             sysFigure.getSysFigureWarRecordList().forEach(sysFigureWarRecord -> {
                 String id = UUID.randomUUID().toString().replaceAll("-", "");
@@ -539,7 +540,7 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
      */
     private void saveOrUpdateFigureContent(SysFigure sysFigure,String type) {
         String figureId = sysFigure.getId();
-        if("save".equals(type)){
+        if(CommonConstant.SAVE_OPERATE.equals(type)){
             //保存
             List<SysClobContent> contentList = new ArrayList<>();
             contentList.add(sysClobContentService.assemblyData(figureId,sysFigure.getBackground(), FigureConstant.BACKGROUND_TYPE));

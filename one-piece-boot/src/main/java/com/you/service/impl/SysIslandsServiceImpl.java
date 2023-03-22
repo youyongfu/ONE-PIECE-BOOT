@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.you.common.ResultBean;
+import com.you.constant.CommonConstant;
 import com.you.constant.IslandsConstant;
 import com.you.constant.OssConstant;
 import com.you.entity.*;
@@ -123,7 +124,7 @@ public class SysIslandsServiceImpl extends ServiceImpl<SysIslandsMapper, SysIsla
         save(sysIslands);
 
         //保存岛屿内容信息
-        saveOrUpdateContent(sysIslands,"save");
+        saveOrUpdateContent(sysIslands, CommonConstant.SAVE_OPERATE);
 
         return ResultBean.success(sysIslands);
     }
@@ -169,7 +170,7 @@ public class SysIslandsServiceImpl extends ServiceImpl<SysIslandsMapper, SysIsla
         updateById(sysIslands);
 
         //更新岛屿内容信息
-        saveOrUpdateContent(sysIslands,"update");
+        saveOrUpdateContent(sysIslands,CommonConstant.UPDATE_OPERATE);
 
         //删除已保存的岛屿文件关系
         if(StringUtils.isNotBlank(sysIslands.getFileIds())){
@@ -219,7 +220,7 @@ public class SysIslandsServiceImpl extends ServiceImpl<SysIslandsMapper, SysIsla
      */
     private void saveOrUpdateContent(SysIslands sysIslands, String type) {
         String islandsId = sysIslands.getId();
-        if("save".equals(type)){
+        if(CommonConstant.SAVE_OPERATE.equals(type)){
             //保存
             List<SysClobContent> contentList = new ArrayList<>();
             contentList.add(sysClobContentService.assemblyData(islandsId,sysIslands.getSource(), IslandsConstant.SOURCE_TYPE));

@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.you.common.ResultBean;
+import com.you.constant.CommonConstant;
 import com.you.constant.OssConstant;
 import com.you.constant.WeaponConstant;
 import com.you.entity.SysClobContent;
@@ -97,7 +98,7 @@ public class SysWeaponServiceImpl extends ServiceImpl<SysWeaponMapper, SysWeapon
         save(sysWeapon);
 
         //保存武器内容信息
-        saveOrUpdateContent(sysWeapon,"save");
+        saveOrUpdateContent(sysWeapon,CommonConstant.SAVE_OPERATE);
 
         return ResultBean.success(sysWeapon);
     }
@@ -140,7 +141,7 @@ public class SysWeaponServiceImpl extends ServiceImpl<SysWeaponMapper, SysWeapon
         updateById(sysWeapon);
 
         //更新船只内容信息
-        saveOrUpdateContent(sysWeapon,"update");
+        saveOrUpdateContent(sysWeapon,CommonConstant.UPDATE_OPERATE);
 
         //删除已保存的武器文件关系
         if(StringUtils.isNotBlank(sysWeapon.getFileIds())){
@@ -180,7 +181,7 @@ public class SysWeaponServiceImpl extends ServiceImpl<SysWeaponMapper, SysWeapon
      */
     private void saveOrUpdateContent(SysWeapon sysWeapon, String type) {
         String weaponId = sysWeapon.getId();
-        if("save".equals(type)){
+        if(CommonConstant.SAVE_OPERATE.equals(type)){
             //保存
             List<SysClobContent> contentList = new ArrayList<>();
             contentList.add(sysClobContentService.assemblyData(weaponId,sysWeapon.getOrigin(), WeaponConstant.ORIGIN_TYPE));

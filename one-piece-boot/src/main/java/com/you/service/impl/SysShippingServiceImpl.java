@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.you.common.ResultBean;
+import com.you.constant.CommonConstant;
 import com.you.constant.OssConstant;
 import com.you.constant.ShippingConstant;
 import com.you.entity.*;
@@ -98,10 +99,10 @@ public class SysShippingServiceImpl extends ServiceImpl<SysShippingMapper, SysSh
         save(sysShipping);
 
         //保存组织内容信息
-        saveOrUpdateContent(sysShipping,"save");
+        saveOrUpdateContent(sysShipping,CommonConstant.SAVE_OPERATE);
 
         //保存相关角色
-        saveOrUpdateShippingRole(sysShipping,"save");
+        saveOrUpdateShippingRole(sysShipping,CommonConstant.SAVE_OPERATE);
 
         return ResultBean.success(sysShipping);
     }
@@ -150,10 +151,10 @@ public class SysShippingServiceImpl extends ServiceImpl<SysShippingMapper, SysSh
         updateById(sysShipping);
 
         //更新船只内容信息
-        saveOrUpdateContent(sysShipping,"update");
+        saveOrUpdateContent(sysShipping,CommonConstant.UPDATE_OPERATE);
 
         //更新相关角色
-        saveOrUpdateShippingRole(sysShipping,"update");
+        saveOrUpdateShippingRole(sysShipping,CommonConstant.UPDATE_OPERATE);
 
         //删除已保存的船只文件关系
         if(StringUtils.isNotBlank(sysShipping.getFileIds())){
@@ -196,7 +197,7 @@ public class SysShippingServiceImpl extends ServiceImpl<SysShippingMapper, SysSh
      */
     private void saveOrUpdateContent(SysShipping sysShipping, String type) {
         String shippingId = sysShipping.getId();
-        if("save".equals(type)){
+        if(CommonConstant.SAVE_OPERATE.equals(type)){
             //保存
             List<SysClobContent> contentList = new ArrayList<>();
             contentList.add(sysClobContentService.assemblyData(shippingId,sysShipping.getBackground(), ShippingConstant.BACKGROUND_TYPE));
@@ -229,7 +230,7 @@ public class SysShippingServiceImpl extends ServiceImpl<SysShippingMapper, SysSh
      */
     private void saveOrUpdateShippingRole(SysShipping sysShipping, String type) {
         String shippingId = sysShipping.getId();
-        if("save".equals(type)){
+        if(CommonConstant.SAVE_OPERATE.equals(type)){
             //保存
             sysShipping.getSysShippingRoleList().forEach(sysShippingRole -> {
                 String id = UUID.randomUUID().toString().replaceAll("-", "");
