@@ -6,7 +6,14 @@
 
     <groupId>com.you</groupId>
     <artifactId>one-piece-boot</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>one-piece-common</module>
+        <module>one-piece-authority</module>
+        <module>one-piece-data</module>
+        <module>one-piece-start</module>
+    </modules>
 
     <!--导入springboot 父工程-->
     <parent>
@@ -206,15 +213,12 @@
         </resources>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
                 <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
         </plugins>
