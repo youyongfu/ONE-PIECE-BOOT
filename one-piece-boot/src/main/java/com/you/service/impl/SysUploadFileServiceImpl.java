@@ -35,7 +35,7 @@ public class SysUploadFileServiceImpl extends ServiceImpl<SysUploadFileMapper, S
     public SysUploadFile uploadFile(MultipartFile file,String type,Boolean preview) {
 
         //上传文件
-        SysUploadFile sysUploadFile = ossUtils.upload(type, file, preview);
+        SysUploadFile sysUploadFile = ossUtils.upload(type, file);
 
         //保存文件信息
         String id = UUID.randomUUID().toString().replaceAll("-","");
@@ -55,16 +55,5 @@ public class SysUploadFileServiceImpl extends ServiceImpl<SysUploadFileMapper, S
     public List<SysUploadFile> getFileInfo(String type,String ownerId) {
         return sysUploadFileMapper.getFileInfo(type,ownerId);
     }
-
-    /**
-     * 下载文件
-     * @param foldName
-     * @param fileName
-     */
-    @Override
-    public void downFile(String foldName, String fileName) {
-        ossUtils.downFile(foldName,fileName);
-    }
-
 
 }

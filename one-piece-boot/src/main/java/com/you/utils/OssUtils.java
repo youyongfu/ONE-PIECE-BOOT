@@ -1,7 +1,9 @@
 package com.you.utils;
 
-import com.aliyun.oss.*;
-import com.aliyun.oss.model.GetObjectRequest;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
+import com.aliyun.oss.ServiceException;
+import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.you.constant.OssConstant;
 import com.you.entity.SysUploadFile;
@@ -11,7 +13,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -42,7 +45,7 @@ public class OssUtils {
      * @param file
      * @return
      */
-    public SysUploadFile upload(String classify, MultipartFile file, Boolean preview) {
+    public SysUploadFile upload(String classify, MultipartFile file) {
 
         if (file.isEmpty()) {
             throw new ServiceException("上传文件不能为空");
@@ -57,10 +60,6 @@ public class OssUtils {
             // 获取文件的名称
             String fileName = file.getOriginalFilename();
             ObjectMetadata objectMetadata = new ObjectMetadata();
-            if (preview) {
-                //预览
-                objectMetadata.setContentType(getcontentType(fileName.substring(fileName.lastIndexOf("."))));
-            }
 
             String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
             fileName = classify + "/" + date + "/" + fileName;
@@ -68,9 +67,16 @@ public class OssUtils {
             ossClient.putObject(bucketName, fileName, new ByteArrayInputStream(file.getBytes()), objectMetadata);
             // 关闭OSSClient。
             ossClient.shutdown();
+
+            String attachment = "?response-content-disposition=inline";
+            String attachmentEncoder = encoder(attachment);
+            String newFileName = fileName + attachment;
+            GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, newFileName);
             // 这里设置图片有效时间 我设置了30年
             Date expiration = new Date(System.currentTimeMillis() + 946080000 * 1000);
-            String url = ossClient.generatePresignedUrl(bucketName, fileName, expiration).toString();
+            generatePresignedUrlRequest.setExpiration(expiration);
+            String url = ossClient.generatePresignedUrl(generatePresignedUrlRequest).toString().replace(attachmentEncoder + "?", attachment + "&");
+
             SysUploadFile sysUploadFile = new SysUploadFile();
             sysUploadFile.setUrl(url);
             sysUploadFile.setFoldName(fileName);
@@ -79,6 +85,13 @@ public class OssUtils {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private String encoder(String s) throws UnsupportedEncodingException {
+        String encoder = URLEncoder.encode(s, "UTF-8");
+        encoder = encoder.replaceAll("\\+", "%20");
+        encoder = encoder.replaceAll("\\*", "%2A");
+        return encoder;
     }
 
     /**
@@ -141,46 +154,5 @@ public class OssUtils {
         }
         return "image/jpg";
     }
-
-    /**
-     * 下载文件
-     *
-     * @param fileName
-     * @return
-     */
-    public void downFile(String foldName, String fileName) {
-        // 创建OSSClient实例。
-        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
-        String pathName = "D:/one-piece/";
-        try {
-            // 下载Object到本地文件，并保存到指定的本地路径中。如果指定的本地文件存在会覆盖，不存在则新建。
-            File file = new File(pathName,fileName);
-            if(!file.exists()){
-                file.mkdir();
-            }
-            // 如果未指定本地路径，则下载后的文件默认保存到示例程序所属项目对应本地路径中。
-            ossClient.getObject(new GetObjectRequest(bucketName, foldName),file);
-//            InputStream ois = object.getObjectContent();
-//            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(ois));
-//            while(true){
-//                String line = bufferedReader.readLine();
-//                if(line == null) break;
-//            }
-//            bufferedReader.close();
-        } catch (OSSException oe) {
-
-            System.out.println("Error Message:" + oe.getErrorMessage());
-            System.out.println("Error Code:" + oe.getErrorCode());
-            System.out.println("Request ID:" + oe.getRequestId());
-            System.out.println("Host ID:" + oe.getHostId());
-        } catch (ClientException ce) {
-            System.out.println("Error Message:" + ce.getMessage());
-        } finally {
-            if (ossClient != null) {
-                ossClient.shutdown();
-            }
-        }
-    }
-
 }
 

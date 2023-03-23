@@ -18,5 +18,4 @@ public interface SysUploadFileService extends IService<SysUploadFile> {
 
     List<SysUploadFile> getFileInfo(String type,String id);
 
-    void downFile(String foldName, String fileName);
 }
