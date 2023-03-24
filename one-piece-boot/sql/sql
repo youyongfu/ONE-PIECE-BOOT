@@ -159,7 +159,7 @@ INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_tim
 INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (33, 31, '武装色霸气', NULL, '2', '2023-03-16 01:14:40', NULL, 1);
 INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (34, 31, '霸王色霸气', NULL, '3', '2023-03-16 01:14:57', NULL, 1);
 INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (35, 26, 'F型', NULL, '5', '2023-03-16 01:50:22', '2023-03-16 01:55:01', 1);
-INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (36, 0, '人物状态', 'FIGURE_STATU', NULL, '2023-03-16 20:24:57', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (36, 0, '人物状态', 'FIGURE_STATU', NULL, '2023-03-16 20:24:57', '2023-03-21 21:25:41', 1);
 INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (37, 36, '活跃', NULL, '1', '2023-03-16 20:26:29', '2023-03-16 20:26:42', 1);
 INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (38, 36, '谢幕', NULL, '2', '2023-03-16 20:28:24', NULL, 1);
 INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (39, 0, '人物对战结果', 'FIGURE_BATTLERESULTS', NULL, '2023-03-17 04:15:50', NULL, 1);
@@ -407,6 +407,7 @@ CREATE TABLE sys_episodes (
   created_time datetime DEFAULT NULL COMMENT '创建时间',
   updated_time datetime DEFAULT NULL COMMENT '更新时间',
   statu int(2) DEFAULT NULL COMMENT '状态',
+  order_num int(2) DEFAULT NULL COMMENT '排序号',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -416,5 +417,28 @@ CREATE TABLE sys_episodes_character (
   figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
   synopsis varchar(255) DEFAULT NULL COMMENT '简介',
   episodes_id varchar(32) DEFAULT NULL COMMENT '剧集id',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--------------------------------------篇章管理表-----------------------------------------------------------------------------
+CREATE TABLE sys_chapter (
+  id varchar(32) NOT NULL,
+  name varchar(255) DEFAULT NULL COMMENT '篇章名称',
+  begin_episodes_id varchar(32) DEFAULT NULL COMMENT '篇章开始剧集',
+  end_episodes_id varchar(32) DEFAULT NULL COMMENT '篇章结束剧集',
+  synopsis varchar(500) DEFAULT NULL COMMENT '简介',
+  created_time datetime DEFAULT NULL COMMENT '创建时间',
+  updated_time datetime DEFAULT NULL COMMENT '更新时间',
+  statu int(2) DEFAULT NULL COMMENT '状态',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--------------------------------------章节管理表-----------------------------------------------------------------------------
+CREATE TABLE sys_chapter_sections (
+  id varchar(32) NOT NULL,
+  name varchar(255) DEFAULT NULL COMMENT '章节名称',
+  begin_episodes_id varchar(32) DEFAULT NULL COMMENT '章节开始剧集',
+  end_episodes_id varchar(32) DEFAULT NULL COMMENT '章节结束剧集',
+  chapter_id varchar(32) DEFAULT NULL COMMENT '篇章id',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

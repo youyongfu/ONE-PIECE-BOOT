@@ -7,14 +7,14 @@ import lombok.EqualsAndHashCode;
 import java.util.List;
 
 /**
- * 剧集实体类
+ * 篇章实体类
  * @author yyf
  * @version 1.0
  * @date 2023/2/9
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class SysEpisodes extends BaseEntity{
+public class SysChapter extends BaseEntity{
 
     private static final long serialVersionUID = 1L;
 
@@ -23,17 +23,21 @@ public class SysEpisodes extends BaseEntity{
     //名称
     private String name;
 
-    //BOSS
-    private String boss;
+    //篇章开始剧集
+    private String beginEpisodesId;
+
+    //篇章结束剧集
+    private String endEpisodesId;
 
     //简介
     private String synopsis;
 
-    //排序号
-    private Integer orderNum;
-
-    //登场角色
+    //篇章内容
     @TableField(exist = false)    //表示当前属性不是数据库的字段
-    private List<SysEpisodesCharacter> sysEpisodesCharacterList;
+    private String content;
+
+    //所属章节
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private List<SysChapterSections> sysChapterSectionsList;
 
 }
