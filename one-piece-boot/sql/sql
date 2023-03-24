@@ -397,3 +397,24 @@ CREATE TABLE sys_figure_war_record (
   figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--------------------------------------剧集管理表-----------------------------------------------------------------------------
+CREATE TABLE sys_episodes (
+  id varchar(32) NOT NULL,
+  name varchar(50) DEFAULT NULL COMMENT '剧集标题',
+  synopsis varchar(500) DEFAULT NULL COMMENT '简介',
+  boss varchar(32) DEFAULT NULL COMMENT 'Boss',
+  created_time datetime DEFAULT NULL COMMENT '创建时间',
+  updated_time datetime DEFAULT NULL COMMENT '更新时间',
+  statu int(2) DEFAULT NULL COMMENT '状态',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--------------------------------------剧集登场角色表-----------------------------------------------------------------------------
+CREATE TABLE sys_episodes_character (
+  id varchar(32) NOT NULL,
+  figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
+  synopsis varchar(255) DEFAULT NULL COMMENT '简介',
+  episodes_id varchar(32) DEFAULT NULL COMMENT '剧集id',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
