@@ -42,6 +42,9 @@ public class SysIslands extends BaseEntity {
     //气候条件
     private String climate;
 
+    //初次出现
+    private String debut;
+
     //简介
     private String synopsis;
 

@@ -225,7 +225,7 @@ CREATE TABLE sys_organization (
   birth varchar(50) DEFAULT NULL COMMENT '诞生时间',
   leader varchar(32) DEFAULT NULL COMMENT '组织领导',
   headquarters varchar(32) DEFAULT NULL COMMENT '组织总部',
-  debut varchar(50) DEFAULT NULL COMMENT '初次登场',
+  debut varchar(32) DEFAULT NULL COMMENT '初次登场',
   synopsis varchar(1000) DEFAULT NULL COMMENT '简介',
   created_time datetime DEFAULT NULL COMMENT '创建时间',
   updated_time datetime DEFAULT NULL COMMENT '更新时间',
@@ -251,7 +251,7 @@ CREATE TABLE sys_devilnut (
   alias varchar(100) DEFAULT NULL COMMENT '别名',
   category varchar(2) DEFAULT NULL COMMENT '类别',
   nature varchar(100) DEFAULT NULL COMMENT '性质',
-  debut varchar(100) DEFAULT NULL COMMENT '初次出现',
+  debut varchar(32) DEFAULT NULL COMMENT '初次出现',
   synopsis varchar(1000) DEFAULT NULL COMMENT '简介',
   created_time datetime DEFAULT NULL COMMENT '创建时间',
   updated_time datetime DEFAULT NULL COMMENT '更新时间',
@@ -273,6 +273,7 @@ CREATE TABLE sys_islands (
   created_time datetime DEFAULT NULL COMMENT '创建时间',
   updated_time datetime DEFAULT NULL COMMENT '更新时间',
   statu int(2) DEFAULT NULL COMMENT '状态',
+  debut varchar(32) DEFAULT NULL COMMENT '初次出现',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -293,6 +294,7 @@ CREATE TABLE sys_shipping (
   updated_time datetime DEFAULT NULL COMMENT '更新时间',
   statu varchar(2) DEFAULT NULL COMMENT '状态',
   model varchar(2) DEFAULT NULL COMMENT '型号',
+  debut varchar(32) DEFAULT NULL COMMENT '初次出现',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -320,7 +322,7 @@ CREATE TABLE sys_weapon (
   created_time datetime DEFAULT NULL COMMENT '创建时间',
   updated_time datetime DEFAULT NULL COMMENT '更新时间',
   statu varchar(2) DEFAULT NULL COMMENT '状态',
-  debut varchar(255) DEFAULT NULL COMMENT '初次登场',
+  debut varchar(32) DEFAULT NULL COMMENT '初次登场',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -336,7 +338,7 @@ CREATE TABLE sys_figure (
   blood varchar(2) DEFAULT NULL COMMENT '血型',
   height varchar(20) DEFAULT NULL COMMENT '身高',
   bounty varchar(50) DEFAULT NULL COMMENT '悬赏金',
-  debut varchar(50) DEFAULT NULL COMMENT '初次登场',
+  debut varchar(32) DEFAULT NULL COMMENT '初次登场',
   position varchar(2) DEFAULT NULL COMMENT '职位',
   eating_habits varchar(255) DEFAULT NULL COMMENT '饮食习惯',
   overbearing varchar(255) DEFAULT NULL COMMENT '霸气',

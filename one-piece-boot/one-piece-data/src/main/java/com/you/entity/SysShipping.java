@@ -52,6 +52,9 @@ public class SysShipping implements Serializable {
     //使用者
     private String user;
 
+    //初次出现
+    private String debut;
+
     //简介
     private String synopsis;
 
