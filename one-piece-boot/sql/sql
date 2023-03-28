@@ -348,6 +348,7 @@ CREATE TABLE sys_figure (
   created_time datetime DEFAULT NULL COMMENT '创建时间',
   updated_time datetime DEFAULT NULL COMMENT '更新时间',
   statu varchar(2) DEFAULT NULL COMMENT '状态',
+  organization_id varchar(32) DEFAULT NULL COMMENT '隶属组织',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -385,7 +386,6 @@ CREATE TABLE sys_figure_experience (
   organization_id varchar(32) DEFAULT NULL COMMENT '组织id',
   active_time varchar(50) DEFAULT NULL COMMENT '活跃时间',
   position varchar(100) DEFAULT NULL COMMENT '身份',
-  shipping_id varchar(32) DEFAULT NULL COMMENT '船只id',
   figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -406,6 +406,15 @@ CREATE TABLE sys_figure_reward (
   figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
   reward varchar(20) DEFAULT NULL COMMENT '悬赏金',
   synopsis varchar(255) DEFAULT NULL COMMENT '主要事件',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--------------------------------------人物船只关系表-----------------------------------------------------------------------------
+CREATE TABLE sys_figure_shipping (
+  id varchar(32) NOT NULL,
+  figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
+  time varchar(255) DEFAULT NULL COMMENT '搭乘时间',
+  shipping_id varchar(32) DEFAULT NULL COMMENT '搭乘船只',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

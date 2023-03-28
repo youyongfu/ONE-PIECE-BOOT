@@ -50,6 +50,8 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
     @Resource
     private SysFigureRewardService sysFigureRewardService;
     @Resource
+    private SysFigureShippingService sysFigureShippingService;
+    @Resource
     private SysUploadFileService sysUploadFileService;
     @Resource
     private SysUploadFileRecordService sysUploadFileRecordService;
@@ -122,6 +124,9 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         //保存人物经历
         saveOrUpdateFigureExperience(sysFigure,CommonConstant.SAVE_OPERATE);
 
+        //保存人物船只信息
+        saveOrUpdateFigureShipping(sysFigure,CommonConstant.SAVE_OPERATE);
+
         //保存人物悬赏
         saveOrUpdateFigureReward(sysFigure,CommonConstant.SAVE_OPERATE);
 
@@ -162,6 +167,9 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
 
         //获取人物对战记录
         sysFigure.setSysFigureWarRecordList(sysFigureWarRecordService.list(queryWrapper));
+
+        //获取人物船只记录
+        sysFigure.setSysFigureShippingList(sysFigureShippingService.list(queryWrapper));
 
         map.put("figure",sysFigure);
 
@@ -233,6 +241,9 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         //更新人物经历
         saveOrUpdateFigureExperience(sysFigure, CommonConstant.UPDATE_OPERATE);
 
+        //更新人物船只
+        saveOrUpdateFigureShipping(sysFigure, CommonConstant.UPDATE_OPERATE);
+
         //保存人物悬赏
         saveOrUpdateFigureReward(sysFigure,CommonConstant.UPDATE_OPERATE);
 
@@ -277,6 +288,9 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
 
         //删除人物经历
         sysFigureExperienceService.remove(queryWrapper);
+
+        //删除人物船只
+        sysFigureShippingService.remove(queryWrapper);
 
         //删除人物悬赏
         sysFigureRewardService.remove(queryWrapper);
@@ -501,6 +515,50 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
             sysFigureRewardService.saveBatch(addList);
             sysFigureRewardService.updateBatchById(updateList);
             sysFigureRewardService.removeByIds(finalDeleteIdList);
+        }
+    }
+
+    /**
+     * 保存/更新人物船只
+     * @param sysFigure
+     */
+    private void saveOrUpdateFigureShipping(SysFigure sysFigure,String type) {
+        String figureId = sysFigure.getId();
+        if(CommonConstant.SAVE_OPERATE.equals(type)){
+            //保存
+            sysFigure.getSysFigureShippingList().forEach(sysFigureShipping -> {
+                String id = UUID.randomUUID().toString().replaceAll("-", "");
+                sysFigureShipping.setId(id);
+                sysFigureShipping.setFigureId(figureId);
+            });
+            sysFigureShippingService.saveBatch(sysFigure.getSysFigureShippingList());
+        }else {
+            //更新
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.eq("figure_id",figureId);
+            List<SysFigureShipping> addList = new ArrayList<>();
+            List<SysFigureShipping> updateList = new ArrayList<>();
+            List<SysFigureShipping> deleteList = sysFigureShippingService.list(queryWrapper);
+            List<String> deleteIdList = new ArrayList<>();
+            if(CollectionUtils.isNotEmpty(deleteList)){
+                deleteIdList = deleteList.stream().map(m -> m.getId()).collect(Collectors.toList());
+            }
+            List<SysFigureShipping> sysFigureShippingList = sysFigure.getSysFigureShippingList();
+            List<String> finalDeleteIdList = deleteIdList;
+            sysFigureShippingList.forEach(sysFigureShipping -> {
+                if(StringUtils.isBlank(sysFigureShipping.getId())){            //新增
+                    String id = UUID.randomUUID().toString().replaceAll("-", "");
+                    sysFigureShipping.setId(id);
+                    sysFigureShipping.setFigureId(figureId);
+                    addList.add(sysFigureShipping);
+                }else {
+                    updateList.add(sysFigureShipping);       //更新
+                    finalDeleteIdList.remove(sysFigureShipping.getId());    //删除
+                }
+            });
+            sysFigureShippingService.saveBatch(addList);
+            sysFigureShippingService.updateBatchById(updateList);
+            sysFigureShippingService.removeByIds(finalDeleteIdList);
         }
     }
 

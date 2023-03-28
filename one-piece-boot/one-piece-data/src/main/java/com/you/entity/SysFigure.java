@@ -67,6 +67,9 @@ public class SysFigure implements Serializable {
     //正义观
     private String justiceView;
 
+    //隶属组织
+    private String organizationId;
+
     // 简介
     private String synopsis;
 
@@ -142,4 +145,8 @@ public class SysFigure implements Serializable {
     //悬赏变化
     @TableField(exist = false)    //表示当前属性不是数据库的字段
     private List<SysFigureReward> sysFigureRewardList;
+
+    //搭乘船只
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private List<SysFigureShipping> sysFigureShippingList;
 }
