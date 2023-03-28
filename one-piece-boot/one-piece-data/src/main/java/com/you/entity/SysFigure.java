@@ -138,4 +138,8 @@ public class SysFigure implements Serializable {
     //对战记录
     @TableField(exist = false)    //表示当前属性不是数据库的字段
     private List<SysFigureWarRecord> sysFigureWarRecordList;
+
+    //悬赏变化
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private List<SysFigureReward> sysFigureRewardList;
 }

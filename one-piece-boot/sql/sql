@@ -400,6 +400,15 @@ CREATE TABLE sys_figure_war_record (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--------------------------------------人物悬赏变化表-----------------------------------------------------------------------------
+CREATE TABLE sys_figure_reward (
+  id varchar(32) NOT NULL,
+  figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
+  reward varchar(20) DEFAULT NULL COMMENT '悬赏金',
+  synopsis varchar(255) DEFAULT NULL COMMENT '主要事件',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 --------------------------------------剧集管理表-----------------------------------------------------------------------------
 CREATE TABLE sys_episodes (
   id varchar(32) NOT NULL,

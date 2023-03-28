@@ -48,6 +48,8 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
     @Resource
     private SysFigureWeaponService sysFigureWeaponService;
     @Resource
+    private SysFigureRewardService sysFigureRewardService;
+    @Resource
     private SysUploadFileService sysUploadFileService;
     @Resource
     private SysUploadFileRecordService sysUploadFileRecordService;
@@ -120,6 +122,9 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         //保存人物经历
         saveOrUpdateFigureExperience(sysFigure,CommonConstant.SAVE_OPERATE);
 
+        //保存人物悬赏
+        saveOrUpdateFigureReward(sysFigure,CommonConstant.SAVE_OPERATE);
+
         //保存人物人际关系
         saveOrUpdateFigureRelation(sysFigure,CommonConstant.SAVE_OPERATE);
 
@@ -151,6 +156,9 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
 
         //获取人物人际关系
         sysFigure.setSysFigureRelationList(sysFigureRelationService.list(queryWrapper));
+
+        //获取人物悬赏
+        sysFigure.setSysFigureRewardList(sysFigureRewardService.list(queryWrapper));
 
         //获取人物对战记录
         sysFigure.setSysFigureWarRecordList(sysFigureWarRecordService.list(queryWrapper));
@@ -225,6 +233,9 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         //更新人物经历
         saveOrUpdateFigureExperience(sysFigure, CommonConstant.UPDATE_OPERATE);
 
+        //保存人物悬赏
+        saveOrUpdateFigureReward(sysFigure,CommonConstant.UPDATE_OPERATE);
+
         //更新人际关系
         saveOrUpdateFigureRelation(sysFigure,CommonConstant.UPDATE_OPERATE);
 
@@ -266,6 +277,9 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
 
         //删除人物经历
         sysFigureExperienceService.remove(queryWrapper);
+
+        //删除人物悬赏
+        sysFigureRewardService.remove(queryWrapper);
 
         //删除人际关系
         sysFigureRelationService.remove(queryWrapper);
@@ -443,6 +457,50 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
             sysFigureExperienceService.saveBatch(sysFigureExperienceAddList);
             sysFigureExperienceService.updateBatchById(sysFigureExperienceUpdateList);
             sysFigureExperienceService.removeByIds(finalDeleteIdList);
+        }
+    }
+
+    /**
+     * 保存/更新人物悬赏
+     * @param sysFigure
+     */
+    private void saveOrUpdateFigureReward(SysFigure sysFigure,String type) {
+        String figureId = sysFigure.getId();
+        if(CommonConstant.SAVE_OPERATE.equals(type)){
+            //保存
+            sysFigure.getSysFigureRewardList().forEach(sysFigureReward -> {
+                String id = UUID.randomUUID().toString().replaceAll("-", "");
+                sysFigureReward.setId(id);
+                sysFigureReward.setFigureId(figureId);
+            });
+            sysFigureRewardService.saveBatch(sysFigure.getSysFigureRewardList());
+        }else {
+            //更新
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.eq("figure_id",figureId);
+            List<SysFigureReward> addList = new ArrayList<>();
+            List<SysFigureReward> updateList = new ArrayList<>();
+            List<SysFigureReward> deleteList = sysFigureRewardService.list(queryWrapper);
+            List<String> deleteIdList = new ArrayList<>();
+            if(CollectionUtils.isNotEmpty(deleteList)){
+                deleteIdList = deleteList.stream().map(m -> m.getId()).collect(Collectors.toList());
+            }
+            List<SysFigureReward> sysFigureRewardList = sysFigure.getSysFigureRewardList();
+            List<String> finalDeleteIdList = deleteIdList;
+            sysFigureRewardList.forEach(sysFigureReward -> {
+                if(StringUtils.isBlank(sysFigureReward.getId())){            //新增
+                    String id = UUID.randomUUID().toString().replaceAll("-", "");
+                    sysFigureReward.setId(id);
+                    sysFigureReward.setFigureId(figureId);
+                    addList.add(sysFigureReward);
+                }else {
+                    updateList.add(sysFigureReward);       //更新
+                    finalDeleteIdList.remove(sysFigureReward.getId());    //删除
+                }
+            });
+            sysFigureRewardService.saveBatch(addList);
+            sysFigureRewardService.updateBatchById(updateList);
+            sysFigureRewardService.removeByIds(finalDeleteIdList);
         }
     }
 
