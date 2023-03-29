@@ -28,4 +28,6 @@ public class SysFigureReward implements Serializable {
     //人物id
     private String figureId;
 
+    //排序号
+    private Integer sortNumber;
 }

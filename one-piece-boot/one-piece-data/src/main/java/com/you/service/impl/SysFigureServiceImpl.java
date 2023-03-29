@@ -157,6 +157,7 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         //获取人物经历
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("figure_id",id);
+        queryWrapper.orderByAsc("sort_number");
         sysFigure.setSysFigureExperienceList(sysFigureExperienceService.list(queryWrapper));
 
         //获取人物人际关系
@@ -178,6 +179,8 @@ public class SysFigureServiceImpl extends ServiceImpl<SysFigureMapper, SysFigure
         map.put("overbearingList",overbearingList);
 
         //获取恶魔果实
+        queryWrapper = new QueryWrapper();
+        queryWrapper.eq("figure_id",id);
         List<String> devilnutList = new ArrayList<>();
         List<SysFigureDevilnut> figureDevilnutByFigureList = sysFigureDevilnutService.list(queryWrapper);
         figureDevilnutByFigureList.forEach(figureDevilnutByFigure -> {
