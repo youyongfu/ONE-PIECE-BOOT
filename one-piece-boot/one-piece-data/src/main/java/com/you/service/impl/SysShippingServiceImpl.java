@@ -122,6 +122,7 @@ public class SysShippingServiceImpl extends ServiceImpl<SysShippingMapper, SysSh
         //获取相关角色
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("shipping_id",id);
+        queryWrapper.orderByAsc("sort_number");
         sysShipping.setSysShippingRoleList(sysShippingRoleService.list(queryWrapper));
 
         map.put("shipping",sysShipping);

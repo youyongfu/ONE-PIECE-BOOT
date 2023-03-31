@@ -115,6 +115,7 @@ public class SysEpisodesServiceImpl extends ServiceImpl<SysEpisodesMapper, SysEp
         //获取剧集登场角色
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("episodes_id",id);
+        queryWrapper.orderByAsc("sort_number");
         sysEpisodes.setSysEpisodesCharacterList(sysEpisodesCharacterService.list(queryWrapper));
 
         map.put("episodes",sysEpisodes);

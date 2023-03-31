@@ -28,4 +28,7 @@ public class SysEpisodesCharacter implements Serializable {
     //简介
     private String synopsis;
 
+    //排序号
+    private Integer sortNumber;
+
 }

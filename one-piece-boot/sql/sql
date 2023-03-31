@@ -240,6 +240,7 @@ CREATE TABLE sys_organization_relation (
   owner_id varchar(32) DEFAULT NULL COMMENT '所属组织id',
   synopsis varchar(500) DEFAULT NULL COMMENT '简介',
   relation_organization_id varchar(32) DEFAULT NULL COMMENT '关联组织id',
+  sort_number int(10) DEFAULT NULL COMMENT '排序号',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -306,6 +307,7 @@ CREATE TABLE sys_shipping_role (
   relation varchar(50) DEFAULT NULL COMMENT '关系类型',
   shipping_id varchar(32) DEFAULT NULL COMMENT '船只id',
   synopsis varchar(500) DEFAULT NULL COMMENT '简介',
+  sort_number int(10) DEFAULT NULL COMMENT '排序号',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -442,6 +444,7 @@ CREATE TABLE sys_episodes_character (
   figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
   synopsis varchar(255) DEFAULT NULL COMMENT '简介',
   episodes_id varchar(32) DEFAULT NULL COMMENT '剧集id',
+  sort_number int(10) DEFAULT NULL COMMENT '排序号',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -465,5 +468,6 @@ CREATE TABLE sys_chapter_sections (
   begin_episodes_id varchar(32) DEFAULT NULL COMMENT '章节开始剧集',
   end_episodes_id varchar(32) DEFAULT NULL COMMENT '章节结束剧集',
   chapter_id varchar(32) DEFAULT NULL COMMENT '篇章id',
+  sort_number int(10) DEFAULT NULL COMMENT '排序号',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

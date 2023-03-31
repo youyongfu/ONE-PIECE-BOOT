@@ -83,21 +83,49 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
      */
     @Override
     public List<SysOrganization> treeList() {
-        List<SysOrganization> menuTree = new ArrayList<>();
-        list().forEach(sysOrganization -> {
-            //获取最外层父节点
-            if(sysOrganization.getParentId().equals("0")){
-                menuTree.add(sysOrganization);
-            }
 
-            //依次获取子节点
-            list().forEach(sysOrganizationChild -> {
-                if(sysOrganization.getId().equals(sysOrganizationChild.getParentId())){
-                    sysOrganization.getChildren().add(sysOrganizationChild);
-                }
-            });
-        });
-        return  menuTree;
+        List<SysOrganization> allList = list();
+        //根节点
+        List<SysOrganization> root = new ArrayList<SysOrganization>();
+        for (SysOrganization nav : allList) {
+            if (nav.getParentId().equals("0")){     //父节点是0的，为根节点。
+                root.add(nav);
+            }
+        }
+
+        //为根菜单设置子菜单，getClild是递归调用的
+        for (SysOrganization nav : root) {
+            List<SysOrganization> childList = getChild(nav.getId(), allList);
+            nav.setChildren(childList);//给根节点设置子节点
+        }
+
+        return  root;
+    }
+
+    /**
+     * 获取子节点
+     * @param id 父节点id
+     * @param allList 所有列表
+     * @return 每个根节点下，所有子菜单列表
+     */
+    public List<SysOrganization> getChild(String id,List<SysOrganization> allList){
+        //子菜单
+        List<SysOrganization> childList = new ArrayList<SysOrganization>();
+        for (SysOrganization nav : allList) {
+            // 遍历所有节点，将所有菜单的父id与传过来的根节点的id比较
+            if (nav.getParentId().equals(id)){
+                childList.add(nav);
+            }
+        }
+        //递归
+        for (SysOrganization nav : childList) {
+            nav.setChildren(getChild(nav.getId(), allList));
+        }
+        //如果节点下没有子节点，返回一个空List（递归退出）
+        if (childList.size() == 0 ){
+            return new ArrayList<SysOrganization>();
+        }
+        return childList;
     }
 
     /**
@@ -155,6 +183,7 @@ public class SysOrganizationServiceImpl extends ServiceImpl<SysOrganizationMappe
         //获取组织关系
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("owner_id",id);
+        queryWrapper.orderByAsc("sort_number");
         sysOrganization.setSysOrganizationRelationList(sysOrganizationRelationService.list(queryWrapper));
 
         map.put("organization",sysOrganization);

@@ -123,6 +123,7 @@ public class SysChapterServiceImpl extends ServiceImpl<SysChapterMapper, SysChap
         //获取剧集登场角色
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("chapter_id",id);
+        queryWrapper.orderByAsc("sort_number");
         sysChapter.setSysChapterSectionsList(sysChapterSectionsService.list(queryWrapper));
 
         map.put("chapter",sysChapter);

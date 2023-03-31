@@ -31,4 +31,7 @@ public class SysOrganizationRelation implements Serializable {
     //所属组织id
     private String ownerId;
 
+    //排序号
+    private Integer sortNumber;
+
 }

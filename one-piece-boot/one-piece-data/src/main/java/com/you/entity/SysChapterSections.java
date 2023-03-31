@@ -31,4 +31,7 @@ public class SysChapterSections implements Serializable {
     //篇章id
     private String chapterId;
 
+    //排序号
+    private Integer sortNumber;
+
 }
