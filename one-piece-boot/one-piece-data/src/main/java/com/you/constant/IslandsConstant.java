@@ -10,5 +10,4 @@ public class IslandsConstant {
 
     public final static String SOURCE_TYPE = "source";         //历史
     public final static String GEOGRAPHY_TYPE = "geography";         //地理环境
-    public final static String APPEARANCES_TYPE = "appearances";         //登场人物
 }

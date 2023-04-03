@@ -56,10 +56,6 @@ public class SysIslands extends BaseEntity {
     @TableField(exist = false)    //表示当前属性不是数据库的字段
     private String geography;
 
-    //登场人物
-    @TableField(exist = false)    //表示当前属性不是数据库的字段
-    private String appearances;
-
     //子区域
     @TableField(exist = false)    //表示当前属性不是数据库的字段
     private List<SysIslands> children = new ArrayList<>();
@@ -67,4 +63,8 @@ public class SysIslands extends BaseEntity {
     //文件id
     @TableField(exist = false)    //表示当前属性不是数据库的字段
     private String fileIds;
+
+    //登场角色
+    @TableField(exist = false)    //表示当前属性不是数据库的字段
+    private List<SysIslandsCharacter> sysIslandsCharacterList;
 }

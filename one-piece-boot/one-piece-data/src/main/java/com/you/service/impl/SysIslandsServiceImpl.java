@@ -5,6 +5,7 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 岛屿管理服务实现类
@@ -41,6 +43,8 @@ public class SysIslandsServiceImpl extends ServiceImpl<SysIslandsMapper, SysIsla
     private SysOrganizationService sysOrganizationService;
     @Resource
     private SysFigureIslandsService sysFigureIslandsService;
+    @Resource
+    private SysIslandsCharacterService sysIslandsCharacterService;
 
     /**
      * 分页获取列表
@@ -126,6 +130,9 @@ public class SysIslandsServiceImpl extends ServiceImpl<SysIslandsMapper, SysIsla
         //保存岛屿内容信息
         saveOrUpdateContent(sysIslands, CommonConstant.SAVE_OPERATE);
 
+        //保存岛屿登场角色
+        saveOrUpdateIslandsCharacter(sysIslands, CommonConstant.SAVE_OPERATE);
+
         return ResultBean.success(sysIslands);
     }
 
@@ -140,6 +147,13 @@ public class SysIslandsServiceImpl extends ServiceImpl<SysIslandsMapper, SysIsla
 
         //获取岛屿信息
         SysIslands sysIslands = getById(id);
+
+        //获取岛屿登场角色
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("islands_id",id);
+        queryWrapper.orderByAsc("sort_number");
+        sysIslands.setSysIslandsCharacterList(sysIslandsCharacterService.list(queryWrapper));
+
         map.put("islands",sysIslands);
 
         //获取上传文件信息
@@ -171,6 +185,9 @@ public class SysIslandsServiceImpl extends ServiceImpl<SysIslandsMapper, SysIsla
 
         //更新岛屿内容信息
         saveOrUpdateContent(sysIslands,CommonConstant.UPDATE_OPERATE);
+
+        //更新岛屿登场角色
+        saveOrUpdateIslandsCharacter(sysIslands, CommonConstant.UPDATE_OPERATE);
 
         //删除已保存的岛屿文件关系
         if(StringUtils.isNotBlank(sysIslands.getFileIds())){
@@ -210,6 +227,11 @@ public class SysIslandsServiceImpl extends ServiceImpl<SysIslandsMapper, SysIsla
         //删除岛屿内容信息
         sysClobContentService.removeContentByOwnerId(id);
 
+        //删除岛屿登场角色
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("islands_id",id);
+        sysIslandsCharacterService.remove(queryWrapper);
+
         return ResultBean.success();
     }
 
@@ -225,7 +247,6 @@ public class SysIslandsServiceImpl extends ServiceImpl<SysIslandsMapper, SysIsla
             List<SysClobContent> contentList = new ArrayList<>();
             contentList.add(sysClobContentService.assemblyData(islandsId,sysIslands.getSource(), IslandsConstant.SOURCE_TYPE));
             contentList.add(sysClobContentService.assemblyData(islandsId,sysIslands.getGeography(), IslandsConstant.GEOGRAPHY_TYPE));
-            contentList.add(sysClobContentService.assemblyData(islandsId,sysIslands.getAppearances(), IslandsConstant.APPEARANCES_TYPE));
             sysClobContentService.saveBatch(contentList);
         }else {
             //更新
@@ -235,11 +256,53 @@ public class SysIslandsServiceImpl extends ServiceImpl<SysIslandsMapper, SysIsla
                     content.setContent(sysIslands.getSource());
                 }else if(IslandsConstant.GEOGRAPHY_TYPE.equals(content.getType())){
                     content.setContent(sysIslands.getGeography());
-                }else if(IslandsConstant.APPEARANCES_TYPE.equals(content.getType())){
-                    content.setContent(sysIslands.getAppearances());
                 }
             });
             sysClobContentService.updateBatchById(islandsContentList);
+        }
+    }
+
+    /**
+     * 保存/更新岛屿登场角色
+     * @param sysIslands
+     */
+    private void saveOrUpdateIslandsCharacter(SysIslands sysIslands, String type) {
+        String islandsId = sysIslands.getId();
+        if(CommonConstant.SAVE_OPERATE.equals(type)){
+            //保存
+            sysIslands.getSysIslandsCharacterList().forEach(sysEpisodesCharacter -> {
+                String id = UUID.randomUUID().toString().replaceAll("-", "");
+                sysEpisodesCharacter.setId(id);
+                sysEpisodesCharacter.setIslandsId(islandsId);
+            });
+            sysIslandsCharacterService.saveBatch(sysIslands.getSysIslandsCharacterList());
+        }else {
+            //更新
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.eq("islands_id",islandsId);
+            List<SysIslandsCharacter> addList = new ArrayList<>();
+            List<SysIslandsCharacter> updateList = new ArrayList<>();
+            List<SysIslandsCharacter> deleteList = sysIslandsCharacterService.list(queryWrapper);
+            List<String> deleteIdList = new ArrayList<>();
+            if(CollectionUtils.isNotEmpty(deleteList)){
+                deleteIdList = deleteList.stream().map(m -> m.getId()).collect(Collectors.toList());
+            }
+            List<SysIslandsCharacter> sysIslandsCharacterList = sysIslands.getSysIslandsCharacterList();
+            List<String> finalDeleteIdList = deleteIdList;
+            sysIslandsCharacterList.forEach(sysEpisodesCharacter -> {
+                if(StringUtils.isBlank(sysEpisodesCharacter.getId())){            //新增
+                    String id = UUID.randomUUID().toString().replaceAll("-", "");
+                    sysEpisodesCharacter.setId(id);
+                    sysEpisodesCharacter.setIslandsId(islandsId);
+                    addList.add(sysEpisodesCharacter);
+                }else {
+                    updateList.add(sysEpisodesCharacter);       //更新
+                    finalDeleteIdList.remove(sysEpisodesCharacter.getId());    //删除
+                }
+            });
+            sysIslandsCharacterService.saveBatch(addList);
+            sysIslandsCharacterService.updateBatchById(updateList);
+            sysIslandsCharacterService.removeByIds(finalDeleteIdList);
         }
     }
 }

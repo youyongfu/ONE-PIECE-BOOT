@@ -187,6 +187,9 @@ INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_tim
 INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (61, 0, '武器状态', 'WEAPON_STATU', NULL, '2023-03-21 05:04:49', NULL, 1);
 INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (62, 61, '活跃', NULL, '1', '2023-03-21 05:05:02', NULL, 1);
 INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (63, 61, '谢幕', NULL, '2', '2023-03-21 05:05:15', NULL, 1);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (65, 50, '海贼同盟', NULL, '3', '2023-03-30 03:46:12', NULL, NULL);
+INSERT INTO sys_dict(id, parent_id, name, code, value, created_time, updated_time, statu) VALUES (66, 50, '友好关系', NULL, '4', '2023-03-30 03:46:33', NULL, NULL);
+
 
 --------------------------------------文件上传信息表-----------------------------------------------------------------------------
 CREATE TABLE sys_upload_file (
@@ -275,6 +278,16 @@ CREATE TABLE sys_islands (
   updated_time datetime DEFAULT NULL COMMENT '更新时间',
   statu int(2) DEFAULT NULL COMMENT '状态',
   debut varchar(32) DEFAULT NULL COMMENT '初次出现',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--------------------------------------岛屿登场角色表-----------------------------------------------------------------------------
+CREATE TABLE sys_islands_character (
+  id varchar(32) NOT NULL,
+  figure_id varchar(32) DEFAULT NULL COMMENT '人物id',
+  synopsis varchar(255) DEFAULT NULL COMMENT '简介',
+  islands_id varchar(32) DEFAULT NULL COMMENT '岛屿id',
+  sort_number int(10) DEFAULT NULL COMMENT '排序号',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
