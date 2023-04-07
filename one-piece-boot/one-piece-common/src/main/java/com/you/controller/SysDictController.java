@@ -47,7 +47,7 @@ public class SysDictController {
     @ApiOperation("获取子数据字典列表")
     @GetMapping("/getChildrenList/{id}")
     @PreAuthorize("hasAuthority('sys:dict:list')")   //查看权限
-    public ResultBean getChildrenList(@ApiParam("父数据字典id") @PathVariable(name = "id") Long id){
+    public ResultBean getChildrenList(@ApiParam("父数据字典id") @PathVariable(name = "id") String id){
         return ResultBean.success(sysDictService.getChildrenList(id));
     }
 
@@ -56,7 +56,7 @@ public class SysDictController {
      * @return
      */
     @ApiOperation("获取数据字典列表")
-    @GetMapping("/list")
+    @GetMapping("/tree")
     @PreAuthorize("hasAuthority('sys:dict:list')")   //查看权限
     public ResultBean list(){
         return ResultBean.success(sysDictService.treeList());
@@ -82,7 +82,7 @@ public class SysDictController {
     @ApiOperation("根据id获取数据字典")
     @GetMapping("/info/{id}")
     @PreAuthorize("hasAuthority('sys:dict:list')")
-    public ResultBean info(@PathVariable(name = "id") Long id) {
+    public ResultBean info(@PathVariable(name = "id") String id) {
         return ResultBean.success(sysDictService.getById(id));
     }
 
@@ -107,7 +107,7 @@ public class SysDictController {
     @Transactional
     @PostMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('sys:dict:delete')")
-    public ResultBean delete(@PathVariable("id") Long id) {
+    public ResultBean delete(@PathVariable("id") String id) {
         return sysDictService.delete(id);
     }
 

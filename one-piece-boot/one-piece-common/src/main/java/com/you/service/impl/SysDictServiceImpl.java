@@ -9,12 +9,14 @@ import com.you.common.ResultBean;
 import com.you.entity.SysDict;
 import com.you.mapper.SysDictMapper;
 import com.you.service.SysDictService;
+import io.netty.util.internal.StringUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 数据字典服务实现类
@@ -70,7 +72,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
      * @return
      */
     @Override
-    public List<SysDict> getChildrenList(Long id) {
+    public List<SysDict> getChildrenList(String id) {
 
         //获取子数据字典
         QueryWrapper queryWrapper = new QueryWrapper();
@@ -93,23 +95,48 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
     @Override
     public List<SysDict> treeList() {
 
-        List<SysDict> dictTree = new ArrayList<>();
-
-        List<SysDict> sysDictList = list();
-        sysDictList.forEach(sysDict -> {
-            //获取最外层父节点
-            if(sysDict.getParentId() == 0L){
-                dictTree.add(sysDict);
+        List<SysDict> allList = list();
+        //根节点
+        List<SysDict> root = new ArrayList<SysDict>();
+        for (SysDict nav : allList) {
+            if (nav.getParentId().equals("0")){     //父节点是0的，为根节点。
+                root.add(nav);
             }
+        }
 
-            //依次获取子节点
-            sysDictList.forEach(sysDictChild -> {
-                if(sysDict.getId() == sysDictChild.getParentId()){
-                    sysDict.getChildren().add(sysDictChild);
-                }
-            });
-        });
-        return  dictTree;
+        //为根菜单设置子菜单，getClild是递归调用的
+        for (SysDict nav : root) {
+            List<SysDict> childList = getChild(nav.getId(), allList);
+            nav.setChildren(childList);//给根节点设置子节点
+        }
+
+        return  root;
+    }
+
+    /**
+     * 获取子节点
+     * @param id 父节点id
+     * @param allList 所有列表
+     * @return 每个根节点下，所有子菜单列表
+     */
+    public List<SysDict> getChild(String id,List<SysDict> allList){
+        //子菜单
+        List<SysDict> childList = new ArrayList<SysDict>();
+        for (SysDict nav : allList) {
+            // 遍历所有节点，将所有菜单的父id与传过来的根节点的id比较
+            if (nav.getParentId().equals(id)){
+                childList.add(nav);
+            }
+        }
+        //递归
+        for (SysDict nav : childList) {
+            nav.setChildren(getChild(nav.getId(), allList));
+        }
+        //如果节点下没有子节点，返回一个空List（递归退出）
+        if (childList.size() == 0 ){
+            return new ArrayList<SysDict>();
+        }
+        return childList;
     }
 
     /**
@@ -119,9 +146,11 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
      */
     @Override
     public ResultBean saveDict(SysDict sysDict) {
+        String id = UUID.randomUUID().toString().replaceAll("-","");
+        sysDict.setId(id);
         //未选择上级菜单，则默认为添加目录
-        if(sysDict.getParentId() == null){
-            sysDict.setParentId(0L);
+        if(StringUtil.isNullOrEmpty(sysDict.getParentId())){
+            sysDict.setParentId("0");
         }
         sysDict.setCreatedTime(new Date());
         save(sysDict);
@@ -136,6 +165,10 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
     @Override
     public ResultBean updateDict(SysDict sysDict) {
         //更新操作
+        //未选择上级菜单，则默认为添加目录
+        if(StringUtil.isNullOrEmpty(sysDict.getParentId())){
+            sysDict.setParentId("0");
+        }
         sysDict.setUpdatedTime(new Date());
         updateById(sysDict);
         return ResultBean.success(sysDict);
@@ -147,7 +180,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
      * @return
      */
     @Override
-    public ResultBean delete(Long id) {
+    public ResultBean delete(String id) {
         //判断该菜单是否存在子数据字典，存在无法删除
         int count = count(new QueryWrapper<SysDict>().eq("parent_id", id));
         if (count > 0) {
@@ -186,7 +219,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
      * @param id
      * @return
      */
-    private Boolean hasChildren(Long id){
+    private Boolean hasChildren(String id){
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("parent_id",id);
         Integer count = sysDictMapper.selectCount(queryWrapper);
