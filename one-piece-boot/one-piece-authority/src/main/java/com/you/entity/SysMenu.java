@@ -1,8 +1,6 @@
 package com.you.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -23,11 +21,10 @@ public class SysMenu extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    private String id;
 
     //菜单ID，一级菜单为0
-    private Long parentId;
+    private String parentId;
 
     //菜单名称
     @NotBlank(message = "菜单名称不能为空")

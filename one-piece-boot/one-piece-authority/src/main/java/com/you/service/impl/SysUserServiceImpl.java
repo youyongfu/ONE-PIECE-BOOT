@@ -26,10 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -112,7 +109,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @return
      */
     @Override
-    public ResultBean rePass(Long userId) {
+    public ResultBean rePass(String userId) {
         SysUser sysUser = getById(userId);
         sysUser.setPassword(bCryptPasswordEncoder.encode(UserConstant.DEFULT_PASSWORD));
         sysUser.setUpdatedTime(new Date());
@@ -180,6 +177,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if(oldUser != null){
             return ResultBean.fail("用户名已存在，无法新增！");
         }
+        String userId = UUID.randomUUID().toString().replaceAll("-","");
+        sysUser.setId(userId);
         sysUser.setCreatedTime(new Date());
         sysUser.setPassword(bCryptPasswordEncoder.encode(UserConstant.DEFULT_PASSWORD));
         save(sysUser);
@@ -192,14 +191,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @return
      */
     @Override
-    public ResultBean getInfoById(Long id) {
+    public ResultBean getInfoById(String id) {
 
         SysUser sysUser = getById(id);
 
         //获取该用户的角色信息
         List<SysRole> sysRoleList = sysRoleMapper.getRoleInfoByUserId(id);
         if(CollectionUtils.isNotEmpty(sysRoleList)){
-            List<Long> roleds = sysRoleList.stream().map(m -> m.getId()).collect(Collectors.toList());
+            List<String> roleds = sysRoleList.stream().map(m -> m.getId()).collect(Collectors.toList());
             sysUser.setRoleIds(roleds);
         }
 
@@ -226,10 +225,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @return
      */
     @Override
-    public ResultBean delete(Long[] ids) {
+    public ResultBean delete(String[] ids) {
 
         //删除角色
-        List<Long> idList = Arrays.asList(ids);
+        List<String> idList = Arrays.asList(ids);
         removeByIds(idList);
 
         //删除用户角色关系
@@ -245,7 +244,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @return
      */
     @Override
-    public ResultBean role(Long id, Long[] roleIds) {
+    public ResultBean role(String id, String[] roleIds) {
 
         //组装前端勾选的用户角色信息
         List<SysUserRole> userRoleList = new ArrayList<>();

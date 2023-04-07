@@ -71,7 +71,7 @@ public class SysRoleController extends BaseController{
     @ApiOperation("根据id获取角色")
     @GetMapping("/info/{id}")
     @PreAuthorize("hasAuthority('sys:role:list')")
-    public ResultBean info(@PathVariable(name = "id") Long id) {
+    public ResultBean info(@PathVariable(name = "id") String id) {
         return sysRoleService.getInfoById(id);
     }
 
@@ -96,7 +96,7 @@ public class SysRoleController extends BaseController{
     @Transactional
     @PostMapping("/delete")
     @PreAuthorize("hasAuthority('sys:role:delete')")
-    public ResultBean delete(@RequestBody Long[] ids) {
+    public ResultBean delete(@RequestBody String[] ids) {
         return sysRoleService.delete(ids);
     }
 
@@ -109,7 +109,7 @@ public class SysRoleController extends BaseController{
     @Transactional
     @PostMapping("/perm/{id}")
     @PreAuthorize("hasAuthority('sys:role:perm')")
-    public ResultBean perm(@PathVariable(name = "id") Long id, @ApiParam("菜单id") @RequestBody Long[] menuIds) {
+    public ResultBean perm(@PathVariable(name = "id") String id, @ApiParam("菜单id") @RequestBody String[] menuIds) {
         return sysRoleService.perm(id,menuIds);
     }
 }

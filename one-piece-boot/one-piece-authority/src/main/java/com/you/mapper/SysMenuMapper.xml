@@ -24,7 +24,7 @@
     </sql>
 
     <!-- 根据用户id获取菜单权限-->
-    <select id="getMenuByUserId" parameterType="Long" resultMap="BaseResultMap">
+    <select id="getMenuByUserId" parameterType="String" resultMap="BaseResultMap">
         select
             DISTINCT m.id,
             m.parent_id,
@@ -46,7 +46,7 @@
     </select>
 
     <!-- 根据角色id获取菜单权限-->
-    <select id="getMenuByRoleId" parameterType="Long" resultMap="BaseResultMap">
+    <select id="getMenuByRoleId" parameterType="String" resultMap="BaseResultMap">
         select
             DISTINCT m.id,
             m.parent_id,

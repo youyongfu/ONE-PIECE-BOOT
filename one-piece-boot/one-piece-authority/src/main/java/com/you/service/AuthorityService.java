@@ -8,11 +8,11 @@ package com.you.service;
  */
 public interface AuthorityService {
 
-    String getUserAuthorityInfo(Long userId);
+    String getUserAuthorityInfo(String userId);
 
     void clearUserAuthorityInfo(String username);
 
-    void clearUserAuthorityInfoByRoleId(Long roleId);
+    void clearUserAuthorityInfoByRoleId(String roleId);
 
-    void clearUserAuthorityInfoByMenuId(Long menuId);
+    void clearUserAuthorityInfoByMenuId(String menuId);
 }

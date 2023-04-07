@@ -47,7 +47,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      * @param userId
      * @return
      */
-    public List<GrantedAuthority> getUserAuthority(Long userId){
+    public List<GrantedAuthority> getUserAuthority(String userId){
         String authority = authorityService.getUserAuthorityInfo(userId);
         return AuthorityUtils.commaSeparatedStringToAuthorityList(authority);
     }

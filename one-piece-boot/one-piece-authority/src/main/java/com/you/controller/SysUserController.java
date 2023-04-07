@@ -56,8 +56,8 @@ public class SysUserController extends BaseController{
      */
     @ApiOperation("重置密码")
     @PostMapping("/repass")
-    public ResultBean repass(@ApiParam("用户id") @RequestBody Long userId){
-        return sysUserService.rePass(userId);
+    public ResultBean repass(String id){
+        return sysUserService.rePass(id);
     }
 
     /**
@@ -103,7 +103,7 @@ public class SysUserController extends BaseController{
     @ApiOperation("根据id获取用户信息")
     @GetMapping("/info/{id}")
     @PreAuthorize("hasAuthority('sys:user:list')")
-    public ResultBean info(@PathVariable(name = "id") Long id) {
+    public ResultBean info(@PathVariable(name = "id") String id) {
         return sysUserService.getInfoById(id);
     }
 
@@ -128,7 +128,7 @@ public class SysUserController extends BaseController{
     @Transactional
     @PostMapping("/delete")
     @PreAuthorize("hasAuthority('sys:user:delete')")
-    public ResultBean delete(@ApiParam("用户id") @RequestBody Long[] ids) {
+    public ResultBean delete(@ApiParam("用户id") @RequestBody String[] ids) {
         return sysUserService.delete(ids);
     }
 
@@ -141,7 +141,7 @@ public class SysUserController extends BaseController{
     @Transactional
     @PostMapping("/role/{id}")
     @PreAuthorize("hasAuthority('sys:user:role')")
-    public ResultBean role(@ApiParam("用户id") @PathVariable(name = "id") Long id, @ApiParam("角色id") @RequestBody Long[] roleIds) {
+    public ResultBean role(@ApiParam("用户id") @PathVariable(name = "id") String id, @ApiParam("角色id") @RequestBody String[] roleIds) {
         return sysUserService.role(id,roleIds);
     }
 

@@ -22,7 +22,7 @@ public interface SysUserService extends IService<SysUser> {
 
     ResultBean updatePassword(PasswordDto passwordDto, Principal principal);
 
-    ResultBean rePass(Long userId);
+    ResultBean rePass(String userId);
 
     ResultBean uploadAvatar(MultipartFile file, String name,String type);
 
@@ -30,12 +30,12 @@ public interface SysUserService extends IService<SysUser> {
 
     ResultBean saveUser(SysUser sysUser);
 
-    ResultBean getInfoById(Long id);
+    ResultBean getInfoById(String id);
 
     ResultBean updateUser(SysUser sysUser);
 
-    ResultBean delete(Long[] ids);
+    ResultBean delete(String[] ids);
 
-    ResultBean role(Long id, Long[] roleIds);
+    ResultBean role(String id, String[] roleIds);
 
 }

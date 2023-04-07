@@ -57,18 +57,18 @@ public class SysMenuController extends BaseController{
     @ApiOperation("获取子菜单列表")
     @GetMapping("/getChildrenList/{id}")
     @PreAuthorize("hasAuthority('sys:menu:list')")   //查看权限
-    public ResultBean getChildrenList(@ApiParam("父菜单id") @PathVariable(name = "id") Long id){
+    public ResultBean getChildrenList(@ApiParam("父菜单id") @PathVariable(name = "id") String id){
         return sysMenuService.getChildrenList(id);
     }
 
     /**
-     * 获取菜单列表
+     * 获取树形数据
      * @return
      */
-    @ApiOperation("获取菜单列表")
-    @GetMapping("/list")
+    @ApiOperation("获取树形数据")
+    @GetMapping("/tree")
     @PreAuthorize("hasAuthority('sys:menu:list')")   //查看权限
-    public ResultBean list(){
+    public ResultBean tree(){
         return ResultBean.success(sysMenuService.treeList());
     }
 
@@ -77,6 +77,7 @@ public class SysMenuController extends BaseController{
      * @param sysMenu
      * @return
      */
+    @Transactional
     @ApiOperation("添加菜单")
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('sys:menu:save')")      //提交权限
@@ -92,7 +93,7 @@ public class SysMenuController extends BaseController{
     @ApiOperation("根据id获取菜单")
     @GetMapping("/info/{id}")
     @PreAuthorize("hasAuthority('sys:menu:list')")
-    public ResultBean info(@PathVariable(name = "id") Long id) {
+    public ResultBean info(@PathVariable(name = "id") String id) {
         return ResultBean.success(sysMenuService.getById(id));
     }
 
@@ -101,6 +102,7 @@ public class SysMenuController extends BaseController{
      * @param sysMenu
      * @return
      */
+    @Transactional
     @ApiOperation("更新菜单")
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('sys:menu:update')")      //更新权限
@@ -117,7 +119,7 @@ public class SysMenuController extends BaseController{
     @Transactional
     @PostMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('sys:menu:delete')")
-    public ResultBean delete(@PathVariable("id") Long id) {
+    public ResultBean delete(@PathVariable("id") String id) {
         return sysMenuService.delete(id);
     }
 }

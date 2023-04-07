@@ -16,12 +16,12 @@ public interface SysRoleService extends IService<SysRole> {
 
     ResultBean saveRole(SysRole sysRole);
 
-    ResultBean getInfoById(Long id);
+    ResultBean getInfoById(String id);
 
     ResultBean updateRole(SysRole sysRole);
 
-    ResultBean delete(Long[] id);
+    ResultBean delete(String[] id);
 
-    ResultBean perm(Long id, Long[] menuIds);
+    ResultBean perm(String id, String[] menuIds);
 
 }

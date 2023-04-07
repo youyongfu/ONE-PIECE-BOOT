@@ -17,9 +17,9 @@ import java.util.List;
 @Mapper
 public interface SysUserMapper extends BaseMapper<SysUser> {
 
-    List<SysUser> getUserInfoByRoleId(Long roleId);
+    List<SysUser> getUserInfoByRoleId(String roleId);
 
-    List<SysUser> getUserInfoByMenuId(Long menuId);
+    List<SysUser> getUserInfoByMenuId(String menuId);
 
     void deleteUserRoleByUserId(@Param("userIds") List userIds);
 

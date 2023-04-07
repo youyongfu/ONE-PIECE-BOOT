@@ -15,7 +15,7 @@ import java.util.List;
 public class SysMenuDto implements Serializable {
 
     //ID
-    private Long id;
+    private String id;
 
     //导航名
     private String name;

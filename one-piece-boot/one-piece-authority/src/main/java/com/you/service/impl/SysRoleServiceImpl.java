@@ -17,10 +17,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -75,6 +72,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      */
     @Override
     public ResultBean saveRole(SysRole sysRole) {
+        String roleId = UUID.randomUUID().toString().replaceAll("-","");
+        sysRole.setId(roleId);
         sysRole.setCreatedTime(new Date());
         save(sysRole);
         return ResultBean.success(sysRole);
@@ -86,14 +85,14 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      * @return
      */
     @Override
-    public ResultBean getInfoById(Long id) {
+    public ResultBean getInfoById(String id) {
 
         SysRole sysRole = getById(id);
 
         //获取角色的菜单信息
         List<SysMenu> sysMenuList = sysMenuMapper.getMenuByRoleId(id);
         if(CollectionUtils.isNotEmpty(sysMenuList)){
-            List<Long> menuIds = sysMenuList.stream().map(m -> m.getId()).collect(Collectors.toList());
+            List<String> menuIds = sysMenuList.stream().map(m -> m.getId()).collect(Collectors.toList());
             sysRole.setMenuIds(menuIds);
         }
 
@@ -123,8 +122,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      * @return
      */
     @Override
-    public ResultBean delete(Long[] ids) {
-        List<Long> idList = Arrays.asList(ids);
+    public ResultBean delete(String[] ids) {
+        List<String> idList = Arrays.asList(ids);
 
         // 清除所有与该角色相关的权限缓存
         idList.stream().forEach(id -> {
@@ -150,7 +149,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      * @return
      */
     @Override
-    public ResultBean perm(Long id, Long[] menuIds) {
+    public ResultBean perm(String id, String[] menuIds) {
 
         //组装前端勾选的角色权限信息
         List<SysRoleMenu> roleMenuList = new ArrayList<>();

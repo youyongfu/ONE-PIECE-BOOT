@@ -1,8 +1,6 @@
 package com.you.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -22,8 +20,7 @@ public class SysRole extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    private String id;
 
     //角色名称
     @NotBlank(message = "角色名称不能为空")
@@ -38,5 +35,5 @@ public class SysRole extends BaseEntity {
 
     //菜单id
     @TableField(exist = false)    //表示当前属性不是数据库的字段
-    private List<Long> menuIds = new ArrayList<>();
+    private List<String> menuIds = new ArrayList<>();
 }

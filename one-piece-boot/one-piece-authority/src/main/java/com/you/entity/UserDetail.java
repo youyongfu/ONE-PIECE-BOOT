@@ -13,7 +13,7 @@ import java.util.Collection;
  */
 public class UserDetail implements UserDetails {
 
-    private Long userId;
+    private String userId;
 
     private String password;
 
@@ -29,12 +29,12 @@ public class UserDetail implements UserDetails {
 
     private final boolean enabled;
 
-    public UserDetail(Long userId, String username, String password, Collection<? extends GrantedAuthority> authorities) {
+    public UserDetail(String userId, String username, String password, Collection<? extends GrantedAuthority> authorities) {
         this(userId, username, password, true, true, true, true, authorities);
     }
 
 
-    public UserDetail(Long userId, String username, String password, boolean enabled, boolean accountNonExpired,
+    public UserDetail(String userId, String username, String password, boolean enabled, boolean accountNonExpired,
                       boolean credentialsNonExpired, boolean accountNonLocked,
                       Collection<? extends GrantedAuthority> authorities) {
         Assert.isTrue(username != null && !"".equals(username) && password != null,

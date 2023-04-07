@@ -19,7 +19,7 @@
     </sql>
 
     <!-- 根据用户id获取角色信息-->
-    <select id="getRoleInfoByUserId" parameterType="Long" resultMap="BaseResultMap">
+    <select id="getRoleInfoByUserId" parameterType="String" resultMap="BaseResultMap">
         select
             r.*
         from
@@ -33,7 +33,7 @@
     <delete id="deleteRoleMenuByRoleId">
         delete from sys_role_menu where role_id in
             <foreach collection="roleIds" item="item" index="index" open="(" separator="," close=")">
-                ${item}
+                #{item}
             </foreach>
     </delete>
 
@@ -41,7 +41,7 @@
     <delete id="deleteUserRoleByRoleId">
         delete from sys_user_role where role_id in
         <foreach collection="roleIds" item="item" index="index" open="(" separator="," close=")">
-            ${item}
+            #{item}
         </foreach>
     </delete>
 
@@ -49,7 +49,7 @@
     <insert id="batchSaveRoleMenu" parameterType="java.util.List">
         insert into sys_role_menu(role_id, menu_id)
         <foreach collection="list" item="item" separator="union all">
-            (select #{item.roleId,jdbcType=DECIMAL}, #{item.menuId,jdbcType=DECIMAL} from dual)
+            (select #{item.roleId,jdbcType=VARCHAR}, #{item.menuId,jdbcType=VARCHAR} from dual)
         </foreach>
     </insert>
 </mapper>

@@ -16,9 +16,9 @@ public class SysRoleMenu implements Serializable {
     private static final long serialVersionUID = 1L;
 
     //角色id
-    private Long roleId;
+    private String roleId;
 
     //菜单id
-    private Long menuId;
+    private String menuId;
 
 }

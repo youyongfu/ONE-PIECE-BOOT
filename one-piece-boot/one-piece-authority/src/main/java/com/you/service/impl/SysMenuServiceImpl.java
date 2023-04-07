@@ -12,6 +12,7 @@ import com.you.mapper.SysMenuMapper;
 import com.you.service.AuthorityService;
 import com.you.service.SysMenuService;
 import com.you.service.SysUserService;
+import io.netty.util.internal.StringUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -20,6 +21,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 菜单服务实现类
@@ -91,7 +93,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      * @return
      */
     @Override
-    public ResultBean getChildrenList(Long id) {
+    public ResultBean getChildrenList(String id) {
 
         //获取子菜单
         QueryWrapper queryWrapper = new QueryWrapper();
@@ -113,7 +115,48 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     @Override
     public List<SysMenu> treeList() {
-        return buildMenuTree(list());
+        List<SysMenu> allList = list();
+        //根节点
+        List<SysMenu> root = new ArrayList<SysMenu>();
+        for (SysMenu nav : allList) {
+            if (nav.getParentId().equals("0")){     //父节点是0的，为根节点。
+                root.add(nav);
+            }
+        }
+
+        //为根菜单设置子菜单，getClild是递归调用的
+        for (SysMenu nav : root) {
+            List<SysMenu> childList = getChild(nav.getId(), allList);
+            nav.setChildren(childList);//给根节点设置子节点
+        }
+
+        return  root;
+    }
+
+    /**
+     * 获取子节点
+     * @param id 父节点id
+     * @param allList 所有列表
+     * @return 每个根节点下，所有子菜单列表
+     */
+    public List<SysMenu> getChild(String id,List<SysMenu> allList){
+        //子菜单
+        List<SysMenu> childList = new ArrayList<SysMenu>();
+        for (SysMenu nav : allList) {
+            // 遍历所有节点，将所有菜单的父id与传过来的根节点的id比较
+            if (nav.getParentId().equals(id)){
+                childList.add(nav);
+            }
+        }
+        //递归
+        for (SysMenu nav : childList) {
+            nav.setChildren(getChild(nav.getId(), allList));
+        }
+        //如果节点下没有子节点，返回一个空List（递归退出）
+        if (childList.size() == 0 ){
+            return new ArrayList<SysMenu>();
+        }
+        return childList;
     }
 
     /**
@@ -123,9 +166,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     @Override
     public ResultBean saveMenu(SysMenu sysMenu) {
+        String menuId = UUID.randomUUID().toString().replaceAll("-","");
+        sysMenu.setId(menuId);
         //未选择上级菜单，则默认为添加目录
-        if(sysMenu.getParentId() == null){
-            sysMenu.setParentId(0L);
+        if(StringUtil.isNullOrEmpty(sysMenu.getParentId())){
+            sysMenu.setParentId("0");
         }
         sysMenu.setCreatedTime(new Date());
         save(sysMenu);
@@ -141,6 +186,10 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     public ResultBean updateMenu(SysMenu sysMenu) {
         //更新操作
         sysMenu.setUpdatedTime(new Date());
+        //未选择上级菜单，则默认为添加目录
+        if(StringUtil.isNullOrEmpty(sysMenu.getParentId())){
+            sysMenu.setParentId("0");
+        }
         updateById(sysMenu);
 
         // 清除所有与该菜单相关的权限缓存
@@ -155,7 +204,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      * @return
      */
     @Override
-    public ResultBean delete(Long id) {
+    public ResultBean delete(String id) {
         //判断该菜单是否存在子菜单，存在无法删除
         int count = count(new QueryWrapper<SysMenu>().eq("parent_id", id));
         if (count > 0) {
@@ -179,7 +228,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      * @param id
      * @return
      */
-    private Boolean hasChildren(Long id){
+    private Boolean hasChildren(String id){
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("parent_id",id);
         Integer count = sysMenuMapper.selectCount(queryWrapper);
@@ -194,13 +243,13 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         List<SysMenu> menuTree = new ArrayList<>();
         sysMenuList.forEach(sysMenu -> {
             //获取最外层父节点
-            if(sysMenu.getParentId() == 0L){
+            if(sysMenu.getParentId().equals("0")){
                 menuTree.add(sysMenu);
             }
 
             //依次获取子节点
             sysMenuList.forEach(sysMenuChild -> {
-                if(sysMenu.getId() == sysMenuChild.getParentId()){
+                if(sysMenu.getId().equals(sysMenuChild.getParentId())){
                     sysMenu.getChildren().add(sysMenuChild);
                 }
             });

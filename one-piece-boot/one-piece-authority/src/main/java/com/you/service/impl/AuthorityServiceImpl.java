@@ -39,7 +39,7 @@ public class AuthorityServiceImpl implements AuthorityService {
      * @return
      */
     @Override
-    public String getUserAuthorityInfo(Long userId) {
+    public String getUserAuthorityInfo(String userId) {
 
         String authority = "";
 
@@ -84,13 +84,13 @@ public class AuthorityServiceImpl implements AuthorityService {
     }
 
     @Override
-    public void clearUserAuthorityInfoByRoleId(Long roleId) {
+    public void clearUserAuthorityInfoByRoleId(String roleId) {
         List<SysUser> userInfoList = sysUserMapper.getUserInfoByRoleId(roleId);
         userInfoList.forEach(u -> clearUserAuthorityInfo(u.getUsername()));
     }
 
     @Override
-    public void clearUserAuthorityInfoByMenuId(Long menuId) {
+    public void clearUserAuthorityInfoByMenuId(String menuId) {
         List<SysUser> userInfoList = sysUserMapper.getUserInfoByMenuId(menuId);
         userInfoList.forEach(u -> clearUserAuthorityInfo(u.getUsername()));
     }
